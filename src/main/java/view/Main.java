@@ -112,6 +112,16 @@ public class Main extends Application {
         gamePanel.getChildren().addAll(backButtonGame, backButtonGame.overlay);
 
 
+        // MUSIC --------------
+        String musicFileName = "src\\resources\\sound\\beat.mp3";
+        Media media = new Media(new File(musicFileName).toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.play();
+        //mediaPlayer.setRate(1);
+        mediaPlayer.setVolume(0.8);
+        // --------------------
+
+
         // OPTIONS ------------
         CustomImage optionsBackground = new CustomImage(windowX, windowY, 1920, 1080, "options menu.png");
 
@@ -125,11 +135,16 @@ public class Main extends Application {
         Pane optionsPane = new Pane();
 
         CustomImage soundScale = new CustomImage(10, 100, 206, 36, "scale.png");
-        Rectangle soundScaleBar = new Rectangle(10+3-1, 100+3-1, 200+2, 30+2);
+        Rectangle soundScaleBar = new Rectangle(10+3-1, 100+3-1, (200+2)*0.8, 30+2);
         soundScaleBar.setFill(Color.rgb(90, 90, 255, 0.85));
-        soundScaleBar.setWidth(100+1);
-        soundScale.setOnMouseClicked((MouseEvent event) -> soundScaleBar.setWidth(event.getSceneX() - soundScaleBar.getX()));
-        soundScaleBar.setOnMouseClicked((MouseEvent event) -> soundScaleBar.setWidth(event.getSceneX() - soundScaleBar.getX()));
+        soundScale.setOnMouseClicked((MouseEvent event) -> {
+            soundScaleBar.setWidth(event.getSceneX() - soundScaleBar.getX());
+            mediaPlayer.setVolume(soundScaleBar.getWidth()/soundScale.getWidth_());
+        });
+        soundScaleBar.setOnMouseClicked((MouseEvent event) -> {
+            soundScaleBar.setWidth(event.getSceneX() - soundScaleBar.getX());
+            mediaPlayer.setVolume(soundScaleBar.getWidth()/soundScale.getWidth_());
+        });
         AtomicBoolean dragging = new AtomicBoolean(true);
 
         optionsPane.getChildren().addAll(backButtonOptions, backButtonOptions.overlay, soundScale, soundScaleBar);
@@ -364,16 +379,6 @@ public class Main extends Application {
         // --------------------
 
 
-        // MUSIC --------------
-        String musicFileName = "src\\resources\\sound\\beat.mp3";
-        Media media = new Media(new File(musicFileName).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.play();
-        //mediaPlayer.setRate(1);
-        mediaPlayer.setVolume(1);
-        // --------------------
-
-
         //JSONReader JSONDataReader = new JSONReader("data.json");
         //JSONWriter JSONDataWriter = new JSONWriter("data.json");
 
@@ -432,8 +437,8 @@ public class Main extends Application {
 
         gamePane.getChildren().removeAll(gamePane.getChildren());
 
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 20; x++) {
+        for (int y = 0; y < blockList.length; y++) {
+            for (int x = 0; x < blockList[y].length; x++) {
                 String fileName = "";
 
                 try {
