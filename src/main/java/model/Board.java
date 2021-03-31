@@ -1,24 +1,11 @@
-package main.java.model;
-
+package model;
 import java.util.ArrayList;
 
 public class Board {
-    private String level
-                    = "    #####\n"
-                    + "    #   #\n"
-                    + "    #$  #\n"
-                    + "  ###  $##\n"
-                    + "  #  $ $ #\n"
-                    + "### # ## #   ######\n"
-                    + "#   # ## #####  ..#\n"
-                    + "# $  $          ..#\n"
-                    + "##### #### #@#  ..#\n"
-                    + "    #      ########\n"
-                    + "    ########\n";
-
+    private final ArrayList<String> level;
     private ArrayList<Wall> walls;
     private ArrayList<Box> boxes;
-    private ArrayList<Objectiv> objectivs;
+    private ArrayList<Goal> goals;
     private Block[][] blockList;
 
     private Player player1;
@@ -26,71 +13,95 @@ public class Board {
     private int levelWidth = 0;
     private int currBoxOnObj = 0;
 
-    public Board() {
-        loadmap();
-        setblockList();
+    private int hiddenPressurePlateX;
+    private int hiddenPressurePlateY;
+
+    public Board(ArrayList<String> level) {
+        this.level = level;
+        loadMap(level);
+        setBlockList();
     }
     /**
-     * Read the String level and create the Arraylists of the walls/boxes and objectivs
+     * Read the String level and create the Arraylists of the walls/boxes and goals
      */
-    private void loadmap(){
+    private void  loadMap(ArrayList<String> level){
         walls = new ArrayList<>();
         boxes = new ArrayList<>();
-        objectivs = new ArrayList<>();
+        goals = new ArrayList<>();
 
         int x = 0;
-        int y = 0;
+        int y = -1;
 
-        for (int i=0; i < level.length();i++) {
-            char item = level.charAt(i);
+        for (String line : level) {
+            if (this.levelWidth < x){
+                this.levelWidth = x;
+            }
+            x = 0;
+            y++;
+            for (int i=0; i < line.length();i++) {
+                char item = line.charAt(i);
 
-            switch (item){
+                switch (item){
 
-                case ' ':
-                    x++;
-                    break;
+                    case ' ':
+                        x++;
+                        break;
 
-                case '#':
-                    Wall wall = new Wall(x,y,"M");
-                    walls.add(wall);
-                    x++;
-                    break;
-                
-                case '\n':
-                    y++;
-                    if (this.levelWidth < x){
-                        this.levelWidth = x;
-                    }
-                    x=0;
-                    break;
-                
-                case '$':
-                    Box newBox = new Box(x,y,"B");
-                    boxes.add(newBox);
-                    x++;
-                    break;
-                
-                case '.':
-                    Objectiv newObjectiv = new Objectiv(x,y,"O");
-                    objectivs.add(newObjectiv);
-                    x++;
-                    break;
-                
-                case '@':
-                    player1 = new Player(x,y,"P");
-                    x++;
-                    break;
-                
-                default:
-                    break;
+                    case '#':
+                        Wall wall = new Wall(x,y,"M");
+                        walls.add(wall);
+                        x++;
+                        break;
+
+                    case '$':
+                        Box newBox = new Box(x,y,"B");
+                        boxes.add(newBox);
+                        x++;
+                        break;
+
+                    case '.':
+                        Goal newGoal = new Goal(x,y,"O");
+                        goals.add(newGoal);
+                        x++;
+                        break;
+
+                    case '@':
+                        player1 = new Player(x,y,"P");
+                        x++;
+                        break;
+
+                    case '+':
+                        player1 = new PlayerOnObj(x,y,"$");
+                        x++;
+                        break;
+
+                    case '*':
+                        BoxOnObj newBoxOnObj = new BoxOnObj(x, y, "$");
+                        boxes.add(newBoxOnObj);
+                        currBoxOnObj++;
+                        x++;
+                        break;
+                    case '=':
+                        Wall newWall = new GhostWall(x,y, "=");
+                        walls.add(newWall);
+                        x++;
+                        break;
+                    case '^':
+                        hiddenPressurePlateX = x;
+                        hiddenPressurePlateY = y;
+                        x++;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Le contenu du fichier n'est pas compatible");
+                }
             }
         }
-        this.levelHeight = y;
+        this.levelHeight = y+1;
     }
     /**
      * Create a 2D table y x with all the items of the game
      */
-    private void setblockList(){
+    private void setBlockList(){
         ArrayList<Block> world = getWorld();
         blockList = new Block[levelHeight][levelWidth];
         for (Block item : world) {
@@ -115,7 +126,7 @@ public class Board {
         
         world.addAll(walls);
         world.addAll(boxes);
-        world.addAll(objectivs);
+        world.addAll(goals);
         world.add(player1);
 
         return world;
@@ -125,7 +136,7 @@ public class Board {
      * levelHeight accessor.
      * @return int levelHeight
      */
-    public int getlevelHeight(){
+    public int getLevelHeight(){
         return this.levelHeight;
     }
 
@@ -133,16 +144,28 @@ public class Board {
      * levelWidth accessor.
      * @return int levelWidth
      */
-    public int getlevelWidth(){
+    public int getLevelWidth(){
         return this.levelWidth;
     }
 
     /**
-     * Check if the all the boxes are on an objectiv AND if all the boxes are placed.
+     * Check if the all the boxes are on an goal AND if all the boxes are placed.
      * @return True if the game is won, false if not.
      */
     public boolean isWin(){
-        return ((currBoxOnObj == objectivs.size()|| (currBoxOnObj == boxes.size())));
+        return currBoxOnObj == boxes.size();
+    }
+
+    public ArrayList<Goal> getGoals() {
+        return goals;
+    }
+
+    public ArrayList<Box> getBoxes() {
+        return boxes;
+    }
+
+    public int getCurrBoxOnObj() {
+        return currBoxOnObj;
     }
 
     /**
@@ -152,383 +175,146 @@ public class Board {
             otherwise, he doesn't move
      * @param direction The direction of the move (RIGHT-UP-LEFT-DOWN)
      */
-    public void move(String direction){
+    public BooleanCouple move(Direction direction){
         int pRow = player1.getX();
         int pLine = player1.getY();
+        int nextX;
+        int nextY;
+        Block nextObj;
+        int nextX2;
+        int nextY2;
+
+        BooleanCouple returnValue = new BooleanCouple(false, false);
 
         switch (direction) {
-            case "UP":
-                //is the case above a void case
-                movePlayerUp(blockList[pLine-1][pRow], pLine, pRow);
+            case UP:
+                nextY = pLine-1;
+                nextX = pRow;
+                nextY2= nextY-1;
+                nextX2 = nextX;
+                nextObj = blockList[nextY][nextX];
                 break;
-            case "DOWN":
-                movePlayerDown(blockList[pLine+1][pRow], pLine, pRow);
+            case DOWN:
+                nextY = pLine+1;
+                nextX = pRow;
+                nextY2= nextY+1;
+                nextX2 = nextX;
+                nextObj = blockList[nextY][nextX];
                 break;
 
-            case "LEFT":
-                movePlayerLeft(blockList[pLine][pRow-1], pLine, pRow);
+            case LEFT:
+                nextY = pLine;
+                nextX = pRow-1;
+                nextY2= nextY;
+                nextX2 = nextX-1;
+                nextObj = blockList[nextY][nextX];
                 break;
-            case "RIGHT":
-                movePlayerRight(blockList[pLine][pRow+1], pLine, pRow);
+            case RIGHT:
+                nextY = pLine;
+                nextX = pRow+1;
+                nextY2= nextY;
+                nextX2 = nextX+1;
+                nextObj = blockList[nextY][nextX];
                 break;
+            default:
+                return returnValue;
         }
 
-    }
-
-    /**
-     * Check all the conditions if the player can move. if he can, he moves.
-     * @param nextObj the Object above the player
-     * @param pLine The line of the player (Y)
-     * @param pRow The row of the player (X)
-     */
-    private void movePlayerUp(Block nextObj,int pLine,int pRow){
-        //move on an objectiv
-        if (nextObj instanceof Objectiv){
-            if (player1 instanceof PlayerOnObj){
-                //if the player wants to move on an objectiv while he's already on one
-                blockList[pLine][pRow] = nextObj;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine-1][pRow] = player1;
-                player1.move("UP");
-                return;
-            }else{
-                //if the player wants to move on an objectiv while's he isn't already on one
-                player1 = new PlayerOnObj(pRow, pLine-1, "$");
-                blockList[pLine-1][pRow] = player1;
+        if(nextObj == null) {
+            if (player1 instanceof PlayerOnObj) {
+                player1 = new Player(nextX, nextY, "P");
+                blockList[pLine][pRow] = new Goal(pRow, pLine, "O");
+                blockList[nextY][nextX] = player1;
+                //he isn't on a goal, he simply move forward.
+            } else {
+                blockList[nextY][nextX] = player1;
                 blockList[pLine][pRow] = null;
-                return;
+                player1.move(direction);
             }
-        //A box is above the player 
-        }else if (nextObj instanceof Box || nextObj instanceof BoxOnObj){
-            //if nothing is above the box
-            if (moveBoxUp(nextObj, blockList[pLine-2][pRow], pLine-1, pRow)){
-                movePlayerUp(blockList[pLine-1][pRow], pLine, pRow);
-            }
-            return;
-        //nothing is above the player      
-        }else if (nextObj == null){
-            //a player is on an objectiv so he change to Player object
-            if (player1 instanceof PlayerOnObj){
-                player1 = new Player(pRow, pLine-1, "P");
-                blockList[pLine][pRow] = new Objectiv(pRow, pLine, "O");
-                blockList[pLine-1][pRow] = player1;
-                return;
-            //he isn't on a objectiv, he simply move forward.
-            }else{
-                blockList[pLine-1][pRow] = player1;
-                blockList[pLine][pRow] = null;  
-                player1.move("UP");
-                return;
-            }
+            returnValue.setA(true);
+            return returnValue;
         }
+        else if (nextX2 < this.levelWidth && nextX2 >= 0 && nextY2 < this.levelHeight && nextY2 >= 0) {
+            if (nextObj.canPass(blockList[nextY2][nextX2])) {
+                if (nextObj instanceof Goal) {
+                    if (player1 instanceof PlayerOnObj) {
+                        //if the player wants to move on an goal while he's already on one
+                        blockList[pLine][pRow] = nextObj;
+                        nextObj.setValues(pRow, pLine);
+                        blockList[nextY][nextX] = player1;
+                        player1.move(direction);
+                    } else {
+                        //if the player wants to move on an goal while's he isn't already on one
+                        player1 = new PlayerOnObj(nextX, nextY, "$");
+                        blockList[nextY][nextX] = player1;
+                        blockList[pLine][pRow] = null;
+                    }
+                } else if (nextObj instanceof GhostWall) {
+                    blockList[pLine][pRow] = null;
+                    blockList[nextY2][nextX2] = player1;
+                    player1.setX(nextX2);
+                    player1.setY(nextY2);
+                }
+                    else{
+                        moveBox(nextObj, blockList[nextY2][nextX2], nextY, nextX, nextX2, nextY2, direction);
+                        move(direction);
+                        returnValue.setB(true);
+                    }
+                }
+                returnValue.setA(true);
+                return returnValue;
+            }
+        return returnValue;
     }
-    
+
     /**
      * Check all the condition if the box can move up.
      * @param currBox The box object we want to move.
      * @param nextObj The object above the box.
-     * @param pLine Line of the player(Y)
-     * @param pRow Row of the player (X)
+     * @param bLine Line of the Box(Y)
+     * @param bRow Row of the Box (X)
+     * @param nextX Row of the next Block(X)
+     * @param nextY Line of the next Block(x)
      * @return true if the box moves, false otherwise. (avoid an infinite loop if the box doesn't move)
      */
-    private boolean moveBoxUp(Block currBox,Block nextObj,int pLine, int pRow){
+    private boolean moveBox(Block currBox,Block nextObj,int bLine, int bRow, int nextX, int nextY, Direction dir){
         if (nextObj == null){
             if (currBox instanceof BoxOnObj){
-                blockList[pLine][pRow] = new Objectiv(pRow, pLine, "O");
-                blockList[pLine-1][pRow] = new Box(pRow,pLine-1,"B");
+                blockList[bLine][bRow] = new Goal(bRow, bLine, "O");
+                blockList[nextY][nextX] = new Box(nextX,nextY,"B");
                 currBoxOnObj--;
                 return true;
             }else{
-                blockList[pLine-1][pRow] = currBox;
-                currBox.push("UP");
-                blockList[pLine][pRow] = null;
+                blockList[nextY][nextX] = currBox;
+                currBox.move(dir);
+                blockList[bLine][bRow] = null;
                 return true;
             }
-        }else if (nextObj instanceof Objectiv){
+        }else if (nextObj instanceof Goal){
             if (currBox instanceof BoxOnObj){
-                blockList[pLine][pRow] = nextObj;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine-1][pRow] = currBox;
-                currBox.push("UP");
+                blockList[bLine][bRow] = nextObj;
+                nextObj.setValues(bRow, bLine);
+                blockList[nextY][nextX] = currBox;
+                currBox.move(dir);
                 return true;
             }else{
-                blockList[pLine][pRow] = null;
-                blockList[pLine-1][pRow] = new BoxOnObj(pRow, pLine-1, "&");
+                blockList[bLine][bRow] = null;
+                blockList[nextY][nextX] = new BoxOnObj(nextX, nextY, "&");
                 currBoxOnObj++;
                 return true;
             }
-        }    
+        }
         else{
             return false;
         }
     }
 
-    /**
-     * Check all the conditions if the player can move. if he can, he moves.
-     * @param nextObj the Object under the player
-     * @param pLine The line of the player (Y)
-     * @param pRow The row of the player (X)
-     */
-    private void movePlayerDown(Block nextObj,int pLine,int pRow){
-        //move on an objectiv
-        if (nextObj instanceof Objectiv){
-            if (player1 instanceof PlayerOnObj){
-                //if the player wants to move on an objectiv while he's already on one
-                blockList[pLine][pRow] = nextObj;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine+1][pRow] = player1;
-                player1.move("DOWN");
-                return;
-            }else{
-                //if the player wants to move on an objectiv while's he isn't already on one
-                player1 = new PlayerOnObj(pRow, pLine+1, "$");
-                blockList[pLine+1][pRow] = player1;
-                blockList[pLine][pRow] = null;
-                return;
-            }
-        //A box is under the player 
-        }else if (nextObj instanceof Box || nextObj instanceof BoxOnObj){
-            //if the box can move, we move the player
-            if (moveBoxDown(nextObj, blockList[pLine+2][pRow], pLine+1, pRow)){
-                movePlayerDown(blockList[pLine+1][pRow], pLine, pRow);
-            }
-            return;
-        //nothing is under the player      
-        }else if (nextObj == null){
-            //a player is on an objectiv so he change to Player object
-            if (player1 instanceof PlayerOnObj){
-                player1 = new Player(pRow, pLine+1, "P");
-                blockList[pLine][pRow] = new Objectiv(pRow, pLine, "O");
-                blockList[pLine+1][pRow] = player1;
-                return;
-            //he isn't on a objectiv, he simply move backward.
-            }else{
-                blockList[pLine+1][pRow] = player1;
-                blockList[pLine][pRow] = null;  
-                player1.move("DOWN");
-                return;
-            }
-        }
+    public boolean isOnPressurePlate(){
+        return ((player1.getX() == hiddenPressurePlateX) && (player1.getY() == hiddenPressurePlateY));
     }
-
-    /**
-     * Check all the condition if the box can move up.
-     * @param currBox The box object we want to move.
-     * @param nextObj The object under the box.
-     * @param pLine Line of the player(Y)
-     * @param pRow Row of the player (X)
-     * @return true if the box moves, false otherwise. (avoid an infinite loop if the box doesn't move)
-     */
-    private boolean moveBoxDown(Block currBox,Block nextObj,int pLine, int pRow){
-        if (nextObj == null){
-            if (currBox instanceof BoxOnObj){
-                blockList[pLine][pRow] = new Objectiv(pRow, pLine, "O");
-                blockList[pLine+1][pRow] = new Box(pRow,pLine+1,"B");
-                currBoxOnObj--;
-                return true;
-            }else{
-                blockList[pLine+1][pRow] = currBox;
-                currBox.push("DOWN");
-                blockList[pLine][pRow] = null;
-                return true;
-            }
-        }else if (nextObj instanceof Objectiv){
-            if (currBox instanceof BoxOnObj){
-                blockList[pLine][pRow] = nextObj;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine+1][pRow] = currBox;
-                currBox.push("DOWN");
-                return true;
-            }else{
-                blockList[pLine][pRow] = null;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine][pRow+1] = new BoxOnObj(pRow, pLine+1, "&");
-                currBoxOnObj--;
-                return true;
-            }
-        }    
-        else{
-            return false;
-        }
+    public void restart(){
+        loadMap(level);
+        setBlockList();
+        currBoxOnObj = 0;
     }
-
-    /**
-     * Check all the conditions if the player can move. if he can, he moves.
-     * @param nextObj the Object to the left of the player
-     * @param pLine The line of the player (Y)
-     * @param pRow The row of the player (X)
-     */
-    private void movePlayerLeft(Block nextObj,int pLine,int pRow){
-        //move on an objectiv
-        if (nextObj instanceof Objectiv){
-            if (player1 instanceof PlayerOnObj){
-                //if the player wants to move on an objectiv while he's already on one
-                blockList[pLine][pRow] = nextObj;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine][pRow-1] = player1;
-                player1.move("LEFT");
-                return;
-            }else{
-                //if the player wants to move on an objectiv while's he isn't already on one
-                player1 = new PlayerOnObj(pRow-1, pLine, "$");
-                blockList[pLine][pRow-1] = player1;
-                blockList[pLine][pRow] = null;
-                return;
-            }
-        //A box is to the left of the player 
-        }else if (nextObj instanceof Box || nextObj instanceof BoxOnObj){
-            //if the box can move, we move the player
-            if (moveBoxLeft(nextObj, blockList[pLine][pRow-2], pLine, pRow-1)){
-                movePlayerLeft(blockList[pLine][pRow-1], pLine, pRow);
-            }
-            return;
-        //nothing is to the left of the player      
-        }else if (nextObj == null){
-            //a player is on an objectiv so he change to Player object
-            if (player1 instanceof PlayerOnObj){
-                player1 = new Player(pRow-1, pLine, "P");
-                blockList[pLine][pRow] = new Objectiv(pRow, pLine, "O");
-                blockList[pLine][pRow-1] = player1;
-                return;
-            //he isn't on a objectiv, he simply move to the left.
-            }else{
-                blockList[pLine][pRow-1] = player1;
-                blockList[pLine][pRow] = null;  
-                player1.move("LEFT");
-                return;
-            }
-        }else{
-            return;
-        }
-    }
-
-        /**
-     * Check all the condition if the box can move up.
-     * @param currBox The box object we want to move.
-     * @param nextObj The object to the left the box.
-     * @param pLine Line of the player(Y)
-     * @param pRow Row of the player (X)
-     * @return true if the box moves, false otherwise. (avoid an infinite loop if the box doesn't move)
-     */
-    private boolean moveBoxLeft(Block currBox,Block nextObj,int pLine, int pRow){
-        if (nextObj == null){
-            if (currBox instanceof BoxOnObj){
-                blockList[pLine][pRow] = new Objectiv(pRow, pLine, "O");
-                blockList[pLine][pRow-1] = new Box(pRow-1,pLine,"B");
-                currBoxOnObj--;
-                return true;
-            }else{
-                blockList[pLine][pRow-1] = currBox;
-                currBox.push("LEFT");
-                blockList[pLine][pRow] = null;
-                return true;
-            }
-        }else if (nextObj instanceof Objectiv){
-            if (currBox instanceof BoxOnObj){
-                blockList[pLine][pRow] = nextObj;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine][pRow-1] = currBox;
-                currBox.push("LEFT");
-                return true;
-            }else{
-                blockList[pLine][pRow] = null;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine][pRow-1] = new BoxOnObj(pRow-1, pLine, "&");
-                currBoxOnObj++;
-                return true;
-            }
-        }    
-        else{
-            return false;
-        }
-    }
-
-    /**
-     * Check all the conditions if the player can move. if he can, he moves.
-     * @param nextObj the Object to the left of the player
-     * @param pLine The line of the player (Y)
-     * @param pRow The row of the player (X)
-     */
-    private void movePlayerRight(Block nextObj,int pLine,int pRow){
-        //move on an objectiv
-        if (nextObj instanceof Objectiv){
-            if (player1 instanceof PlayerOnObj){
-                //if the player wants to move on an objectiv while he's already on one
-                blockList[pLine][pRow] = nextObj;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine][pRow+1] = player1;
-                player1.move("RIGHT");
-                return;
-            }else{
-                //if the player wants to move on an objectiv while's he isn't already on one
-                player1 = new PlayerOnObj(pRow+1, pLine, "$");
-                blockList[pLine][pRow+1] = player1;
-                blockList[pLine][pRow] = null;
-                return;
-            }
-        //A box is to the left of the player 
-        }else if (nextObj instanceof Box || nextObj instanceof BoxOnObj){
-            //if the box can move, we move the player
-            if (moveBoxRight(nextObj, blockList[pLine][pRow+2], pLine, pRow+1)){
-                movePlayerRight(blockList[pLine][pRow+1], pLine, pRow);
-            }
-            return;
-        //nothing is to the left of the player      
-        }else if (nextObj == null){
-            //a player is on an objectiv so he change to Player object
-            if (player1 instanceof PlayerOnObj){
-                player1 = new Player(pRow+1, pLine, "P");
-                blockList[pLine][pRow] = new Objectiv(pRow, pLine, "O");
-                blockList[pLine][pRow+1] = player1;
-                return;
-            //he isn't on a objectiv, he simply move to the Right.
-            }else{
-                blockList[pLine][pRow+1] = player1;
-                blockList[pLine][pRow] = null;  
-                player1.move("RIGHT");
-                return;
-            }
-        }
-    }
-
-    /**
-     * Check all the condition if the box can move up.
-     * @param currBox The box object we want to move.
-     * @param nextObj The object to the right the box.
-     * @param pLine Line of the player(Y)
-     * @param pRow Row of the player (X)
-     * @return true if the box moves, false otherwise. (avoid an infinite loop if the box doesn't move)
-     */
-    private boolean moveBoxRight(Block currBox,Block nextObj,int pLine, int pRow){
-        if (nextObj == null){
-            if (currBox instanceof BoxOnObj){
-                blockList[pLine][pRow] = new Objectiv(pRow, pLine, "O");
-                blockList[pLine][pRow+1] = new Box(pRow+1,pLine,"B");
-                currBoxOnObj--;
-                return true;
-            }else{
-                blockList[pLine][pRow+1] = currBox;
-                currBox.push("RIGHT");
-                blockList[pLine][pRow] = null;
-                return true;
-            }
-        }else if (nextObj instanceof Objectiv){
-            if (currBox instanceof BoxOnObj){
-                blockList[pLine][pRow] = nextObj;
-                nextObj.setValues(pRow, pLine);
-                blockList[pLine][pRow+1] = currBox;
-                currBox.push("RIGHT");
-                return true;
-            }else{
-                blockList[pLine][pRow] = null;
-                blockList[pLine][pRow+1] = new BoxOnObj(pRow+1, pLine, "&");
-                currBoxOnObj++;
-                return true;
-            }
-        }    
-        else{
-            return false;
-        }
-    }
-
 }

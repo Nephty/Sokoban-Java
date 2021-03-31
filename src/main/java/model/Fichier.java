@@ -1,29 +1,56 @@
-package main.java.model;
+package  model;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.nio.file.*;
+import java.util.ArrayList;
 
 public class Fichier {
 
     /**
-     * Sauvegarde le niveau en cours.
-     * @param levelName Le nom du fichier dans le quel on sauvegarde.
-     * @param content Le contenu a sauvegarder.
+     * Lis le contenue d'un fichier.xsb et le retourn sous forme d'une ArrayList.
+     * @param levelName Le nom du fichier a lire.
+     * @param _def Si le fichier est un fichier "move" ou un fichier "save" ou juste un fichier "" (niveau).
+     * @return Le contenue du fichier sous forme d'ArrayList.
      */
-    public static void saveFile(String levelName, ArrayList<String> content) throws IOException {      
-        String levelPath = getlevelPath(_saveAdd(levelName), "level/save");
+    public static ArrayList<String> loadFile(String levelName, String _def) throws IOException {
+        // Donne le repertoire courant.
+        String directory = directory(levelName, _def);
+        // Instantie une ArrayList et la rempli du contenu du fichier.
+        ArrayList<String> content = new ArrayList<>();
+        try {
+            File file = new File(directory);
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            StringBuffer sb = new StringBuffer();
+            String line;
+            while ((line = br.readLine()) != null) {
+                content.add(line);
+            }
+            fr.close();
+            return content;
+        } 
+        catch (Exception e) {
+            throw new IllegalArgumentException("Le fichier " + levelName + " n'est pas present dans " + directory);
+        }
+    }
 
-        File file = new File(levelPath);
+    /**
+     * Sauvegarde un contenue dans un fichier.xsb.
+     * @param levelName Le nom du fichier dans lequel en sauvegarde.
+     * @param _def Si le fichier doit etre un fichier "move" ou un fichier "save" ou juste un fichier "" (niveau).
+     * @param content Le contenu a sauvegarder dans le fichier.
+     */
+    public static void saveFile(String levelName, String _def, ArrayList<String> content) throws IOException {
+        // Donne le repertoire courant.
+        String directory = directory(levelName, _def);
 
+        File file = new File(directory);
         if (file.exists()) {
             // si le fichier existe, alors on le supprime.
             file.delete();
         }
-
         // cree le fichier
         file.createNewFile();
-            
         // Ajouter le contenu au fichier
         FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
         BufferedWriter bw = new BufferedWriter(fw);
@@ -35,107 +62,65 @@ public class Fichier {
     }
 
     /**
-     * Charge le niveau et le retourne.
-     * @param levelName Nom du fichier a charger.
-     * @param save Si Vrai, va rechercher le niveau dans le sous-dossier "save" de "level". Si faux dans le dossier "level".
-     * @return Le niveau sous forme d'une arraylist.
+     * /!\ A finaliser /!\   isFile() & isDirectory()
+     * Donne sous forme d'un tableau, les niveaux presents dans un fichier.
+     * @return Un tableau avec le nom des niveaux.
      */
-    public static String loadFile(String levelName, boolean save) throws IOException{
-        String levelPath;
-        String fileName;
-        if (save) {
-            fileName = "level/save";
-            levelName = _saveAdd(levelName);
-            levelPath = getlevelPath(levelName, fileName);
-        } else {
-            fileName = "level";
-            levelPath = getlevelPath(levelName, fileName);
-        }
-        
-        ArrayList<String> content = new ArrayList<>();
-        if (areYouHere(levelName, fileName)) {
-            File file = new File(levelPath);
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            StringBuffer sb = new StringBuffer();
-            String line;
-            while ((line = br.readLine()) != null) {
-                content.add(line);
-            }
-            fr.close();
-            String res = "";
-            for (String el : content){
-                res += el;
-            }
-            return res;
-        } else {
-            throw new IllegalArgumentException("Le fichier " + levelName + " n'est pas present");
-        }
-    }
-
-    /**
-     * Methode pour modifier un fichier deja existant. <br>
-     * /!\ PAS ENCORE FAIT /!\ <br>
-     * A voir si je fait ainsi ?
-     */
-    public static void editFile(String levelName, ArrayList<String> content) {
-        System.out.println("pass");
-    }
-
-    /**
-     * Ajoute "_save" au nom du level avant le ".xsb".
-     * @param levelName
-     * @return
-     */
-    public static String _saveAdd(String levelName) {
-        // Ajoute "_save" au nom.
-        String levelNameSave = (levelName.substring(0, levelName.length()-4)) + "_save.xsb";
-        return levelNameSave;
-    }
-
-    /**
-     * Chemin relatif
-     * @return 
-     */
-    public static Path whereAmI() {
-        Path path = Paths.get("../", "ressources");     
-        return path.toAbsolutePath();
-    }
-
-    public static String getFilePath(String fileName) {
-        String filePath = whereAmI().resolve(fileName).toString();
-        return filePath;
-    }
-
-    public static String getlevelPath(String levelName, String fileName) {   
-        String levelPath = getFilePath(fileName).concat("/".concat(levelName));
-        return levelPath;
-    }
-
-    /**
-     * Donne le nom des niveaux present dans le fichier.
-     * @return une ArrayList<String> de nom des niveaux.
-     */
-    public static String[] howManyLevel(String filePath) {
-        File file = new File(filePath);
+    public static String[] howManyLevel() {
+        String directory = directory();      
+        File file = new File(directory);
         String[] content = file.list();
         return content;
     }
 
     /**
-     * Dit si un fichier est present dans le dossier.
-     * @param levelName Nom du fichier rechercher.
-     * @param fileName Nom du dossier dans le quel on cherche.
-     * @return
+     * /!\ A finaliser /!\   isFile() & isDirectory()
+     * Donne sous forme d'un tableau, les niveaux presents dans un fichier.
+     * @return Un tableau avec le nom des niveaux.
      */
-    public static boolean areYouHere(String levelName, String fileName) {
-        String[] listName = howManyLevel(getFilePath(fileName));
-        for(String name : listName) {
-            if(name.equals(levelName)){
-                return true;
-            }
-        }
-        return false;
+    public static String[] howManySound() {
+        String directory = directorySound();      
+        File file = new File(directory);
+        String[] content = file.list();
+        return content;
     }
 
+    /**
+     * Donne le chemin vers le dossier level.
+     * @return Le chemin sous forme d'un String.
+     */
+    public static String directorySound() {
+        String directory = System.getProperty("user.dir").concat("\\src\\resources\\sound");
+        return directory;
+    }
+
+    /**
+     * Donne le chemin vers le dossier level.
+     * @return Le chemin sous forme d'un String.
+     */
+    public static String directory() {
+        String directory = System.getProperty("user.dir").concat("\\src\\resources\\level");
+        return directory;
+    }
+
+    /**
+     * Donne le chemin vers le dossier level.
+     * @param levelName Le nom du fichier.
+     * @param _def Si le fichier est un fichier "move" ou un fichier "save" ou juste un fichier "" (niveau).
+     * @return Le chemin sous forme d'un String.
+     */
+    public static String directory(String levelName, String _def) {
+        String directory = System.getProperty("user.dir").concat("\\src\\resources\\level");
+        // Acces au fichier "move" ou "save" ou "level".
+        if(_def.equals("move")) {
+            directory = directory().concat("\\move\\"+levelName);
+        }
+        else if(_def.equals("save")) {
+            directory = directory().concat("\\save\\"+levelName);
+        }
+        else {
+            directory = directory().concat("\\"+levelName);
+        }
+        return directory;
+    }
 }

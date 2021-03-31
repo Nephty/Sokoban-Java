@@ -1,4 +1,4 @@
-package main.java.model;
+package  model;
 
 public class PlayerOnObj extends Player{
     public PlayerOnObj(int x_, int y_, String texture) {

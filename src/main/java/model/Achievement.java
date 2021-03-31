@@ -1,13 +1,8 @@
-package main.java.model;
+package  model;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import main.java.view.CustomImage;
+import  view.CustomImage;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -19,10 +14,10 @@ public class Achievement {
     AtomicBoolean locked;
     boolean done = false;
 
-    public Achievement(CustomImage image_, CustomImage text_, int posX, int posY, GridPane grid) throws FileNotFoundException {
+    public Achievement(CustomImage image_, CustomImage text_, int posX, int posY, float WR, float HR, GridPane grid) throws FileNotFoundException {
         this.image = image_;
-        this.overlay = new CustomImage(0, 0, 100, 100, "achievement overlay.png");
-        this.overlayDone = new CustomImage(0, 0, 100, 100, "achievement done overlay.png");
+        this.overlay = new CustomImage(0, 0, WR, HR, "achievement overlay.png");
+        this.overlayDone = new CustomImage(0, 0, WR, HR, "achievement done overlay.png");
         this.text = text_;
         this.overlay.setVisible(false);
         this.overlayDone.setVisible(false);

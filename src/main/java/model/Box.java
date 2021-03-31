@@ -1,30 +1,42 @@
-package main.java.model;
+package  model;
 
 public class Box extends Block {
     public Box(int x_, int y_, String texture) {
         super(x_, y_,texture);
     }
-    /*
-    public void push(String Direction){
-        
+
+    public void move(Direction direction){
+        super.move(direction);
             //change the x,y of the box, depending on the direction
             //direction = RIGHT,LEFT,UP,DOWN
-        
-        switch (Direction) {
-            case "LEFT":
+        switch (direction) {
+            case LEFT:
                 setX(getX()-1);
                 break;
             
-            case "RIGHT":
+            case RIGHT:
                 setX(getX()+1);
                 break;
             
-            case "UP":
+            case UP:
                 setY(getY()-1);
                 break;
             
-            case "DOWN":
+            case DOWN:
                 setY(getY()+1);
         }
-    }*/
+    }
+
+    @Override
+    public boolean canPass(Block nextObj){
+        super.canPass(nextObj);
+        if (nextObj instanceof  Box){
+            return false;
+        }
+        else if (nextObj == null || nextObj.canPass(nextObj)){
+            return true;
+        }
+        else
+            return false;
+    }
 }

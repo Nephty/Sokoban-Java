@@ -1,4 +1,4 @@
-package main.java.model;
+package  model;
 
 public class Wall extends Block {
     public Wall(int x_, int y_,String texture) {
