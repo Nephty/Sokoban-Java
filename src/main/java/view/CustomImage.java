@@ -1,14 +1,11 @@
 package main.java.view;
 
-import javafx.geometry.BoundingBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
-import java.awt.MouseInfo;
-import java.awt.PointerInfo;
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -17,8 +14,28 @@ public class CustomImage extends Rectangle {
     private Image image;
     private Pane imgContainer;
 
-    private int x_, y_, width_, height_;
+    private int x_, y_;
+    private double width_, height_;
     private String fileName_;
+
+    public CustomImage(int x_, int y_, float WR, float HR, String fileName) throws FileNotFoundException {
+        super(x_*WR, y_*HR);
+
+        FileInputStream inputStream = new FileInputStream("src\\resources\\img\\" + fileName);
+        this.image = new Image(inputStream);
+        this.setFill(new ImagePattern(this.image));
+
+        this.x_ = (int) (x_*WR);
+        this.y_ = (int) (y_*HR);
+        this.width_ = this.image.getWidth()*WR;
+        this.height_ = this.image.getHeight()*HR;
+        this.fileName_ = fileName;
+
+        this.setWidth(this.width_);
+        this.setHeight(this.height_);
+        this.setX(this.x_);
+        this.setY(this.y_);
+    }
 
     public CustomImage(int x_, int y_, int width_, int height_, String fileName) throws FileNotFoundException {
         super(x_, y_, width_, height_);
@@ -27,16 +44,11 @@ public class CustomImage extends Rectangle {
         this.image = new Image(inputStream);
         this.setFill(new ImagePattern(this.image));
 
-        this.imgContainer = new Pane();
-        this.imgContainer.getChildren().add(this);
-
-
         this.x_ = x_;
         this.y_ = y_;
         this.width_ = width_;
         this.height_ = height_;
         this.fileName_ = fileName;
-
     }
     /*
     public void setPosX(double finalX) {
@@ -70,11 +82,11 @@ public class CustomImage extends Rectangle {
         return this.y_;
     }
 
-    public int getWidth_() {
+    public double getWidth_() {
         return this.width_;
     }
 
-    public int getHeight_() {
+    public double getHeight_() {
         return this.height_;
     }
 

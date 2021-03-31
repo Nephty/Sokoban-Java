@@ -1,4 +1,4 @@
-package main.java.model;
+package  main.java.model;
 
 public class Block {
     private int x;
@@ -22,18 +22,18 @@ public class Block {
         return this.y;
     }
 
-    // X AND Y Modificator
+    // X AND Y Setter
     public void setValues(int newValueX, int newValueY) {
         this.x = newValueX;
         this.y = newValueY;
     }
 
-    //X modificator
+    //X Setter
     public void setX(int newValue){
         this.x = newValue;
     }
 
-    // Y Modificator
+    // Y Setter
     public void setY(int newValue) {
         this.y = newValue;
     }
@@ -42,33 +42,18 @@ public class Block {
         return texture;
     }
 
-    public void push(String direction){
-        /*
-            change the x,y of the box, depending on the direction
-            direction = RIGHT,LEFT,UP,DOWN
-        */
-        if(this instanceof Box){
-            /*
-            change the x,y of the box, depending on the direction
-            direction = RIGHT,LEFT,UP,DOWN
-            */
-            switch (direction) {
-                case "LEFT":
-                    setX(getX()-1);
-                    break;
-                
-                case "RIGHT":
-                    setX(getX()+1);
-                    break;
-                
-                case "UP":
-                    setY(getY()-1);
-                    break;
-                
-                case "DOWN":
-                    setY(getY()+1);
-            }
+    public void move(Direction direction){
+    }
+
+    public boolean canPass(Block nextObj){
+        if (! (this instanceof Box) ){
+            return this.canPass();
         }
+        return false;
+    }
+
+    public boolean canPass(){
+        return false;
     }
 
 }

@@ -1,4 +1,4 @@
-package main.java.model;
+package  main.java.model;
 
 import javafx.geometry.Insets;
 import javafx.scene.Parent;

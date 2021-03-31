@@ -1,4 +1,4 @@
-package main.java.model;
+package  main.java.model;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -33,10 +33,26 @@ public class JSONWriter {
         JSONReader temporaryReader = new JSONReader(this.fileName);
 
         temporaryReader.obj.remove(key);
+        //noinspection unchecked
         temporaryReader.obj.put(key, newValue);
 
-        try (FileWriter file = new FileWriter("resources\\json\\" + this.fileName)) {
-            file.write(temporaryReader.obj.toString());
+        String tempStr = temporaryReader.obj.toString();
+        StringBuilder finalStr = new StringBuilder();
+        for (int i = 0; i < tempStr.length(); i++) {
+            finalStr.append(tempStr.charAt(i));
+            switch (tempStr.charAt(i)) {
+                case ',':
+                case '{':
+                    finalStr.append("\n");
+                default:
+            }
+            if (i == tempStr.length()-2) {
+                finalStr.append("\n");
+            }
+        }
+
+        try (FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\resources\\json\\" + this.fileName)) {
+            file.write(finalStr.toString());
             file.flush();
         }
         catch (IOException e) {
