@@ -1,14 +1,20 @@
 package main.java.view;
 
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import com.sun.javafx.scene.control.ControlHelper;
+import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
+
+import static main.java.view.MainMenu.playInterface;
+import static main.java.view.Menu.fullscreen;
 
 public class CustomButton extends CustomImage {
 
     public CustomImage overlay;
+    private EventHandler<? super MouseEvent> function;
 
     public CustomButton(int x_, int y_, float WR, float HR, String fileName) throws FileNotFoundException {
         super(x_, y_, WR, HR, fileName);
@@ -58,6 +64,10 @@ public class CustomButton extends CustomImage {
         this.overlay.setOnMouseExited(e -> {
             this.overlay.setVisible(false);
         });
+    }
+
+    public EventHandler<? super MouseEvent> getFunction() {
+        return this.function;
     }
 
     public void setOnClick(EventHandler<? super MouseEvent> eventHandler) {

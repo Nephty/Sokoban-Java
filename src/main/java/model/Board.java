@@ -1,7 +1,4 @@
 package main.java.model;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 public class Board {
@@ -15,6 +12,9 @@ public class Board {
     private int levelHeight = 0;
     private int levelWidth = 0;
     private int currBoxOnObj = 0;
+
+    private int hiddenPressurePlateX;
+    private int hiddenPressurePlateY;
 
     public Board(ArrayList<String> level) {
         this.level = level;
@@ -81,7 +81,16 @@ public class Board {
                         currBoxOnObj++;
                         x++;
                         break;
-
+                    case '=':
+                        Wall newWall = new GhostWall(x,y, "=");
+                        walls.add(newWall);
+                        x++;
+                        break;
+                    case '^':
+                        hiddenPressurePlateX = x;
+                        hiddenPressurePlateY = y;
+                        x++;
+                        break;
                     default:
                         throw new IllegalArgumentException("Le contenu du fichier n'est pas compatible");
                 }
@@ -103,7 +112,7 @@ public class Board {
     /**
      * Return the current BlockList of the game.
      * @return current blocklist (Block[][])
-    */
+     */
     public Block[][] getBlockList(){
         return blockList;
     }
@@ -114,7 +123,7 @@ public class Board {
      */
     private ArrayList<Block> getWorld(){
         ArrayList<Block> world = new ArrayList<>();
-        
+
         world.addAll(walls);
         world.addAll(boxes);
         world.addAll(goals);
@@ -161,12 +170,12 @@ public class Board {
 
     /**
      * try to move the player in the direction in parameter
-            move the player if he can go this way
-            push the box if there's a box that can go this way too
-            otherwise, he doesn't move
+     move the player if he can go this way
+     push the box if there's a box that can go this way too
+     otherwise, he doesn't move
      * @param direction The direction of the move (RIGHT-UP-LEFT-DOWN)
      */
-    public BooleanCouple move(@NotNull Direction direction){
+    public BooleanCouple move(Direction direction){
         int pRow = player1.getX();
         int pLine = player1.getY();
         int nextX;
@@ -183,14 +192,12 @@ public class Board {
                 nextX = pRow;
                 nextY2= nextY-1;
                 nextX2 = nextX;
-                nextObj = blockList[nextY][nextX];
                 break;
             case DOWN:
                 nextY = pLine+1;
                 nextX = pRow;
                 nextY2= nextY+1;
                 nextX2 = nextX;
-                nextObj = blockList[nextY][nextX];
                 break;
 
             case LEFT:
@@ -198,54 +205,60 @@ public class Board {
                 nextX = pRow-1;
                 nextY2= nextY;
                 nextX2 = nextX-1;
-                nextObj = blockList[nextY][nextX];
                 break;
             case RIGHT:
                 nextY = pLine;
                 nextX = pRow+1;
                 nextY2= nextY;
                 nextX2 = nextX+1;
-                nextObj = blockList[nextY][nextX];
                 break;
             default:
                 return returnValue;
         }
-
-        if(nextObj == null) {
-            if (player1 instanceof PlayerOnObj) {
-                player1 = new Player(nextX, nextY, "P");
-                blockList[pLine][pRow] = new Goal(pRow, pLine, "O");
-                blockList[nextY][nextX] = player1;
-                //he isn't on a goal, he simply move forward.
-            } else {
-                blockList[nextY][nextX] = player1;
-                blockList[pLine][pRow] = null;
-                player1.move(direction);
-            }
-            returnValue.setA(true);
-            return returnValue;
-        }
-        else if(nextObj.canPass(blockList[nextY2][nextX2])){
-            if(nextObj instanceof Goal){
-                if (player1 instanceof PlayerOnObj){
-                    //if the player wants to move on an goal while he's already on one
-                    blockList[pLine][pRow] = nextObj;
-                    nextObj.setValues(pRow, pLine);
+        if (nextX < this.levelWidth && nextX >= 0 && nextY < this.levelHeight && nextY >= 0) {
+            nextObj = blockList[nextY][nextX];
+            if (nextObj == null) {
+                if (player1 instanceof PlayerOnObj) {
+                    player1 = new Player(nextX, nextY, "P");
+                    blockList[pLine][pRow] = new Goal(pRow, pLine, "O");
                     blockList[nextY][nextX] = player1;
-                    player1.move(direction);
-                }else{
-                    //if the player wants to move on an goal while's he isn't already on one
-                    player1 = new PlayerOnObj(nextX, nextY, "$");
+                    //he isn't on a goal, he simply move forward.
+                } else {
                     blockList[nextY][nextX] = player1;
                     blockList[pLine][pRow] = null;
+                    player1.move(direction);
                 }
-            }else{
-                moveBox(nextObj, blockList[nextY2][nextX2], nextY, nextX, nextX2, nextY2, direction);
-                move(direction);
-                returnValue.setB(true);
+                returnValue.setA(true);
+                return returnValue;
+            } else if (nextX2 < this.levelWidth && nextX2 >= 0 && nextY2 < this.levelHeight && nextY2 >= 0) {
+                if (nextObj.canPass(blockList[nextY2][nextX2])) {
+                    if (nextObj instanceof Goal) {
+                        if (player1 instanceof PlayerOnObj) {
+                            //if the player wants to move on an goal while he's already on one
+                            blockList[pLine][pRow] = nextObj;
+                            nextObj.setValues(pRow, pLine);
+                            blockList[nextY][nextX] = player1;
+                            player1.move(direction);
+                        } else {
+                            //if the player wants to move on an goal while's he isn't already on one
+                            player1 = new PlayerOnObj(nextX, nextY, "$");
+                            blockList[nextY][nextX] = player1;
+                            blockList[pLine][pRow] = null;
+                        }
+                    } else if (nextObj instanceof GhostWall) {
+                        blockList[pLine][pRow] = null;
+                        blockList[nextY2][nextX2] = player1;
+                        player1.setX(nextX2);
+                        player1.setY(nextY2);
+                    } else {
+                        moveBox(nextObj, blockList[nextY2][nextX2], nextY, nextX, nextX2, nextY2, direction);
+                        move(direction);
+                        returnValue.setB(true);
+                    }
+                }
+                returnValue.setA(true);
+                return returnValue;
             }
-            returnValue.setA(true);
-            return returnValue;
         }
         return returnValue;
     }
@@ -292,9 +305,12 @@ public class Board {
         }
     }
 
+    public boolean isOnPressurePlate(){
+        return ((player1.getX() == hiddenPressurePlateX) && (player1.getY() == hiddenPressurePlateY));
+    }
     public void restart(){
+        currBoxOnObj = 0;
         loadMap(level);
         setBlockList();
-        currBoxOnObj = 0;
     }
 }
