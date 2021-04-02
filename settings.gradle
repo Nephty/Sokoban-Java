@@ -1,2 +1,32 @@
-rootProject.name = 'Sokoban Gradle'
+plugins {
+    // Apply the application plugin to add support for building a CLI application in java.
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.13'
+
+    // This dependency is used by the application
+    implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+}
+
+application {
+    mainClass = "main.java.view.Main"
+}
+
+run {
+    standardInput = System.in
+}
+
+javafx {
+    version = "15.0.1"
+    modules = [ 'javafx.controls' , 'javafx.fxml' , 'javafx.media' ]
+}
