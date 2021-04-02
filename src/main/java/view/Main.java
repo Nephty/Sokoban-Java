@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import main.java.model.Achievement;
 import main.java.model.JSONReader;
 import main.java.model.JSONWriter;
-import org.jetbrains.annotations.NotNull;
 import org.json.simple.parser.ParseException;
 
 import java.awt.*;
@@ -215,6 +214,9 @@ public class Main extends Application {
                 playingMenu.getRestartButton(), playingMenu.getRestartButton().overlay
         );
 
+        System.out.println(playingMenu.getObjectives());
+        System.out.println(playingMenu.getObjectivesContainer());
+
         playingMenu.getRightMenu().getChildren().add(playingMenu.getRightMenuImage());
         playingMenu.getRightMenu().getChildren().addAll(
                 playingMenu.getCurrentLevelImg(), playingMenu.getCurrentLevelImgContainer(), playingMenu.getCurrentLevelText(),
@@ -245,7 +247,7 @@ public class Main extends Application {
         // --------------------
 
         // MUSIC --------------
-        String musicFileName = "src\\resources\\sound\\beat.mp3";
+        String musicFileName = "src\\main\\resources\\sound\\beat.mp3";
         Media media = new Media(new File(musicFileName).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.play();
@@ -258,25 +260,53 @@ public class Main extends Application {
         window.show();
     }
 
+    /**
+    * Reads the ID of the selected resolution in the data.json file and returns it.
+     * @return byte The selected ID written in the data.json file
+     * @throws IOException Occurs if the provided file isn't found
+     * @throws ParseException Occurs if the file is not readable
+    */
     public static byte getResolutionID() throws IOException, ParseException {
         JSONReader JSONDataReader = new JSONReader("data.json");
         RESOLUTION_ID = JSONDataReader.getByte("resolution");
         return RESOLUTION_ID;
     }
 
+    /**
+     * Create a dimension object with the screen width and height as parameters and returns it.
+     * @return Dimension Dimension object containing the width and the height of the screen
+     */
     public static Dimension getScreenDimension() {
         return java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     }
 
-    public static float getWidthRatio(@NotNull int targetWidth) {
+    /**
+     * Computes the width ratio to scale down the images according to the selected resolution.
+     * @param targetWidth The width selected by the user
+     * @return float The ratio between the reference width (1920) and the desired width
+     */
+    public static float getWidthRatio(int targetWidth) {
         return (float) targetWidth/ORIGINAL_WIDTH;
     }
 
-    public static float getHeightRatio(@NotNull int targetHeight) {
+    /**
+     * Computes the height ratio to scale down the images according to the selected resolution.
+     * @param targetHeight The height selected by the user
+     * @return float The ratio between the reference height (1080) and the desired height
+     */
+    public static float getHeightRatio(int targetHeight) {
         return (float) targetHeight/ORIGINAL_HEIGHT;
     }
 
-    public static void prepareResolution(@NotNull Stage window) throws IOException, ParseException {
+    /**
+     * Create a Dimension object with the selected resolution, sets the width and height ratio, the fullscreen
+     * variable according to the selected resolution, the width, the height and the position of the window,
+     * as well as its title and fullscreen mode.
+     * @param window The window that will be prepared
+     * @throws IOException Occurs if the file read for the resolution ID isn't found
+     * @throws ParseException Occurs if the file read for the resolution ID in not readable
+     */
+    public static void prepareResolution(Stage window) throws IOException, ParseException {
         // Available resolutions :
         // 0 : native resolution
         // 1 : 1280x720     HD
@@ -332,6 +362,9 @@ public class Main extends Application {
     }
 
 
+    /**
+     * Safely closes the program by prompting a warning to the user and asking confirmation.
+     */
     private void closeProgram() {
         boolean closeReply = ConfirmBox.display("Warning", "You're about to exit the program. Are you sure ?");
         if (closeReply) {

@@ -90,7 +90,7 @@ public class Fichier {
      * @return Le chemin sous forme d'un String.
      */
     public static String directorySound() {
-        String directory = System.getProperty("user.dir").concat("\\src\\resources\\sound");
+        String directory = System.getProperty("user.dir").concat("\\src\\main\\resources\\sound");
         return directory;
     }
 
@@ -99,7 +99,7 @@ public class Fichier {
      * @return Le chemin sous forme d'un String.
      */
     public static String directory() {
-        String directory = System.getProperty("user.dir").concat("\\src\\resources\\level");
+        String directory = System.getProperty("user.dir").concat("\\src\\main\\resources\\level");
         return directory;
     }
 

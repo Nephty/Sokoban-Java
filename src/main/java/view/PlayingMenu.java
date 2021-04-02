@@ -487,12 +487,6 @@ public class PlayingMenu extends Menu {
 
         this.remainingSpace = (int) (220 * WR);
         this.firstPosX = (int) (460 * WR);
-
-        System.out.println("image length       :   " + this.imageLength + " px");
-        System.out.println("limit              :   " + this.limit + " img");
-        System.out.println("available space    : " + this.availableSpace + " px");
-        System.out.println("remaining space    :  " + this.remainingSpace + " px");
-        System.out.println("pos x of first img :  " + this.firstPosX + " px");
     }
 
     private void updateMapTiles()  // was previously called setMap()
@@ -514,7 +508,6 @@ public class PlayingMenu extends Menu {
                 } else if (currentItem instanceof Goal) {
                     fileName = "objective.png";
                 } else if (currentItem instanceof Player) {
-                    System.out.println(this.game.getPlayerFacing());
                     fileName = switch (this.game.getPlayerFacing()) {
                         case DOWN -> "player down.png";
                         case UP -> "player up.png";

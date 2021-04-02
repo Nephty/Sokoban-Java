@@ -12,7 +12,7 @@ public class JSONReader {
     JSONObject obj;
     public JSONReader(String fileName) throws IOException, ParseException {
         JSONParser jsonparser = new JSONParser();
-        FileReader reader = new FileReader(System.getProperty("user.dir") + "\\src\\resources\\json\\" + fileName);
+        FileReader reader = new FileReader(System.getProperty("user.dir") + "\\src\\main\\resources\\json\\" + fileName);
         this.obj = (JSONObject) jsonparser.parse(reader);
     }
 

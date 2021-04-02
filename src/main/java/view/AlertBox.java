@@ -9,6 +9,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AlertBox {
+    /**
+     * Static method to apply to the AlertBox class that pops up and pauses the execution of the
+     * main window until the user closes the pop up.
+     * @param title The title of the pop up window
+     * @param message The message displayed in the pop up window
+     */
     public static void display(String title, String message) {
         Stage window = new Stage();
 

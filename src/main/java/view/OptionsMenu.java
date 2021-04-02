@@ -35,7 +35,6 @@ public class OptionsMenu
         this.comboBox.setLayoutY(150*this.HR);
 
         this.comboBox.setOnAction(e -> {
-            System.out.println("User selected : " + this.comboBox.getValue());
             try {
                 JSONWriter resolutionModifier = new JSONWriter("data.json");
                 RESOLUTION_ID.set((byte) (this.comboBox.getSelectionModel().getSelectedIndex()));
