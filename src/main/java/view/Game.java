@@ -55,7 +55,7 @@ public class Game {
     }
 
     public void addTotalPushes(byte value) {
-        this.totalPushesPow += value;
+        this.totalPushes += value;
     }
 
     public void addTotalPushesPow(byte value) {

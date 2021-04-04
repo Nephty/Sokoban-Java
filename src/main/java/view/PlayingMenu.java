@@ -32,7 +32,8 @@ public class PlayingMenu extends Menu {
             time, timeContainer,
             currentLevelImg, currentLevelImgContainer,
             difficultyImg, difficultyImgContainer,
-            averageRatingImg, averageRatingImgContainer;
+            averageRatingImg, averageRatingImgContainer,
+            middleMenuBackground;
     private CustomButton undoButton, restartButton, mainMenuButton;
     Text totalMovesText, totalPushesText, objectivesText, timeText, currentLevelText, currentLevelAverageRatingText, currentLevelDifficultyText;
     private Game game;
@@ -43,11 +44,11 @@ public class PlayingMenu extends Menu {
     // Data //
     //------//
 
-    private byte currentLevel = 2;
+    private byte currentLevel = 4;
     private int maxWidth, limit, availableSpace, imageLength, remainingSpace, firstPosX;
     int currentLevelPosX = 148;
     int difficultyPosX = 0;
-    float currentLevelAverageRating = (float) 0.69;
+    float currentLevelAverageRating = (float) 0.27;
     int averageRatingPosX = 140;
     Difficulty currentLevelDifficulty = Difficulty.NORMAL;
 
@@ -61,6 +62,8 @@ public class PlayingMenu extends Menu {
         this.rightMenuImage = new CustomImage(0, 0, WR, HR, "right side menu.png");
 
         this.middleMenu = new Pane();
+        this.middleMenuBackground = new CustomImage(0, 0, WR, HR, "background empty.png");
+        this.middleMenu.getChildren().add(this.middleMenuBackground);
 
         this.game = new Game(this.currentBoard);
 
@@ -102,6 +105,30 @@ public class PlayingMenu extends Menu {
                     case R:
                         currentBoard.restart();
                         game.setPlayerFacing(Direction.DOWN);
+                        game.setTotalMoves(0);
+                        game.setTotalPushes(0);
+                        totalMovesText.setText(String.valueOf(game.getTotalMoves()));
+                        totalPushesText.setText(String.valueOf(game.getTotalPushes()));
+                        objectivesText.setText(
+                                currentBoard.getCurrBoxOnObj()
+                                        + " / "
+                                        + currentBoard.getBoxes().size());
+                        while (game.getTotalMovesPow() > 1) {
+                            game.addTotalMovesPow((byte) -1);
+                            totalMovesText.setX(totalMovesText.getX() + 10);
+                        }
+                        while (game.getTotalPushesPow() > 1) {
+                            game.addTotalPushesPow((byte) -1);
+                            totalMovesText.setX(totalPushesText.getX() + 10);
+                        }
+
+                        try {
+                            updateMapTiles();
+                        } catch (FileNotFoundException fileNotFoundException) {
+                            fileNotFoundException.printStackTrace();
+                        }
+
+                        game.setPlayerFacing(Direction.DOWN);
                         direction = Direction.RESTART;
                     default:
                         direction = Direction.NULL;
@@ -124,7 +151,7 @@ public class PlayingMenu extends Menu {
 
                         // offset to keep the text centered
                         if ((game.getTotalPushes()) % Math.pow(10, game.getTotalPushesPow()) == 0 && game.getTotalPushes() != 0) {
-                            game.addTotalPushes((byte) 1);
+                            game.addTotalPushesPow((byte) 1);
                             totalPushesText.setX(totalPushesText.getX() - 10);
                         }
 
@@ -139,6 +166,9 @@ public class PlayingMenu extends Menu {
         };
         prepareMoveButtons(keyEventHandler);
         updateMapTiles();
+
+        System.out.println(this.objectives);
+        System.out.println(this.objectivesContainer);
 
         this.finalPane = new Pane();
         this.finalPane.setLayoutX(0);
@@ -309,6 +339,7 @@ public class PlayingMenu extends Menu {
         this.prepareTimeInterface();
         this.prepareUndoButton();
         this.prepareRestartButton();
+        this.prepareRestartButtonAction();
         this.prepareMainMenuButton();
         this.prepareCurrentLevelInterface();
         this.prepareDifficultyInterface();
@@ -340,8 +371,8 @@ public class PlayingMenu extends Menu {
 
     private void prepareObjectivesInterface()
             throws FileNotFoundException {
-        this.objectives = new CustomImage(65, 210, this.WR, this.HR, "pushes.png");
-        this.objectivesContainer = new CustomImage(85, 260, this.WR, this.HR, "text container.png");
+        this.objectives = new CustomImage(65, 320, this.WR, this.HR, "objectives.png");
+        this.objectivesContainer = new CustomImage(85, 370, this.WR, this.HR, "text container.png");
     }
 
     private void prepareTimeInterface()
@@ -376,12 +407,13 @@ public class PlayingMenu extends Menu {
     private void prepareRestartButton()
             throws FileNotFoundException {
         this.restartButton = new CustomButton(65, 900, WR, HR, "restart.png", (byte) 0);
+    }
+
+    private void prepareRestartButtonAction() {
         this.restartButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 this.currentBoard.restart();
                 this.game.setPlayerFacing(Direction.DOWN);
-                this.game.setTotalMoves(0);
-                this.game.setTotalPushes(0);
                 this.totalMovesText.setText(String.valueOf(this.game.getTotalMoves()));
                 this.totalPushesText.setText(String.valueOf(this.game.getTotalPushes()));
                 this.objectivesText.setText(
@@ -390,12 +422,14 @@ public class PlayingMenu extends Menu {
                                 + this.currentBoard.getBoxes().size());
                 while (this.game.getTotalMovesPow() > 1) {
                     this.game.addTotalMovesPow((byte) -1);
-                    this.totalMovesText.setX(this.totalMovesText.getX() - 10);
+                    this.totalMovesText.setX(this.totalMovesText.getX() + 10);
                 }
                 while (this.game.getTotalPushesPow() > 1) {
                     this.game.addTotalPushesPow((byte) -1);
-                    this.totalMovesText.setX(this.totalMovesText.getX() - 10);
+                    this.totalMovesText.setX(this.totalPushesText.getX() + 10);
                 }
+                this.game.setTotalMoves(0);
+                this.game.setTotalPushes(0);
 
                 try {
                     this.updateMapTiles();
@@ -595,94 +629,94 @@ public class PlayingMenu extends Menu {
     }
 
     public CustomImage getMovesContainer() {
-        return movesContainer;
+        return this.movesContainer;
     }
 
     public CustomImage getPushes() {
-        return pushes;
+        return this.pushes;
     }
 
     public CustomImage getPushesContainer() {
-        return pushesContainer;
+        return this.pushesContainer;
     }
 
     public CustomImage getObjectives() {
-        return objectives;
+        return this.objectives;
     }
 
     public CustomImage getObjectivesContainer() {
-        return objectivesContainer;
+        return this.objectivesContainer;
     }
 
     public CustomImage getTime() {
-        return time;
+        return this.time;
     }
 
     public CustomImage getTimeContainer() {
-        return timeContainer;
+        return this.timeContainer;
     }
 
     public CustomImage getCurrentLevelImg() {
-        return currentLevelImg;
+        return this.currentLevelImg;
     }
 
     public CustomImage getCurrentLevelImgContainer() {
-        return currentLevelImgContainer;
+        return this.currentLevelImgContainer;
     }
 
     public CustomImage getDifficultyImg() {
-        return difficultyImg;
+        return this.difficultyImg;
     }
 
     public CustomImage getDifficultyImgContainer() {
-        return difficultyImgContainer;
+        return this.difficultyImgContainer;
     }
 
     public CustomImage getAverageRatingImg() {
-        return averageRatingImg;
+        return this.averageRatingImg;
     }
 
     public CustomImage getAverageRatingImgContainer() {
-        return averageRatingImgContainer;
+        return this.averageRatingImgContainer;
     }
 
     public CustomButton getUndoButton() {
-        return undoButton;
+        return this.undoButton;
     }
 
     public CustomButton getRestartButton() {
-        return restartButton;
+        return this.restartButton;
     }
 
     public Text getTotalMovesText() {
-        return totalMovesText;
+        return this.totalMovesText;
     }
 
     public Text getTotalPushesText() {
-        return totalPushesText;
+        return this.totalPushesText;
     }
 
     public Text getObjectivesText() {
-        return objectivesText;
+        return this.objectivesText;
     }
 
     public Text getTimeText() {
-        return timeText;
+        return this.timeText;
     }
 
     public Text getCurrentLevelText() {
-        return currentLevelText;
+        return this.currentLevelText;
     }
 
     public Text getCurrentLevelAverageRatingText() {
-        return currentLevelAverageRatingText;
+        return this.currentLevelAverageRatingText;
     }
 
     public Text getCurrentLevelDifficultyText() {
-        return currentLevelDifficultyText;
+        return this.currentLevelDifficultyText;
     }
 
     public int getAverageRatingPosX() {
-        return averageRatingPosX;
+        return this.averageRatingPosX;
     }
 }

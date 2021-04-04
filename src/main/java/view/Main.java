@@ -15,15 +15,14 @@ import main.java.model.JSONReader;
 import main.java.model.JSONWriter;
 import org.json.simple.parser.ParseException;
 
+import javax.swing.text.html.Option;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 
 @SuppressWarnings("ALL")
 public class Main extends Application {
 
     Stage window;
-    Scene optionsMenu;
     Scene achievementsMenu;
 
     static MediaPlayer mediaPlayer;
@@ -53,7 +52,6 @@ public class Main extends Application {
         MainMenu mainMenu = new MainMenu(mainMenuPanel, windowWidth, windowHeight, WR, HR, window, background);
         // TODO : move the resolution setup
 
-
         // Set all buttons & overlays
 
 
@@ -64,12 +62,6 @@ public class Main extends Application {
         // --------------------
 
         // BUTTONS ACTIONS (SCENE SWITCHERS) ----
-        mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                window.setScene(optionsMenu);
-                window.setFullScreen(fullscreen);
-            }
-        });
 
         mainMenu.getAchievementsButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
@@ -132,6 +124,14 @@ public class Main extends Application {
         soundScaleBar.setOnMouseClicked((MouseEvent event) -> soundScaleBar.setWidth(event.getSceneX() - soundScaleBar.getX()));
         AtomicBoolean dragging = new AtomicBoolean(true);
         */
+
+        mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                window.setScene(optionsMenu);
+                window.setFullScreen(fullscreen);
+            }
+        });
+
         // --------------------
 
 
@@ -214,9 +214,6 @@ public class Main extends Application {
                 playingMenu.getRestartButton(), playingMenu.getRestartButton().overlay
         );
 
-        System.out.println(playingMenu.getObjectives());
-        System.out.println(playingMenu.getObjectivesContainer());
-
         playingMenu.getRightMenu().getChildren().add(playingMenu.getRightMenuImage());
         playingMenu.getRightMenu().getChildren().addAll(
                 playingMenu.getCurrentLevelImg(), playingMenu.getCurrentLevelImgContainer(), playingMenu.getCurrentLevelText(),
@@ -227,7 +224,7 @@ public class Main extends Application {
 
         playingMenu.getMiddleMenu().getChildren().addAll(playingMenu.getGamePane());
 
-        playingMenu.getFinalPane().getChildren().addAll(playingMenu.getLeftMenu(), playingMenu.getRightMenu(), playingMenu.getMiddleMenu());
+        playingMenu.getFinalPane().getChildren().addAll(playingMenu.getLeftMenu(), playingMenu.getMiddleMenu(), playingMenu.getRightMenu());
 
         playingMenuPanel.getChildren().addAll(
             playingMenu.getFinalPane()
@@ -247,12 +244,12 @@ public class Main extends Application {
         // --------------------
 
         // MUSIC --------------
-        String musicFileName = "src\\main\\resources\\sound\\beat.mp3";
-        Media media = new Media(new File(musicFileName).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.play();
+        //String musicFileName = "src\\main\\resources\\sound\\beat.mp3";
+        //Media media = new Media(new File(musicFileName).toURI().toString());
+        //mediaPlayer = new MediaPlayer(media);
+        //mediaPlayer.play();
         //mediaPlayer.setRate(1);
-        mediaPlayer.setVolume(1);
+        //mediaPlayer.setVolume(1);
         // --------------------
 
         window.setScene(mainMenu);
