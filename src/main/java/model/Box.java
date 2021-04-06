@@ -1,4 +1,4 @@
-package  main.java.model;
+package main.java.model;
 
 public class Box extends Block {
     public Box(int x_, int y_, String texture) {

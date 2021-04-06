@@ -7,7 +7,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import main.java.model.Achievement;
@@ -15,7 +14,6 @@ import main.java.model.JSONReader;
 import main.java.model.JSONWriter;
 import org.json.simple.parser.ParseException;
 
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.io.IOException;
 
@@ -243,6 +241,43 @@ public class Main extends Application {
         });
         // --------------------
 
+        // TUTORIAl -----------
+        Pane tutorialPane = new Pane();
+        Tutorial tutorial = new Tutorial(tutorialPane, windowWidth, windowHeight, WR, HR);
+
+        tutorialPane.getChildren().addAll(
+                tutorial.getTutorial0(), tutorial.getTutorial1(),
+                tutorial.getTutorial2(), tutorial.getTutorial3(),
+                tutorial.getTutorial4(), tutorial.getTutorial5(),
+                tutorial.getTutorial6(), tutorial.getLeftArrow(), tutorial.getRightArrow()
+        );
+
+        mainMenu.getTutorialButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                window.setScene(tutorial);
+                window.setFullScreen(fullscreen);
+            }
+        });
+
+        tutorial.getRightArrow().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                if (tutorial.getCurrentImage() == 0) {
+                    window.setScene(mainMenu);
+                    window.setFullScreen(fullscreen);
+                }
+            }
+        });
+
+        tutorial.getLeftArrow().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                if (tutorial.getCurrentImage() == 0) {
+                    window.setScene(mainMenu);
+                    window.setFullScreen(fullscreen);
+                }
+            }
+        });
+        // --------------------
+
         // MUSIC --------------
         //String musicFileName = "src\\main\\resources\\sound\\beat.mp3";
         //Media media = new Media(new File(musicFileName).toURI().toString());
@@ -251,6 +286,9 @@ public class Main extends Application {
         //mediaPlayer.setRate(1);
         //mediaPlayer.setVolume(1);
         // --------------------
+
+        // TODO : make a border image for full screen and one for not fullscreen
+
 
         window.setScene(mainMenu);
 

@@ -1,4 +1,4 @@
-package  main.java.model;
+package main.java.model;
 
 public class Player extends Block {
     public Player(int x_, int y_, String texture) {

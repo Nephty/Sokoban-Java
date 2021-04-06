@@ -1,4 +1,4 @@
-package  main.java.model;
+package main.java.model;
 
 public class Block {
     private int x;

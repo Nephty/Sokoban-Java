@@ -1,4 +1,4 @@
-package  main.java.model;
+package main.java.model;
 
 public class Goal extends Block {
     public Goal(int x_, int y_, String texture) {

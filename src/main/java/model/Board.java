@@ -174,6 +174,9 @@ public class Board {
      push the box if there's a box that can go this way too
      otherwise, he doesn't move
      * @param direction The direction of the move (RIGHT-UP-LEFT-DOWN)
+     * @return BooleanCouple A couple of booleans, the first element is true
+     *          if the player moved and the second element is true
+     *          if the player pushes a box.
      */
     public BooleanCouple move(Direction direction){
         int pRow = player1.getX();
@@ -255,8 +258,8 @@ public class Board {
                         move(direction);
                         returnValue.setB(true);
                     }
+                    returnValue.setA(true);
                 }
-                returnValue.setA(true);
                 return returnValue;
             }
         }

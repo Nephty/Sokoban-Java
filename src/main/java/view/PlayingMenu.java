@@ -44,7 +44,7 @@ public class PlayingMenu extends Menu {
     // Data //
     //------//
 
-    private byte currentLevel = 4;
+    private byte currentLevel = 10;
     private int maxWidth, limit, availableSpace, imageLength, remainingSpace, firstPosX;
     int currentLevelPosX = 148;
     int difficultyPosX = 0;
@@ -53,8 +53,8 @@ public class PlayingMenu extends Menu {
     Difficulty currentLevelDifficulty = Difficulty.NORMAL;
 
 
-    public PlayingMenu(Parent parent_, double width_, double height_, float WR, float HR, Stage window_) throws IOException {
-        super(parent_, width_, height_, WR, HR);
+    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_) throws IOException {
+        super(parent_, width_, height_, WR_, HR_);
         this.leftMenu = new Pane();
         this.leftMenuImage = new CustomImage(0, 0, WR, HR, "left side menu.png");
 
@@ -119,7 +119,7 @@ public class PlayingMenu extends Menu {
                         }
                         while (game.getTotalPushesPow() > 1) {
                             game.addTotalPushesPow((byte) -1);
-                            totalMovesText.setX(totalPushesText.getX() + 10);
+                            totalPushesText.setX(totalPushesText.getX() + 10);
                         }
 
                         try {
@@ -414,8 +414,8 @@ public class PlayingMenu extends Menu {
             if (e.getButton() == MouseButton.PRIMARY) {
                 this.currentBoard.restart();
                 this.game.setPlayerFacing(Direction.DOWN);
-                this.totalMovesText.setText(String.valueOf(this.game.getTotalMoves()));
-                this.totalPushesText.setText(String.valueOf(this.game.getTotalPushes()));
+                this.totalMovesText.setText("0");
+                this.totalPushesText.setText("0");
                 this.objectivesText.setText(
                         this.currentBoard.getCurrBoxOnObj()
                                 + " / "
@@ -426,7 +426,7 @@ public class PlayingMenu extends Menu {
                 }
                 while (this.game.getTotalPushesPow() > 1) {
                     this.game.addTotalPushesPow((byte) -1);
-                    this.totalMovesText.setX(this.totalPushesText.getX() + 10);
+                    this.totalPushesText.setX(this.totalPushesText.getX() + 10);
                 }
                 this.game.setTotalMoves(0);
                 this.game.setTotalPushes(0);

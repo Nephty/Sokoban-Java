@@ -1,4 +1,4 @@
-package  main.java.model;
+package main.java.model;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

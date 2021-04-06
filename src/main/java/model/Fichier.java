@@ -1,4 +1,4 @@
-package  main.java.model;
+package main.java.model;
 
 import java.io.*;
 import java.nio.file.*;

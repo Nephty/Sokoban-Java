@@ -8,6 +8,7 @@ import javafx.scene.shape.Rectangle;
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Collection;
 
 public class CustomImage extends Rectangle {
 
