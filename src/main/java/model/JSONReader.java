@@ -1,4 +1,4 @@
-package  model;
+package model;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,7 +12,7 @@ public class JSONReader {
     JSONObject obj;
     public JSONReader(String fileName) throws IOException, ParseException {
         JSONParser jsonparser = new JSONParser();
-        FileReader reader = new FileReader(System.getProperty("user.dir") + "\\src\\resources\\json\\" + fileName);
+        FileReader reader = new FileReader(System.getProperty("user.dir") + "\\src\\main\\resources\\json\\" + fileName);
         this.obj = (JSONObject) jsonparser.parse(reader);
     }
 
@@ -31,4 +31,6 @@ public class JSONReader {
     public byte getByte(String key) {
         return Byte.parseByte(this.obj.get(key).toString());
     }
+
+
 }

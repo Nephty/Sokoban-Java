@@ -1,4 +1,4 @@
-package  model;
+package model;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -51,9 +51,10 @@ public class JSONWriter {
             }
         }
 
-        try (FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\resources\\json\\" + this.fileName)) {
+        try (FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\resources\\json\\" + this.fileName)) {
             file.write(finalStr.toString());
             file.flush();
+            file.close();
         }
         catch (IOException e) {
             e.printStackTrace();

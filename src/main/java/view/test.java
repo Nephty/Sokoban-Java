@@ -1,23 +1,29 @@
-package main.java.view;
+package view;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import javafx.concurrent.Task;
 
-public class test {
-    public static void main(String[] args) throws FileNotFoundException {
-        List<String> content = new ArrayList<>();
-        File textFile = new File("C:\\Users\\Nephty\\Desktop\\fileA.txt");
-        Scanner dataScanner = new Scanner(textFile);
-        while (dataScanner.hasNext()) {
-            content.add(dataScanner.nextLine());
-        }
-        dataScanner.close();
+public class test extends Task<Long> {
 
-        for (String str : content) {
-            System.out.println(str);
-        }
+    private int n;
+
+    public test(int n) {
+        this.n = n;
+    }
+
+    @Override
+    protected Long call() throws Exception {
+        updateMessage("    Processing... ");
+        long result = fibonacci(n);
+        updateMessage("    Done.  ");
+        return result;
+    }
+
+    public long fibonacci(long number) {
+        if (number == 0 || number == 1)
+            return number;
+        else
+            return fibonacci(number - 1) + fibonacci(number - 2);
     }
 }
+
+

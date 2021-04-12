@@ -16,7 +16,6 @@ import org.json.simple.parser.ParseException;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
 
 @SuppressWarnings("ALL")
 public class Main extends Application {
