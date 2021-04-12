@@ -1,15 +1,12 @@
 package view;
 
 
-import javafx.event.EventTarget;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.Fichier;
@@ -19,6 +16,8 @@ import org.json.simple.parser.ParseException;
 
 
 public class CampaignSelector extends LevelSelector{
+
+    private byte selectedLevel;
 
     public CampaignSelector(Parent parent_, double width_, double height_, float WR, float HR)
             throws IOException, ParseException{
@@ -39,9 +38,15 @@ public class CampaignSelector extends LevelSelector{
             int files = Fichier.howManyLevel("main\\resources\\level\\campaign\\");
             int xScale=0;
             int yScale=0;
-            for (int i = 0; i<files;i++) {
+          
+            for (int i = 0; i<files - (page*36);i++) {
+                if (i > 35){
+                    this.nextPageButton.setVisible(true);
+                    break;
+                }
+                byte level;
+                level = (byte) (i + (page*36));
                 CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level_box.png");
-                byte level = (byte) (i + 1);
 
                 this.middleMenu.getChildren().addAll(tmpButton);
                 if (i > completedLevels) {
@@ -85,8 +90,13 @@ public class CampaignSelector extends LevelSelector{
     }
 
 
-    private void showLevel(Node img, byte level){
-        img.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+    /**
+     * Add the MouseOver EventHandler to the node
+     * @param node The button/text/image we want to set
+     * @param level The number of the level we want the image
+     */
+    private void showLevel(Node node, byte level){
+        node.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             try {
                 selectedLevelViewer.setVisible(false);
                 levelViewer.getChildren().removeAll(levelViewer.getChildren());
@@ -97,12 +107,17 @@ public class CampaignSelector extends LevelSelector{
             }
         });
 
-        img.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+        node.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
             levelViewer.getChildren().removeAll(levelViewer.getChildren());
             selectedLevelViewer.setVisible(true);
         });
     }
 
+    /**
+     * Add the event handler to select a level with the node
+     * @param node The button/text/image we want to set
+     * @param level The number of the level the node will select
+     */
     private void selectLevel(Node node, byte level) {
         node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             this.selectedLevel = level;
@@ -116,5 +131,15 @@ public class CampaignSelector extends LevelSelector{
                 exc.printStackTrace();
             }
         });
+    }
+
+    /**
+     * selectedLevel accessor
+     * @return (byte) selectedLevel
+     */
+    @Override
+    public byte getSelectedLevel(){
+        super.getSelectedLevel();
+        return this.selectedLevel;
     }
 }

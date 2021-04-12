@@ -17,7 +17,8 @@ public class MainMenu
     // Objects //
     //---------//
 
-    private CustomButton playButton, optionsButton, quitButton, achievementsButton, campaignButton, tutorialButton;
+    private CustomButton playButton, optionsButton, quitButton, achievementsButton, campaignButton, tutorialButton,
+                        freePlayButton;
     private CustomImage background;
     private static Stage window;
 
@@ -80,9 +81,14 @@ public class MainMenu
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
                 (int) (((ORIGINAL_HEIGHT/2)-96+5+(96/2))),
                 WR, HR, "tutorial button.png");
+        this.freePlayButton = new CustomButton(
+                (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
+                (int) (((ORIGINAL_HEIGHT/2)+15+(96/2))),
+                WR, HR, "achievements button.png");
 
         this.campaignButton.setVisible(false);
         this.tutorialButton.setVisible(false);
+        this.freePlayButton.setVisible(false);
     }
 
     private void prepareButtonsActions() {
@@ -90,11 +96,13 @@ public class MainMenu
             if (!playInterface.get()) {
                 this.campaignButton.setVisible(true);
                 this.tutorialButton.setVisible(true);
+                this.freePlayButton.setVisible(true);
                 playInterface.set(true);
             }
             else {
                 this.campaignButton.setVisible(false);
                 this.tutorialButton.setVisible(false);
+                this.freePlayButton.setVisible(false);
                 playInterface.set(false);
             }
         });
@@ -105,6 +113,7 @@ public class MainMenu
                 playInterface.set(false);
                 this.campaignButton.setVisible(false);
                 this.tutorialButton.setVisible(false);
+                this.freePlayButton.setVisible(false);
                 this.campaignButton.overlay.setVisible(false);
             }
         });
@@ -115,7 +124,19 @@ public class MainMenu
                 playInterface.set(false);
                 this.campaignButton.setVisible(false);
                 this.tutorialButton.setVisible(false);
+                this.freePlayButton.setVisible(false);
                 this.tutorialButton.overlay.setVisible(false);
+            }
+        });
+
+        this.freePlayButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                window.setFullScreen(fullscreen);
+                playInterface.set(false);
+                this.campaignButton.setVisible(false);
+                this.tutorialButton.setVisible(false);
+                this.freePlayButton.setVisible(false);
+                this.freePlayButton.overlay.setVisible(false);
             }
         });
     }
@@ -150,5 +171,9 @@ public class MainMenu
 
     public CustomButton getTutorialButton() {
         return tutorialButton;
+    }
+
+    public CustomButton getFreePlayButton() {
+        return freePlayButton;
     }
 }

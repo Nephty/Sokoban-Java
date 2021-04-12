@@ -99,7 +99,7 @@ public class Fichier {
      * @return Le chemin sous forme d'un String.
      */
     public static String directorySound() {
-        String directory = System.getProperty("user.dir").concat("\\src\\resources\\sound");
+        String directory = System.getProperty("user.dir").concat("\\src\\main\\resources\\sound");
         return directory;
     }
 
@@ -128,7 +128,9 @@ public class Fichier {
             directory = directory.concat("main\\resources\\level\\campaign\\"+levelName);
         }else if (_def.equals("test")){
             directory = directory.concat("test\\resources\\"+levelName);
-        }else{
+        }else if (_def.equals("freePlay")) {
+            directory = directory.concat("main\\resources\\level\\freePlay\\"+levelName);
+        } else{
             directory = directory.concat("main\\resources\\level\\campaign\\"+levelName);
         }
         return directory;
