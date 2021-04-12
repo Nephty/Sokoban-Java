@@ -88,6 +88,7 @@ public class Main extends Application {
             if (mainMenu.getPlayInterface()) {
                 mainMenu.getCampaignButton().setVisible(false);
                 mainMenu.getTutorialButton().setVisible(false);
+                mainMenu.getFreePlayButton().setVisible(false);
                 mainMenu.setPlayInterface(false);
             }
         });
@@ -101,6 +102,7 @@ public class Main extends Application {
                 mainMenu.getQuitButton(), mainMenu.getQuitButton().overlay,
                 mainMenu.getTutorialButton(), mainMenu.getTutorialButton().overlay,
                 mainMenu.getCampaignButton(), mainMenu.getCampaignButton().overlay,
+                mainMenu.getFreePlayButton(), mainMenu.getFreePlayButton().overlay,
                 mainMenu.getAchievementsButton(), mainMenu.getAchievementsButton().overlay);
 
 
@@ -220,6 +222,25 @@ public class Main extends Application {
         // --------------------
 
 
+        //FREE PLAY ------
+        Pane freePlayPanel = new Pane();
+        LevelSelector freePlaySelector = new FreePlaySelector(freePlayPanel, windowWidth, windowHeight, WR, HR);
+
+        freePlayPanel.getChildren().addAll(freePlaySelector.getFinalPane());
+
+        freePlaySelector.getBackButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            window.setScene(mainMenu);
+            window.setFullScreen(fullscreen);
+        });
+
+        mainMenu.getFreePlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                window.setScene(freePlaySelector);
+                window.setFullScreen(fullscreen);
+                freePlaySelector.setSelectors();
+            }
+        });
+
         // PLAY ---------------
         Pane playingMenuPanel = new Pane();
         PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, window);
@@ -255,8 +276,26 @@ public class Main extends Application {
             }
         });
 
-        campaignSelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            playingMenu.setMovesHistory(new ArrayList<>());
+        freePlaySelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
+            if (e.getButton() == MouseButton.PRIMARY) {
+                try{
+                    playingMenu.setLevel(freePlaySelector.getStringLevel());
+                    freePlaySelector.getPlayButton().setVisible(false);
+                    window.setScene(playingMenu);
+                    window.setFullScreen(fullscreen);
+                    freePlaySelector.getResumeButton().setVisible(true);
+                    freePlaySelector.hasSelected = true;
+                }catch(Exception exc){
+                    exc.printStackTrace();
+                }
+            }
+        });
+
+        freePlaySelector.getResumeButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                window.setScene(playingMenu);
+                window.setFullScreen(fullscreen);
+            }
         });
         // --------------------
 

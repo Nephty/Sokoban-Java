@@ -1,5 +1,6 @@
 package view;
 
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -13,8 +14,8 @@ public class LevelSelector
 	protected Pane middleMenu, rightMenu, levelViewer, selectedLevelViewer;
 	protected CustomImage middleMenuBackground, rightMenuImage;
     protected int completedLevels;
-    protected byte selectedLevel;
-    protected CustomButton backButton, chooseButton, resumeButton, playButton;
+    protected  byte page=0;
+    protected CustomButton backButton, resumeButton, playButton, nextPageButton, previousPageButton;
     protected boolean hasSelected = false;
 
     protected Pane finalPane;
@@ -30,6 +31,13 @@ public class LevelSelector
             this.rightMenuImage = new CustomImage(0,0,WR,HR,"right side menu.png");
         }
 
+        this.nextPageButton = new CustomButton(75,(int)height_-100, WR, HR, "pushes.png");
+        this.previousPageButton = new CustomButton(75, (int)height_-150, WR, HR, "restart.png");
+        nextPageButton.setVisible(false);
+        previousPageButton.setVisible(false);
+        prepareNextPageButton();
+        preparePreviousPageButton();
+
         //Used to show the map when the mouse is over a button.
         this.levelViewer = new Pane();
         this.levelViewer.setLayoutY(350*HR);
@@ -39,24 +47,23 @@ public class LevelSelector
         this.selectedLevelViewer = new Pane();
         this.selectedLevelViewer.setLayoutY(350*HR);
         this.selectedLevelViewer.setMaxWidth(350*WR);
-        rightMenu.getChildren().addAll(rightMenuImage, selectedLevelViewer,levelViewer);
+        rightMenu.getChildren().addAll(rightMenuImage, selectedLevelViewer,levelViewer, nextPageButton, previousPageButton);
 
         //Back tomain Menu
         this.backButton = new CustomButton(50, (int)((height_-96-5)), WR, HR, "back button.png");
 
         //Visible when a level is selected and it starts the game
-        this.playButton = new CustomButton((int)(width_-900), (int)(height_-96-5), WR, HR, "start button.png");
+        this.playButton = new CustomButton((int)(width_-900), (int)(height_-96-5), WR, HR, "play button.png");
         this.playButton.setVisible(false);
 
         //Visible when the player comeback from the playingMenu.
         //It starts the game where the player was.
-        this.resumeButton = new CustomButton((int) (width_-900), (int) height_-96-5, WR, HR, "resume button.png");
+        this.resumeButton = new CustomButton((int) (width_-900), (int) height_-96-5, WR, HR, "options button.png");
         this.resumeButton.setVisible(false);
 
         this.middleMenu = new Pane();
-        this.middleMenuBackground = new CustomButton(0,0,WR,HR,"background empty.png");
-        this.middleMenu.getChildren().add(this.middleMenuBackground);
 
+        this.setSelectors();
         //Pane with all the buttons for the selection
         this.middleMenuBackground.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
             if (e.getButton() == MouseButton.PRIMARY) {
@@ -66,22 +73,19 @@ public class LevelSelector
                 }
             }
         });
-        this.setSelectors();
 
         if (!Main.fullscreen) {
             this.backButton.setLayoutY(-50);
             this.backButton.overlay.setLayoutY(-50);
             this.playButton.setLayoutY(-50);
             this.playButton.overlay.setLayoutY(-50);
-            this.resumeButton.setLayoutY(-50);
-            this.resumeButton.overlay.setLayoutY(-50);
         }
 
 
 
         this.setPaneSizes();
 
-        //Global pane of the levelselector
+        //Global pane of the levelSelector
         this.finalPane = new Pane();
         this.finalPane.setLayoutX(0);
         this.finalPane.setLayoutY(0);
@@ -92,10 +96,6 @@ public class LevelSelector
         this.finalPane.setMinHeight(ORIGINAL_HEIGHT);
         this.finalPane.setMaxHeight(ORIGINAL_HEIGHT);
 
-
-        middleMenu.getChildren().addAll(resumeButton, resumeButton.overlay,
-                                            playButton, playButton.overlay,
-                                            backButton, backButton.overlay);
         finalPane.getChildren().addAll(middleMenu, rightMenu);
 
     }
@@ -105,7 +105,42 @@ public class LevelSelector
      * Read the completed levels in the data.json file and create the good number of buttons.
      */
     public void setSelectors(){
+        try {
+            middleMenu.getChildren().removeAll(middleMenu.getChildren());
+            this.middleMenuBackground = new CustomButton(0, 0, WR, HR, "background empty.png");
+            this.middleMenu.getChildren().add(this.middleMenuBackground);
+            middleMenu.getChildren().addAll(resumeButton, resumeButton.overlay,
+                    playButton, playButton.overlay,
+                    backButton, backButton.overlay);
+        } catch (IOException exc){
+            exc.printStackTrace();
+        }
     }
+
+    /**
+     * Set the EvenHandler for the nextPageButton
+     */
+    private void prepareNextPageButton(){
+        this.nextPageButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
+            page++;
+            nextPageButton.setVisible(false);
+            previousPageButton.setVisible(true);
+            this.setSelectors();
+        });
+    }
+
+    /**
+     * Set the EvenHandler for the previousPageButton
+     */
+    private void preparePreviousPageButton(){
+        previousPageButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
+            page--;
+            nextPageButton.setVisible(true);
+            previousPageButton.setVisible(false);
+            this.setSelectors();
+        });
+    }
+
 
     /**
      * Configure the middlePane and the rightPane
@@ -157,7 +192,11 @@ public class LevelSelector
      * @return (byte) selectedLevel
      */
     public byte getSelectedLevel(){
-        return this.selectedLevel;
+        return 0;
+    }
+
+    public String getStringLevel(){
+        return "";
     }
 
     /**

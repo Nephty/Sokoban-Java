@@ -12,9 +12,13 @@ import javafx.stage.Stage;
 import model.*;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.json.simple.parser.ParseException;
+import view.Main.*;
 
 public class PlayingMenu extends Menu {
 
@@ -23,7 +27,7 @@ public class PlayingMenu extends Menu {
     //---------//
 
     private Board currentBoard;
-    private ArrayList<String> currentLevelString;
+    ArrayList<String> currentLevelString;
     private Pane leftMenu, middleMenu, rightMenu;
     private CustomImage leftMenuImage, middleMenuImage, rightMenuImage;
     private Pane gamePane;
@@ -36,24 +40,25 @@ public class PlayingMenu extends Menu {
             averageRatingImg, averageRatingImgContainer,
             middleMenuBackground;
     private CustomButton undoButton, restartButton, mainMenuButton;
-    private Text totalMovesText, totalPushesText, objectivesText, timeText, currentLevelText, currentLevelAverageRatingText, currentLevelDifficultyText;
+    Text totalMovesText, totalPushesText, objectivesText, timeText, currentLevelText, currentLevelAverageRatingText, currentLevelDifficultyText;
     private Game game;
-    private Button moveUp, moveDown, moveLeft, moveRight;
-    private Pane finalPane;
-    private ArrayList<Direction> movesHistory;
-    private LevelSaver levelSaver = new LevelSaver();
+    Button moveUp, moveDown, moveLeft, moveRight;
+    Pane finalPane;
+    ArrayList<Direction> movesHistory;
+    LevelSaver levelSaver = new LevelSaver();
 
     //------//
     // Data //
     //------//
 
     private byte currentLevel = 6;
+    private String currentLevelName = "level06.xsb";
     private int maxWidth, limit, availableSpace, imageLength, remainingSpace, firstPosX;
     int currentLevelPosX = 148;
     int difficultyPosX = 0;
     float currentLevelAverageRating = (float) 0.27;
     int averageRatingPosX = 140;
-    private Difficulty currentLevelDifficulty = Difficulty.NORMAL;
+    Difficulty currentLevelDifficulty = Difficulty.NORMAL;
     private boolean currentLevelIsWon = false;
 
 
@@ -286,7 +291,7 @@ public class PlayingMenu extends Menu {
         }
         levelFileName += String.valueOf(this.currentLevel);
         levelFileName += ".xsb";
-        this.currentLevelString = Fichier.loadFile(levelFileName, "");
+        this.currentLevelString = Fichier.loadFile(levelFileName, "campaign");
         this.game.setBoard(new Board(this.currentLevelString));
     }
 
@@ -425,10 +430,18 @@ public class PlayingMenu extends Menu {
     private void prepareDifficultyText() {
         this.currentLevelDifficulty = Difficulty.NORMAL;
         switch (this.currentLevelDifficulty) {
-            case EASY -> this.difficultyPosX = 123;
-            case NORMAL -> this.difficultyPosX = 91;
-            case HARD -> this.difficultyPosX = 118;
-            case EXTREME -> this.difficultyPosX = 89;
+            case EASY:
+                this.difficultyPosX = 123;
+                break;
+            case NORMAL:
+                this.difficultyPosX = 91;
+                break;
+            case HARD:
+                this.difficultyPosX = 118;
+                break;
+            case EXTREME:
+                this.difficultyPosX = 89;
+                break;
         }
         this.currentLevelDifficultyText = new Text(this.difficultyPosX * WR, 330 * WR, String.valueOf(this.currentLevelDifficulty));
         this.currentLevelDifficultyText.setFont(this.font);
@@ -568,6 +581,16 @@ public class PlayingMenu extends Menu {
         this.updateMapTiles();
     }
 
+    public void setLevel(String name) throws IOException{
+        this.currentLevelName = name;
+        this.currentLevelIsWon = false;
+        this.currentLevelString = Fichier.loadFile(currentLevelName, "freePlay");
+        this.game.setBoard(new Board(this.currentLevelString));
+        this.prepareMapSize();
+        this.resetCounters();
+        this.updateMapTiles();
+    }
+
     private void resetCounters(){
         this.game.setPlayerFacing(Direction.DOWN);
         this.totalMovesText.setText("0");
@@ -586,9 +609,5 @@ public class PlayingMenu extends Menu {
         }
         this.game.setTotalMoves(0);
         this.game.setTotalPushes(0);
-    }
-
-    public void setMovesHistory(ArrayList<Direction> movesHistory) {
-        this.movesHistory = movesHistory;
     }
 }
