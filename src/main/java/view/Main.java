@@ -254,6 +254,10 @@ public class Main extends Application {
                 window.setFullScreen(fullscreen);
             }
         });
+
+        campaignSelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            playingMenu.setMovesHistory(new ArrayList<>());
+        });
         // --------------------
 
         // TUTORIAl -----------

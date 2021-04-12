@@ -12,13 +12,9 @@ import javafx.stage.Stage;
 import model.*;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 import org.json.simple.parser.ParseException;
-import view.Main.*;
 
 public class PlayingMenu extends Menu {
 
@@ -27,7 +23,7 @@ public class PlayingMenu extends Menu {
     //---------//
 
     private Board currentBoard;
-    ArrayList<String> currentLevelString;
+    private ArrayList<String> currentLevelString;
     private Pane leftMenu, middleMenu, rightMenu;
     private CustomImage leftMenuImage, middleMenuImage, rightMenuImage;
     private Pane gamePane;
@@ -40,12 +36,12 @@ public class PlayingMenu extends Menu {
             averageRatingImg, averageRatingImgContainer,
             middleMenuBackground;
     private CustomButton undoButton, restartButton, mainMenuButton;
-    Text totalMovesText, totalPushesText, objectivesText, timeText, currentLevelText, currentLevelAverageRatingText, currentLevelDifficultyText;
+    private Text totalMovesText, totalPushesText, objectivesText, timeText, currentLevelText, currentLevelAverageRatingText, currentLevelDifficultyText;
     private Game game;
-    Button moveUp, moveDown, moveLeft, moveRight;
-    Pane finalPane;
-    ArrayList<Direction> movesHistory;
-    LevelSaver levelSaver = new LevelSaver();
+    private Button moveUp, moveDown, moveLeft, moveRight;
+    private Pane finalPane;
+    private ArrayList<Direction> movesHistory;
+    private LevelSaver levelSaver = new LevelSaver();
 
     //------//
     // Data //
@@ -57,7 +53,7 @@ public class PlayingMenu extends Menu {
     int difficultyPosX = 0;
     float currentLevelAverageRating = (float) 0.27;
     int averageRatingPosX = 140;
-    Difficulty currentLevelDifficulty = Difficulty.NORMAL;
+    private Difficulty currentLevelDifficulty = Difficulty.NORMAL;
     private boolean currentLevelIsWon = false;
 
 
@@ -590,5 +586,9 @@ public class PlayingMenu extends Menu {
         }
         this.game.setTotalMoves(0);
         this.game.setTotalPushes(0);
+    }
+
+    public void setMovesHistory(ArrayList<Direction> movesHistory) {
+        this.movesHistory = movesHistory;
     }
 }

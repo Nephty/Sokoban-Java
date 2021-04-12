@@ -3,11 +3,9 @@ package view;
 
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.Fichier;
