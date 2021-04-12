@@ -10,21 +10,36 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.13'
-
     // This dependency is used by the application
     implementation 'com.google.guava:guava:29.0-jre'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-}
 
-mainClassName = "view.Main"
+    // Use JUnit test framework
+    testCompile('org.junit.jupiter:junit-jupiter-api:5.3.1')
+    testCompile('org.junit.jupiter:junit-jupiter-engine:5.3.1')
+}
 
 run {
     standardInput = System.in
 }
 
+application {
+    mainClass = "view.Main"
+}
+
 javafx {
     version = "15.0.1"
     modules = [ 'javafx.controls' , 'javafx.fxml' , 'javafx.media' ]
+}
+
+test{
+    useJUnitPlatform()
+    testLogging {
+        outputs.upToDateWhen {false}
+        events "passed", "skipped", "failed"
+    }
+}
+
+task myJavadocs(type: Javadoc) {
+  source = sourceSets.main.allJava
 }
