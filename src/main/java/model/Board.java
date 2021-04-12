@@ -2,7 +2,7 @@ package model;
 import java.util.ArrayList;
 
 public class Board {
-    private final ArrayList<String> level;
+    private ArrayList<String> level;
     private ArrayList<Wall> walls;
     private ArrayList<Box> boxes;
     private ArrayList<Goal> goals;
@@ -13,8 +13,11 @@ public class Board {
     private int levelWidth = 0;
     private int currBoxOnObj = 0;
 
-    private int hiddenPressurePlateX;
-    private int hiddenPressurePlateY;
+    private int pressurePlateX = -1;
+    private int pressurePlateY = -1;
+
+    public Board() {
+    }
 
     public Board(ArrayList<String> level) {
         this.level = level;
@@ -23,6 +26,7 @@ public class Board {
     }
     /**
      * Read the String level and create the Arraylists of the walls/boxes and goals
+     * @param level
      */
     private void  loadMap(ArrayList<String> level){
         walls = new ArrayList<>();
@@ -48,35 +52,35 @@ public class Board {
                         break;
 
                     case '#':
-                        Wall wall = new Wall(x,y,"M");
+                        Wall wall = new Wall(x,y,"#");
                         walls.add(wall);
                         x++;
                         break;
 
                     case '$':
-                        Box newBox = new Box(x,y,"B");
+                        Box newBox = new Box(x,y,"$", false);
                         boxes.add(newBox);
                         x++;
                         break;
 
                     case '.':
-                        Goal newGoal = new Goal(x,y,"O");
+                        Goal newGoal = new Goal(x,y,".");
                         goals.add(newGoal);
                         x++;
                         break;
 
                     case '@':
-                        player1 = new Player(x,y,"P");
+                        player1 = new Player(x,y,"@",false);
                         x++;
                         break;
 
                     case '+':
-                        player1 = new PlayerOnObj(x,y,"$");
+                        player1 = new Player(x,y,"+",true);
                         x++;
                         break;
 
                     case '*':
-                        BoxOnObj newBoxOnObj = new BoxOnObj(x, y, "$");
+                        Box newBoxOnObj = new Box(x, y, "*", true);
                         boxes.add(newBoxOnObj);
                         currBoxOnObj++;
                         x++;
@@ -87,8 +91,8 @@ public class Board {
                         x++;
                         break;
                     case '^':
-                        hiddenPressurePlateX = x;
-                        hiddenPressurePlateY = y;
+                        pressurePlateX = x;
+                        pressurePlateY = y;
                         x++;
                         break;
                     default:
@@ -169,11 +173,9 @@ public class Board {
     }
 
     /**
-     * try to move the player in the direction in parameter
-            move the player if he can go this way
-            push the box if there's a box that can go this way too
-            otherwise, he doesn't move
+     *
      * @param direction The direction of the move (RIGHT-UP-LEFT-DOWN)
+     * @return (BooleanCouple) used to know if the player moved and if he pushed a box
      */
     public BooleanCouple move(Direction direction){
         int pRow = player1.getX();
@@ -192,14 +194,12 @@ public class Board {
                 nextX = pRow;
                 nextY2= nextY-1;
                 nextX2 = nextX;
-                nextObj = blockList[nextY][nextX];
                 break;
             case DOWN:
                 nextY = pLine+1;
                 nextX = pRow;
                 nextY2= nextY+1;
                 nextX2 = nextX;
-                nextObj = blockList[nextY][nextX];
                 break;
 
             case LEFT:
@@ -207,114 +207,101 @@ public class Board {
                 nextX = pRow-1;
                 nextY2= nextY;
                 nextX2 = nextX-1;
-                nextObj = blockList[nextY][nextX];
                 break;
             case RIGHT:
                 nextY = pLine;
                 nextX = pRow+1;
                 nextY2= nextY;
                 nextX2 = nextX+1;
-                nextObj = blockList[nextY][nextX];
                 break;
             default:
                 return returnValue;
         }
-
-        if(nextObj == null) {
-            if (player1 instanceof PlayerOnObj) {
-                player1 = new Player(nextX, nextY, "P");
-                blockList[pLine][pRow] = new Goal(pRow, pLine, "O");
-                blockList[nextY][nextX] = player1;
-                //he isn't on a goal, he simply move forward.
-            } else {
-                blockList[nextY][nextX] = player1;
-                blockList[pLine][pRow] = null;
-                player1.move(direction);
-            }
-            returnValue.setA(true);
-            return returnValue;
+        //if the next case is still in the map size
+        if (nextX < this.levelWidth && nextX >= 0 && nextY < this.levelHeight && nextY >= 0) {
+            this.currBoxOnObj = player1.move(nextX,nextY,nextX2,nextY2,blockList,returnValue, currBoxOnObj, levelHeight, levelWidth);
         }
-        else if (nextX2 < this.levelWidth && nextX2 >= 0 && nextY2 < this.levelHeight && nextY2 >= 0) {
-            if (nextObj.canPass(blockList[nextY2][nextX2])) {
-                if (nextObj instanceof Goal) {
-                    if (player1 instanceof PlayerOnObj) {
-                        //if the player wants to move on an goal while he's already on one
-                        blockList[pLine][pRow] = nextObj;
-                        nextObj.setValues(pRow, pLine);
-                        blockList[nextY][nextX] = player1;
-                        player1.move(direction);
-                    } else {
-                        //if the player wants to move on an goal while's he isn't already on one
-                        player1 = new PlayerOnObj(nextX, nextY, "$");
-                        blockList[nextY][nextX] = player1;
-                        blockList[pLine][pRow] = null;
-                    }
-                } else if (nextObj instanceof GhostWall) {
-                    blockList[pLine][pRow] = null;
-                    blockList[nextY2][nextX2] = player1;
-                    player1.setX(nextX2);
-                    player1.setY(nextY2);
-                }
-                    else{
-                        moveBox(nextObj, blockList[nextY2][nextX2], nextY, nextX, nextX2, nextY2, direction);
-                        move(direction);
-                        returnValue.setB(true);
-                    }
-                }
-                returnValue.setA(true);
-                return returnValue;
-            }
         return returnValue;
     }
 
     /**
-     * Check all the condition if the box can move up.
-     * @param currBox The box object we want to move.
-     * @param nextObj The object above the box.
-     * @param bLine Line of the Box(Y)
-     * @param bRow Row of the Box (X)
-     * @param nextX Row of the next Block(X)
-     * @param nextY Line of the next Block(x)
-     * @return true if the box moves, false otherwise. (avoid an infinite loop if the box doesn't move)
+     * Used for the easter eggs
+     * @return true if the player is on the Pressure Plate.
      */
-    private boolean moveBox(Block currBox,Block nextObj,int bLine, int bRow, int nextX, int nextY, Direction dir){
-        if (nextObj == null){
-            if (currBox instanceof BoxOnObj){
-                blockList[bLine][bRow] = new Goal(bRow, bLine, "O");
-                blockList[nextY][nextX] = new Box(nextX,nextY,"B");
-                currBoxOnObj--;
-                return true;
-            }else{
-                blockList[nextY][nextX] = currBox;
-                currBox.move(dir);
-                blockList[bLine][bRow] = null;
-                return true;
+    public boolean isOnPressurePlate(){
+        return (player1.getX() == pressurePlateX && player1.getY() == pressurePlateY);
+    }
+
+    /**
+     * Restart the map.
+     */
+    public void restart(){
+        currBoxOnObj = 0;
+        loadMap(level);
+        setBlockList();
+    }
+
+    /**
+     * Compare the current Board with another Board (Used for the tests)
+     * @param map The Board we want to compare with
+     * @return True if the Boards are equals
+     */
+    public boolean isEquals(Board map) {
+        Block[][] blockList2 = map.getBlockList();
+        try {
+            for (int i = 0; i < this.blockList.length; i++) {
+                for (int j = 0; j < this.blockList[0].length; j++) {
+                    Block obj1 = this.blockList[i][j];
+                    Block obj2 = blockList2[i][j];
+                    if (obj1 == null || obj2 == null) {
+                        if (obj1 == obj2) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    if (!obj1.getClass().equals(obj2.getClass())) {
+                        return false;
+                    }
+                }
             }
-        }else if (nextObj instanceof Goal){
-            if (currBox instanceof BoxOnObj){
-                blockList[bLine][bRow] = nextObj;
-                nextObj.setValues(bRow, bLine);
-                blockList[nextY][nextX] = currBox;
-                currBox.move(dir);
-                return true;
-            }else{
-                blockList[bLine][bRow] = null;
-                blockList[nextY][nextX] = new BoxOnObj(nextX, nextY, "&");
-                currBoxOnObj++;
-                return true;
-            }
-        }
-        else{
+            return true;
+        } catch (IndexOutOfBoundsException exception) {
+            exception.printStackTrace();
             return false;
         }
     }
 
-    public boolean isOnPressurePlate(){
-        return ((player1.getX() == hiddenPressurePlateX) && (player1.getY() == hiddenPressurePlateY));
+    /**
+     * Take the blockList and return the ArrayList String made from it.
+     * @return String ArrayList of the board
+     */
+    public ArrayList<String> toArrayList(){
+        ArrayList<String> res = new ArrayList<>();
+        for (int i=0;i<blockList.length;i++){
+            String line = "";
+            for (int j=0; j<blockList[i].length;j++){
+                if (blockList[i][j] == null){
+                    if ((pressurePlateY != -1) && (i == pressurePlateY && j == pressurePlateX)){
+                        line += "^";
+                    }else{
+                        line += " ";
+                    }
+                }else {
+                    line += blockList[i][j].getTexture();
+                }
+            }
+            res.add(line);
+        }
+        return res;
     }
-    public void restart(){
-        loadMap(level);
-        setBlockList();
-        currBoxOnObj = 0;
+
+    /**
+     * Apply the moves to the current map
+     * @param moves (ArrayList of the directions we want to apply
+     */
+    public void applyMoves(ArrayList<Direction> moves){
+        for (Direction dir : moves){
+            this.move(dir);
+        }
     }
 }

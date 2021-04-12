@@ -1,7 +1,7 @@
-package  model;
+package model;
 
 import javafx.scene.layout.GridPane;
-import  view.CustomImage;
+import view.CustomImage;
 
 import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicBoolean;

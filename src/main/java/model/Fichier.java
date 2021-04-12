@@ -12,7 +12,7 @@ public class Fichier {
      * @param _def Si le fichier est un fichier "move" ou un fichier "save" ou juste un fichier "" (niveau).
      * @return Le contenue du fichier sous forme d'ArrayList.
      */
-    public static ArrayList<String> loadFile(String levelName, String _def) throws IOException {
+    public static ArrayList<String> loadFile(String levelName, String _def){
         // Donne le repertoire courant.
         String directory = directory(levelName, _def);
         // Instantie une ArrayList et la rempli du contenu du fichier.
@@ -66,11 +66,20 @@ public class Fichier {
      * Donne sous forme d'un tableau, les niveaux presents dans un fichier.
      * @return Un tableau avec le nom des niveaux.
      */
-    public static String[] howManyLevel() {
-        String directory = directory();      
+    public static String[] levelList(String dir) {
+        String directory = directory().concat(dir);
         File file = new File(directory);
         String[] content = file.list();
         return content;
+    }
+
+    /**
+     * Donne le nombre de niveaux presents dans un fichier.
+     * @return Int -> nombre de niveaux dans un fichier
+     */
+    public static int howManyLevel(String dir){
+        String[] list = levelList(dir);
+        return list.length;
     }
 
     /**
@@ -99,7 +108,7 @@ public class Fichier {
      * @return Le chemin sous forme d'un String.
      */
     public static String directory() {
-        String directory = System.getProperty("user.dir").concat("\\src\\resources\\level");
+        String directory = System.getProperty("user.dir").concat("\\src\\");
         return directory;
     }
 
@@ -110,17 +119,53 @@ public class Fichier {
      * @return Le chemin sous forme d'un String.
      */
     public static String directory(String levelName, String _def) {
-        String directory = System.getProperty("user.dir").concat("\\src\\resources\\level");
-        // Acces au fichier "move" ou "save" ou "level".
-        if(_def.equals("move")) {
-            directory = directory().concat("\\move\\"+levelName);
-        }
-        else if(_def.equals("save")) {
-            directory = directory().concat("\\save\\"+levelName);
-        }
-        else {
-            directory = directory().concat("\\"+levelName);
+        String directory = directory();
+        if(_def.equals("moves")) {
+            directory = directory.concat("main\\resources\\level\\moves\\"+levelName);
+        } else if(_def.equals("save")) {
+            directory = directory.concat("main\\resources\\level\\save\\"+levelName);
+        } else if (_def.equals("campaign")){
+            directory = directory.concat("main\\resources\\level\\campaign\\"+levelName);
+        }else if (_def.equals("test")){
+            directory = directory.concat("test\\resources\\"+levelName);
+        }else{
+            directory = directory.concat("main\\resources\\level\\campaign\\"+levelName);
         }
         return directory;
+    }
+
+
+    /**
+     * Create an ArrayList of direction objects.
+     * @param fileName (String) Name of the .mov file.
+     * @param _def (String) The name of the directory (move,
+     * @return ArrayList of direction objects
+     * @throws IllegalArgumentException Throws an exception if the string is different of (R-D-U-L)
+     */
+    public static ArrayList<Direction> toDirectionList(String fileName, String _def) throws IllegalArgumentException{
+        ArrayList<String> moves = loadFile(fileName, _def);
+        ArrayList<Direction> res = new ArrayList<>();
+        for (String line : moves) {
+            for (int i = 0; i < line.length(); i++) {
+                char move = line.charAt(i);
+                switch (move) {
+                    case 'R':
+                        res.add(Direction.RIGHT);
+                        break;
+                    case 'U':
+                        res.add(Direction.UP);
+                        break;
+                    case 'D':
+                        res.add(Direction.DOWN);
+                        break;
+                    case 'L':
+                        res.add(Direction.LEFT);
+                        break;
+                    case '\n':
+                        break;
+                }
+            }
+        }
+        return res;
     }
 }
