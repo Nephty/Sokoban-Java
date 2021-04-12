@@ -12,6 +12,14 @@ public class ConfirmBox {
 
     static boolean reply = false;
 
+    /**
+     * Static method to apply to the ConfirmBox class that pops up and pauses the execution of the
+     * main window until the user closes the pop up. The user can answer to a question by yes or no
+     * and the value will be returned as a boolean.
+     * @param title The title of the pop up window
+     * @param message The message displayed in the pop up window
+     * @return boolean - true if the user answered yes, false otherwise
+     */
     public static boolean display(String title, String message) {
         Stage window = new Stage();
 
@@ -25,6 +33,7 @@ public class ConfirmBox {
 
         Button yesButton = new Button("Yes");
         Button noButton  = new Button("No");
+        reply = false;
 
         yesButton.setOnAction(e -> {
             reply = true;
@@ -32,7 +41,6 @@ public class ConfirmBox {
         });
 
         noButton.setOnAction(e -> {
-            reply = false;
             window.close();
         });
 

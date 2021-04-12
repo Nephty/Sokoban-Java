@@ -21,7 +21,7 @@ public class CustomImage extends Rectangle {
     public CustomImage(int x_, int y_, float WR, float HR, String fileName) throws FileNotFoundException {
         super(x_*WR, y_*HR);
 
-        FileInputStream inputStream = new FileInputStream("src\\resources\\img\\" + fileName);
+        FileInputStream inputStream = new FileInputStream("src\\main\\resources\\img\\" + fileName);
         this.image = new Image(inputStream);
         this.setFill(new ImagePattern(this.image));
 

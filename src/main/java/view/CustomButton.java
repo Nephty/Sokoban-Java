@@ -1,15 +1,31 @@
 package view;
 
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import com.sun.javafx.scene.control.ControlHelper;
+import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
+
+import static view.MainMenu.playInterface;
+import static view.Menu.fullscreen;
 
 public class CustomButton extends CustomImage {
 
     public CustomImage overlay;
+    private EventHandler<? super MouseEvent> function;
 
+    /**
+     * Creates a new CustomButton that can be interacted with. The buttons has an image that can be of any size to
+     * make it fully customizable.
+     * @param x_ The X position of the button in its container
+     * @param y_ The Y position of the button in its container
+     * @param WR The width ratio used to resize the button according to the resolution
+     * @param HR The height ratio used to resize the button according to the resolution
+     * @param fileName The name of the image file that will be used to display the button
+     * @throws FileNotFoundException Occurs if the given file is not found
+     */
     public CustomButton(int x_, int y_, float WR, float HR, String fileName) throws FileNotFoundException {
         super(x_, y_, WR, HR, fileName);
 
@@ -58,6 +74,10 @@ public class CustomButton extends CustomImage {
         this.overlay.setOnMouseExited(e -> {
             this.overlay.setVisible(false);
         });
+    }
+
+    public EventHandler<? super MouseEvent> getFunction() {
+        return this.function;
     }
 
     public void setOnClick(EventHandler<? super MouseEvent> eventHandler) {
