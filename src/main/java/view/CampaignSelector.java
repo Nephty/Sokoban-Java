@@ -38,6 +38,7 @@ public class CampaignSelector extends LevelSelector{
             int files = Fichier.howManyLevel("main\\resources\\level\\campaign\\");
             int xScale=0;
             int yScale=0;
+          
             for (int i = 0; i<files - (page*36);i++) {
                 if (i > 35){
                     this.nextPageButton.setVisible(true);
