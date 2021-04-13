@@ -7,7 +7,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import model.Achievement;
 import model.JSONReader;
@@ -23,7 +22,7 @@ public class Main extends Application {
     Stage window;
     Scene achievementsMenu;
 
-    static MediaPlayer mediaPlayer;
+    static AudioPlayer audioPlayer;
 
     static final int windowX = 0;
     static final int windowY = 0;
@@ -59,6 +58,10 @@ public class Main extends Application {
 
         // --------------------
 
+        //MUSIC --------------
+
+        audioPlayer = new AudioPlayer();
+        // --------------------
         // BUTTONS ACTIONS (SCENE SWITCHERS) ----
 
         mainMenu.getAchievementsButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
@@ -114,16 +117,6 @@ public class Main extends Application {
         OptionsMenu optionsMenu = new OptionsMenu(optionsPane, windowWidth, windowHeight, WR, HR, optionsBackground);
 
         optionsPane.getChildren().addAll(optionsBackground, backButtonOptions, backButtonOptions.overlay, optionsMenu.getComboBox());
-
-        /*
-        CustomImage soundScale = new CustomImage((int)(10*WR), (int)(100*HR), WR, HR, "scale.png");
-        Rectangle soundScaleBar = new Rectangle((int)((10+3-1)*WR), (int)((100+3-1*HR)), (int)((200+2)*WR), (int)((30+2)*HR));
-        soundScaleBar.setFill(Color.rgb(90, 90, 255, 0.85));
-        soundScaleBar.setWidth((int)((100+1)*WR));
-        soundScale.setOnMouseClicked((MouseEvent event) -> soundScaleBar.setWidth(event.getSceneX() - soundScaleBar.getX()));
-        soundScaleBar.setOnMouseClicked((MouseEvent event) -> soundScaleBar.setWidth(event.getSceneX() - soundScaleBar.getX()));
-        AtomicBoolean dragging = new AtomicBoolean(true);
-        */
 
         mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
@@ -243,7 +236,7 @@ public class Main extends Application {
 
         // PLAY ---------------
         Pane playingMenuPanel = new Pane();
-        PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, window);
+        PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, window, audioPlayer);
 
         playingMenuPanel.getChildren().addAll(
             playingMenu.getFinalPane()
@@ -283,6 +276,7 @@ public class Main extends Application {
                     freePlaySelector.getPlayButton().setVisible(false);
                     window.setScene(playingMenu);
                     window.setFullScreen(fullscreen);
+                    audioPlayer.setMusic("secret.mp3");
                     freePlaySelector.getResumeButton().setVisible(true);
                     freePlaySelector.hasSelected = true;
                 }catch(Exception exc){
@@ -297,6 +291,15 @@ public class Main extends Application {
                 window.setFullScreen(fullscreen);
             }
         });
+
+        playingMenu.getRickRollImage().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                window.setScene(mainMenu);
+                window.setFullScreen(fullscreen);
+                playingMenu.getRickRollImage().setVisible(false);
+                audioPlayer.setMusic(audioPlayer.getBeat());
+            }
+         });
         // --------------------
 
         // TUTORIAl -----------
@@ -334,24 +337,10 @@ public class Main extends Application {
                 }
             }
         });
-        // --------------------
 
-        // MUSIC --------------
-        //String musicFileName = "src\\main\\resources\\sound\\beat.mp3";
-        //Media media = new Media(new File(musicFileName).toURI().toString());
-        //mediaPlayer = new MediaPlayer(media);
-        //mediaPlayer.play();
-        //mediaPlayer.setRate(1);
-        //mediaPlayer.setVolume(1);
         // --------------------
 
         // TODO : make a border image for full screen and one for not fullscreen
-
-        /*
-        Application2 app = new Application2();
-        app.start(new Stage());
-        app.stop();
-         */
 
         window.setScene(mainMenu);
 
