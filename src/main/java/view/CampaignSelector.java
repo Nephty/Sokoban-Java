@@ -45,7 +45,7 @@ public class CampaignSelector extends LevelSelector{
                     break;
                 }
                 byte level;
-                level = (byte) (i + (page*36));
+                level = (byte) (i + (page*36)+1);
                 CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level_box.png");
 
                 this.middleMenu.getChildren().addAll(tmpButton);

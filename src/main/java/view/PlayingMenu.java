@@ -7,18 +7,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 import org.json.simple.parser.ParseException;
-import view.Main.*;
 
 public class PlayingMenu extends Menu {
 
@@ -26,10 +24,9 @@ public class PlayingMenu extends Menu {
     // Objects //
     //---------//
 
-    private Board currentBoard;
     ArrayList<String> currentLevelString;
-    private Pane leftMenu, middleMenu, rightMenu;
-    private CustomImage leftMenuImage, middleMenuImage, rightMenuImage;
+    private final Pane leftMenu, middleMenu, rightMenu;
+    private CustomImage leftMenuImage, middleMenuImage, rightMenuImage, rickRollImage;
     private Pane gamePane;
     private CustomImage moves, movesContainer,
             pushes, pushesContainer,
@@ -40,7 +37,9 @@ public class PlayingMenu extends Menu {
             averageRatingImg, averageRatingImgContainer,
             middleMenuBackground;
     private CustomButton undoButton, restartButton, mainMenuButton;
-    Text totalMovesText, totalPushesText, objectivesText, timeText, currentLevelText, currentLevelAverageRatingText, currentLevelDifficultyText;
+    private Text totalMovesText, totalPushesText, objectivesText, timeText,
+            currentLevelText, currentLevelAverageRatingText,
+            currentLevelDifficultyText, youWonText;
     private Game game;
     Button moveUp, moveDown, moveLeft, moveRight;
     Pane finalPane;
@@ -60,12 +59,16 @@ public class PlayingMenu extends Menu {
     int averageRatingPosX = 140;
     Difficulty currentLevelDifficulty = Difficulty.NORMAL;
     private boolean currentLevelIsWon = false;
+    private AudioPlayer beatPlayer;
+    private AudioPlayer effectPlayer;
 
-
-    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_) throws IOException {
+    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_, AudioPlayer beatPlayer) throws IOException {
         super(parent_, width_, height_, WR_, HR_);
         this.leftMenu = new Pane();
         this.rightMenu = new Pane();
+        this.beatPlayer = beatPlayer;
+
+        this.effectPlayer = new AudioPlayer("crash.mp3");
 
         if (Main.fullscreen) {
             this.leftMenuImage = new CustomImage(0, 0, WR, HR, "side menu perfect fit.png");
@@ -78,6 +81,10 @@ public class PlayingMenu extends Menu {
         this.middleMenu = new Pane();
         this.middleMenuBackground = new CustomImage(0, 0, WR, HR, "background empty.png");
         this.middleMenu.getChildren().add(this.middleMenuBackground);
+
+        this.rickRollImage = new CustomImage(0,0,WR,HR,"secret.png");
+        this.rickRollImage.setVisible(false);
+
 
         this.game = new Game(new Board());
         this.movesHistory = new ArrayList<>();
@@ -208,8 +215,8 @@ public class PlayingMenu extends Menu {
                 this.mainMenuButton, this.mainMenuButton.overlay
         );
 
-        this.middleMenu.getChildren().addAll(this.gamePane);
-        this.finalPane.getChildren().addAll(this.leftMenu, this.middleMenu, this.rightMenu);
+        this.middleMenu.getChildren().addAll(this.gamePane, this.youWonText);
+        this.finalPane.getChildren().addAll(this.leftMenu, this.middleMenu, this.rightMenu,this.rickRollImage);
     }
 
     private void applyMove(Direction direction) {
@@ -241,6 +248,10 @@ public class PlayingMenu extends Menu {
                 } catch (FileNotFoundException fileNotFoundException) {
                     fileNotFoundException.printStackTrace();
                 }
+            }else{
+                effectPlayer.getMediaPlayer().play();
+                effectPlayer.restart();
+
             }
         }
     }
@@ -318,6 +329,7 @@ public class PlayingMenu extends Menu {
         this.prepareDifficultyText();
         this.prepareAverageRatingText();
         this.prepareCurrentLevelText();
+        this.prepareYouWonText();
     }
 
 
@@ -460,6 +472,13 @@ public class PlayingMenu extends Menu {
         this.currentLevelAverageRatingText.setFill(this.color);
     }
 
+    private void prepareYouWonText(){
+        this.youWonText = new Text(100*WR,  150*HR, "YOU WON !");
+        this.youWonText.setFont(new Font("Microsoft YaHei", 175*WR));
+        this.youWonText.setFill(Color.rgb(88, 38, 24));
+        this.youWonText.setVisible(false);
+    }
+
     private void prepareMapSize() {
         this.maxWidth = this.game.getBoard().getLevelWidth();
         this.limit = (int) (20 * this.WR);
@@ -521,9 +540,20 @@ public class PlayingMenu extends Menu {
             }
         }
         if (this.game.getBoard().isWin() && !currentLevelIsWon){
-            AlertBox.display("Victory !", "You won !");
+            //AlertBox.display("Victory !", "You won !");
+            youWonText.setVisible(true);
             currentLevelIsWon = true;
             addLevel();
+        } else if (currentLevelIsWon && youWonText.isVisible()){
+            youWonText.setVisible(false);
+        }
+
+        if (game.getBoard().getPlayer1().isOnPressurePlate()){
+            PressurePlate plate = game.getBoard().getPlayer1().getPlate();
+            if (plate.getEffect().equals("RickRoll")){
+                this.rickRollImage.setVisible(true);
+                this.beatPlayer.setMusic("secret.mp3");
+            }
         }
     }
 
@@ -544,6 +574,11 @@ public class PlayingMenu extends Menu {
     public CustomButton getMainMenuButton() {
         return this.mainMenuButton;
     }
+
+    public CustomImage getRickRollImage(){
+        return rickRollImage;
+    }
+
 
     public Pane getFinalPane() {
         return finalPane;

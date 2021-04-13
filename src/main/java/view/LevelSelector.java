@@ -49,16 +49,16 @@ public class LevelSelector
         this.selectedLevelViewer.setMaxWidth(350*WR);
         rightMenu.getChildren().addAll(rightMenuImage, selectedLevelViewer,levelViewer, nextPageButton, previousPageButton);
 
-        //Back tomain Menu
+        //Back to main Menu
         this.backButton = new CustomButton(50, (int)((height_-96-5)), WR, HR, "back button.png");
 
         //Visible when a level is selected and it starts the game
-        this.playButton = new CustomButton((int)(width_-900), (int)(height_-96-5), WR, HR, "play button.png");
+        this.playButton = new CustomButton((int)(width_-900), (int)(height_-96-5), WR, HR, "start_button.png");
         this.playButton.setVisible(false);
 
         //Visible when the player comeback from the playingMenu.
         //It starts the game where the player was.
-        this.resumeButton = new CustomButton((int) (width_-900), (int) height_-96-5, WR, HR, "options button.png");
+        this.resumeButton = new CustomButton((int) (width_-900), (int) height_-96-5, WR, HR, "resume_button.png");
         this.resumeButton.setVisible(false);
 
         this.middleMenu = new Pane();
