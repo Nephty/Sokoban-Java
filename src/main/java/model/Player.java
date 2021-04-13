@@ -2,6 +2,7 @@ package model;
 
 public class Player extends Block {
     private boolean isOnGoal;
+    private PressurePlate plate;
     public Player(int x_, int y_,String texture, boolean isOnGoal) {
         super(x_, y_,texture);
         this.isOnGoal = isOnGoal;
@@ -9,13 +10,16 @@ public class Player extends Block {
 
 
     /**
-     * Push the Box to the nextX,nextY position
+     * Move the player to the nextX,nextY position
      * @param nextX
      * @param nextY
+     * @param nextX2
+     * @param nextY2
      * @param blockList
-     * @param player1
      * @param returnValue
      * @param currBoxOnObj
+     * @param levelHeight
+     * @param levelWidth
      * @return currBoxOnObj because we need to return it to update the counter if it changes
      */
     public int move(int nextX, int nextY, int nextX2, int nextY2, Block[][] blockList,
@@ -27,6 +31,11 @@ public class Player extends Block {
                 blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), ".");
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
+            } else if (isOnPressurePlate()){
+                blockList[this.getY()][this.getX()] = plate;
+                blockList[nextY][nextX] = this;
+                this.setValues(nextX, nextY);
+                this.setPlate(null);
             } else {
                 blockList[nextY][nextX] = this;
                 blockList[this.getY()][this.getX()] = null;
@@ -66,5 +75,17 @@ public class Player extends Block {
         }else{
             isOnGoal = true;
         }
+    }
+
+    public void setPlate(PressurePlate plate){
+        this.plate = plate;
+    }
+
+    public boolean isOnPressurePlate(){
+        return (plate != null);
+    }
+
+    public PressurePlate getPlate(){
+        return plate;
     }
 }

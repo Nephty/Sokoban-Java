@@ -13,8 +13,7 @@ public class Board {
     private int levelWidth = 0;
     private int currBoxOnObj = 0;
 
-    private int pressurePlateX = -1;
-    private int pressurePlateY = -1;
+    private PressurePlate plate;
 
     public Board() {
     }
@@ -91,8 +90,7 @@ public class Board {
                         x++;
                         break;
                     case '^':
-                        pressurePlateX = x;
-                        pressurePlateY = y;
+                        plate = new PressurePlate(x,y,"^","RickRoll");
                         x++;
                         break;
                     default:
@@ -132,6 +130,7 @@ public class Board {
         world.addAll(boxes);
         world.addAll(goals);
         world.add(player1);
+        world.add(plate);
 
         return world;
     }
@@ -225,14 +224,6 @@ public class Board {
     }
 
     /**
-     * Used for the easter eggs
-     * @return true if the player is on the Pressure Plate.
-     */
-    public boolean isOnPressurePlate(){
-        return (player1.getX() == pressurePlateX && player1.getY() == pressurePlateY);
-    }
-
-    /**
      * Restart the map.
      */
     public void restart(){
@@ -281,11 +272,7 @@ public class Board {
             String line = "";
             for (int j=0; j<blockList[i].length;j++){
                 if (blockList[i][j] == null){
-                    if ((pressurePlateY != -1) && (i == pressurePlateY && j == pressurePlateX)){
-                        line += "^";
-                    }else{
-                        line += " ";
-                    }
+                    line += " ";
                 }else {
                     line += blockList[i][j].getTexture();
                 }
@@ -303,5 +290,9 @@ public class Board {
         for (Direction dir : moves){
             this.move(dir);
         }
+    }
+
+    public Player getPlayer1(){
+        return player1;
     }
 }
