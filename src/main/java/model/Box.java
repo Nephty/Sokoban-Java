@@ -47,12 +47,12 @@ public class Box extends Block {
 
     /**
      * Push the Box to the nextX,nextY position
-     * @param nextX
-     * @param nextY
-     * @param blockList
-     * @param player1
-     * @param returnValue
-     * @param currBoxOnObj
+     * @param nextX The row of the next Block
+     * @param nextY The Line of the next Block
+     * @param blockList The list of all the blocks
+     * @param player1 The instance of the player
+     * @param returnValue BooleanCouple : used to know if the player moved or not
+     * @param currBoxOnObj The current amount of box on Objectives
      * @return currBoxOnObj because we need to return it to update the counter if it changes
      */
     @Override
@@ -89,5 +89,17 @@ public class Box extends Block {
         }
         returnValue.setB(true);
         return currBoxOnObj;
+    }
+
+    /**
+     * @return Return the image fileName if the box is on a obj or not
+     */
+    @Override
+    public String getTexture(){
+        String res = super.getTexture();
+        if (amIOnGoal()){
+            res = "boxonobjective.png";
+        }
+        return res;
     }
 }

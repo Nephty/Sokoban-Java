@@ -19,12 +19,12 @@ public class PressurePlate extends Block{
 
     /**
      * move the player to the nextX,nextY position
-     * @param nextX
-     * @param nextY
-     * @param blockList
-     * @param player1
-     * @param returnValue
-     * @param currBoxOnObj
+     * @param nextX The x value of the next block
+     * @param nextY The y value of the next block
+     * @param blockList The blockList of the game
+     * @param player1 Instance of the player who moves
+     * @param returnValue BooleanCouple used to know if the player has moved
+     * @param currBoxOnObj The current amount of box on Objectives
      * @return currBoxOnObj because we need to return it to update the counter if it changes
      */
     @Override
@@ -38,6 +38,10 @@ public class PressurePlate extends Block{
     }
 
 
+    /**
+     * Effect accessor
+     * @return The effect of the pressure plate
+     */
     public String getEffect(){
         return effect;
     }

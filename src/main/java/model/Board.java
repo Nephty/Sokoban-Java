@@ -51,46 +51,46 @@ public class Board {
                         break;
 
                     case '#':
-                        Wall wall = new Wall(x,y,"#");
+                        Wall wall = new Wall(x,y,"wall.png");
                         walls.add(wall);
                         x++;
                         break;
 
                     case '$':
-                        Box newBox = new Box(x,y,"$", false);
+                        Box newBox = new Box(x,y,"box.png", false);
                         boxes.add(newBox);
                         x++;
                         break;
 
                     case '.':
-                        Goal newGoal = new Goal(x,y,".");
+                        Goal newGoal = new Goal(x,y,"objective.png");
                         goals.add(newGoal);
                         x++;
                         break;
 
                     case '@':
-                        player1 = new Player(x,y,"@",false);
+                        player1 = new Player(x,y,"player down.png",false);
                         x++;
                         break;
 
                     case '+':
-                        player1 = new Player(x,y,"+",true);
+                        player1 = new Player(x,y,"player down.png",true);
                         x++;
                         break;
 
                     case '*':
-                        Box newBoxOnObj = new Box(x, y, "*", true);
+                        Box newBoxOnObj = new Box(x, y, "box.png", true);
                         boxes.add(newBoxOnObj);
                         currBoxOnObj++;
                         x++;
                         break;
                     case '=':
-                        Wall newWall = new GhostWall(x,y, "=");
+                        Wall newWall = new GhostWall(x,y, "wall.png");
                         walls.add(newWall);
                         x++;
                         break;
                     case '^':
-                        plate = new PressurePlate(x,y,"^","RickRoll");
+                        plate = new PressurePlate(x,y,"air.png","RickRoll");
                         x++;
                         break;
                     default:
@@ -130,7 +130,9 @@ public class Board {
         world.addAll(boxes);
         world.addAll(goals);
         world.add(player1);
-        world.add(plate);
+        if (plate != null) {
+            world.add(plate);
+        }
 
         return world;
     }
