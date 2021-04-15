@@ -507,15 +507,10 @@ public class PlayingMenu extends Menu {
         for (int y = 0; y < this.game.getBoard().getLevelHeight(); y++) {
             for (int x = 0; x < blockList[y].length; x++) {
                 Block currentItem = blockList[y][x];
-                if (currentItem instanceof Wall) {
-                    fileName = "wall.png";
-                } else if ((currentItem instanceof Box) && (currentItem.amIOnGoal())) {
-                    fileName = "boxonobjective.png";
-                } else if (currentItem instanceof Box) {
-                    fileName = "box.png";
-                } else if (currentItem instanceof Goal) {
-                    fileName = "objective.png";
-                } else if (currentItem instanceof Player) {
+
+                if (currentItem != null && !(currentItem instanceof  Player)) {
+                    fileName = currentItem.getTexture();
+                }else if (currentItem != null) {
                     switch (this.game.getPlayerFacing()) {
                         case DOWN:
                             fileName = "player down.png";
@@ -531,8 +526,8 @@ public class PlayingMenu extends Menu {
                             break;
                         default:
                             break;
-                    };
-                } else {  // if item is null (air) or something else
+                    }
+                } else {
                     fileName = "air.png";
                 }
                 CustomImage currentItemImg = new CustomImage((int) (x * spaceConstant), (int) (y * spaceConstant), this.WR, this.HR, fileName);

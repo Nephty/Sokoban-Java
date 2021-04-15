@@ -11,15 +11,15 @@ public class Player extends Block {
 
     /**
      * Move the player to the nextX,nextY position
-     * @param nextX
-     * @param nextY
-     * @param nextX2
-     * @param nextY2
-     * @param blockList
-     * @param returnValue
-     * @param currBoxOnObj
-     * @param levelHeight
-     * @param levelWidth
+     * @param nextX The x value of the next block
+     * @param nextY The y value of the next block
+     * @param nextX2 The x value of the 2nd block (player -> next block -> 2nd block)
+     * @param nextY2 The y value of the 2nd block (player -> next block -> 2nd block)
+     * @param blockList the list with all the blocks
+     * @param returnValue BooleanCouple : used to know if the player moved or not
+     * @param currBoxOnObj The current amount of box on Objectives
+     * @param levelHeight The height of the level
+     * @param levelWidth The width of the level
      * @return currBoxOnObj because we need to return it to update the counter if it changes
      */
     public int move(int nextX, int nextY, int nextX2, int nextY2, Block[][] blockList,
@@ -77,14 +77,26 @@ public class Player extends Block {
         }
     }
 
+    /**
+     * Set the pressure plate where the player is.
+     * @param plate The instance of the pressure plate
+     */
     public void setPlate(PressurePlate plate){
         this.plate = plate;
     }
 
+    /**
+     *
+     * @return True if the player is on a pressurePlate
+     */
     public boolean isOnPressurePlate(){
         return (plate != null);
     }
 
+    /**
+     * Plate accessor
+     * @return The plate where the player is
+     */
     public PressurePlate getPlate(){
         return plate;
     }

@@ -18,12 +18,12 @@ public class GhostWall extends Wall{
 
     /**
      * move the player to the nextX,nextY position
-     * @param nextX
-     * @param nextY
-     * @param blockList
-     * @param player1
-     * @param returnValue
-     * @param currBoxOnObj
+     * @param nextX The row of the Block
+     * @param nextY The line of the Block
+     * @param blockList The list of all the blocks
+     * @param player1 The instance of the player
+     * @param returnValue BooleanCouple : used to know if the player moved or not
+     * @param currBoxOnObj The current amount of box on Objectives
      * @return currBoxOnObj because we need to return it to update the counter if it changes
      */
     @Override
