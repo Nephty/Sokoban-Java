@@ -15,23 +15,42 @@ public class AudioPlayer {
 
     private String beat = "beat.mp3";
 
+    /**
+     * Default constructor which uses the default beat of the game
+     */
     public AudioPlayer(){
         setMusic(beat);
         mediaPlayer.setAutoPlay(true);
     }
 
+    /**
+     * AudioPlayer constructor with a special sound (not the beat)
+     * @param fileName The name of the sound we want to set (Only in the sound directory)
+     */
     public AudioPlayer(String fileName){
         prepareMusic(fileName);
     }
 
+    /**
+     * MediaPlayer accessor
+     * @return The current MediaPlayer
+     */
     public MediaPlayer getMediaPlayer(){
         return this.mediaPlayer;
     }
 
+    /**
+     * Beat accessor
+     * @return The name of the default beat of the game
+     */
     public String getBeat(){
         return beat;
     }
 
+    /**
+     * Change the music of the game
+     * @param musicName The fileName of the sound we want to use (Only in the sound directory)
+     */
     public void setMusic(String musicName){
         if (mediaPlayer != null){
             mediaPlayer.stop();
@@ -43,6 +62,10 @@ public class AudioPlayer {
         mediaPlayer.setVolume(volume);
     }
 
+    /**
+     * Change the music but doesn't play it
+     * @param fileName The fileName of the sound we want to use (Only in the sound directory)
+     */
     public void prepareMusic(String fileName){
         if (mediaPlayer != null){
             mediaPlayer.stop();
@@ -54,17 +77,20 @@ public class AudioPlayer {
     }
 
 
-    public void changeVolume(double volume) throws NumberFormatException{
-        if (volume > 1 || volume < 0){
-            throw new NumberFormatException("Volume must be between 0 and 1");
-        }else {
-            this.volume = volume;
-            if (mediaPlayer != null){
-                mediaPlayer.setVolume(volume);
-            }
+    /**
+     * Change the volume of the mediaPlayer
+     * @param volume A number between 0 and 1.
+     */
+    public void changeVolume(double volume){
+        this.volume = volume;
+        if (mediaPlayer != null){
+            mediaPlayer.setVolume(volume);
         }
     }
 
+    /**
+     * restart the sound (used for the sound effects)
+     */
     public void restart(){
         mediaPlayer = new MediaPlayer(currMedia);
         mediaPlayer.setRate(1);
