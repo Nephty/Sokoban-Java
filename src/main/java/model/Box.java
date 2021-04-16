@@ -62,7 +62,7 @@ public class Box extends Block {
         if (nextObj == null){
             //if the box is on a Goal
             if (amIOnGoal()){
-                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "O");
+                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png");
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
                 this.changeGoalValue();

@@ -13,8 +13,8 @@ public class Player extends Block {
      * Move the player to the nextX,nextY position
      * @param nextX The x value of the next block
      * @param nextY The y value of the next block
-     * @param nextX2 The x value of the 2nd block (player -> next block -> 2nd block)
-     * @param nextY2 The y value of the 2nd block (player -> next block -> 2nd block)
+     * @param nextX2 The x value of the 2nd block (player - next block - 2nd block)
+     * @param nextY2 The y value of the 2nd block (player - next block - 2nd block)
      * @param blockList the list with all the blocks
      * @param returnValue BooleanCouple : used to know if the player moved or not
      * @param currBoxOnObj The current amount of box on Objectives
@@ -28,7 +28,7 @@ public class Player extends Block {
         if (nextObj == null) {
             if (this.amIOnGoal()){
                 this.changeGoalValue();
-                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), ".");
+                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png");
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
             } else if (isOnPressurePlate()){
@@ -62,7 +62,6 @@ public class Player extends Block {
      */
     @Override
     public boolean amIOnGoal(){
-        super.amIOnGoal();
         return isOnGoal;
     }
 

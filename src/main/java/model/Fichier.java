@@ -39,6 +39,7 @@ public class Fichier {
      * @param levelName Le nom du fichier dans lequel en sauvegarde.
      * @param _def Si le fichier doit etre un fichier "move" ou un fichier "save" ou juste un fichier "" (niveau).
      * @param content Le contenu a sauvegarder dans le fichier.
+     * @throws IOException File not found.
      */
     public static void saveFile(String levelName, String _def, ArrayList<String> content) throws IOException {
         // Donne le repertoire courant.
@@ -62,8 +63,8 @@ public class Fichier {
     }
 
     /**
-     * /!\ A finaliser /!\   isFile() & isDirectory()
      * Donne sous forme d'un tableau, les niveaux presents dans un fichier.
+     * @param dir The directory where we want to make the list
      * @return Un tableau avec le nom des niveaux.
      */
     public static String[] levelList(String dir) {
@@ -75,7 +76,8 @@ public class Fichier {
 
     /**
      * Donne le nombre de niveaux presents dans un fichier.
-     * @return Int -> nombre de niveaux dans un fichier
+     * @param dir The directory where we want to count
+     * @return Le nombre de niveaux dans un fichier
      */
     public static int howManyLevel(String dir){
         String[] list = levelList(dir);
@@ -83,7 +85,6 @@ public class Fichier {
     }
 
     /**
-     * /!\ A finaliser /!\   isFile() & isDirectory()
      * Donne sous forme d'un tableau, les niveaux presents dans un fichier.
      * @return Un tableau avec le nom des niveaux.
      */
