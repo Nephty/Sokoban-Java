@@ -12,16 +12,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
+import presenter.Main;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Timer;
 
 import org.json.simple.parser.ParseException;
 
-import javax.swing.*;
 
 public class PlayingMenu extends Menu{
 
@@ -49,8 +46,6 @@ public class PlayingMenu extends Menu{
     Button moveUp, moveDown, moveLeft, moveRight;
     Pane finalPane;
     ArrayList<Direction> movesHistory;
-    LevelSaver levelSaver = new LevelSaver();
-
     //------//
     // Data //
     //------//
@@ -76,7 +71,7 @@ public class PlayingMenu extends Menu{
 
         this.effectPlayer = new AudioPlayer("crash.mp3");
 
-        if (Main.fullscreen) {
+        if (Main.isFullscreen()) {
             this.leftMenuImage = new CustomImage(0, 0, WR, HR, "side menu perfect fit.png");
             this.rightMenuImage = new CustomImage(0, 0, WR, HR, "side menu perfect fit.png");
         } else {
@@ -162,7 +157,7 @@ public class PlayingMenu extends Menu{
                         break;
                     case F:
                         try {
-                            levelSaver.saveLevel(movesHistory, currentLevel, CompleteFieldBox.display("Enter a file name",
+                            LevelSaver.saveLevel(movesHistory, currentLevel, CompleteFieldBox.display("Enter a file name",
                                     "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
                                     "File name..."));
                         } catch (IOException e) {
@@ -173,7 +168,7 @@ public class PlayingMenu extends Menu{
                     case G:
                         // TODO : what's taking so long to apply a lot of moves (200+ for example) ?
                         String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
-                        ArrayList<Direction> res = levelSaver.getHistory(fileName);  // will never throw errors so no need to make a try/catch
+                        ArrayList<Direction> res = LevelSaver.getHistory(fileName,"");  // will never throw errors so no need to make a try/catch
                         for (Direction dir : res) {
                             applyMove(dir);
                             System.out.println("applied : " + dir);
@@ -516,7 +511,7 @@ public class PlayingMenu extends Menu{
                 Block currentItem = blockList[y][x];
 
                 if (currentItem != null && !(currentItem instanceof Player)) {
-                    fileName = currentItem.getTexture();
+                    fileName = currentItem.getImage();
                 }else if (currentItem instanceof  Player) {
                     switch (this.game.getPlayerFacing()) {
                         case DOWN:
@@ -542,7 +537,6 @@ public class PlayingMenu extends Menu{
             }
         }
         if (this.game.getBoard().isWin() && !currentLevelIsWon){
-            //AlertBox.display("Victory !", "You won !");
             youWonText.setVisible(true);
             currentLevelIsWon = true;
             addLevel();

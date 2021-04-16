@@ -1,12 +1,12 @@
 package view;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
+import presenter.Main;
 
 public class LevelSelector
         extends Menu {
@@ -25,7 +25,7 @@ public class LevelSelector
         super(parent_, width_, height_, WR, HR);
 
         this.rightMenu = new Pane();
-        if (Main.fullscreen) {
+        if (Main.isFullscreen()) {
             this.rightMenuImage = new CustomImage(0,0,WR,HR,"side menu perfect fit.png");
         } else {
             this.rightMenuImage = new CustomImage(0,0,WR,HR,"right side menu.png");
@@ -74,7 +74,7 @@ public class LevelSelector
             }
         });
 
-        if (!Main.fullscreen) {
+        if (!Main.isFullscreen()) {
             this.backButton.setLayoutY(-50);
             this.backButton.overlay.setLayoutY(-50);
             this.playButton.setLayoutY(-50);
@@ -253,5 +253,9 @@ public class LevelSelector
      */
     public CustomButton getPlayButton(){
         return playButton;
+    }
+
+    public void setHasSelected(boolean value){
+        hasSelected = value;
     }
 }
