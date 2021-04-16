@@ -2,13 +2,14 @@ package view;
 
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
+import javafx.util.Duration;
+
 import java.io.File;
 
 public class AudioPlayer {
     private String audioFile = System.getProperty("user.dir").concat("\\src\\main\\resources\\sound\\");
 
     private MediaPlayer mediaPlayer;
-    private String status;
     private Media currMedia;
 
     private double volume = 0.5;
@@ -20,7 +21,7 @@ public class AudioPlayer {
      */
     public AudioPlayer(){
         setMusic(beat);
-        mediaPlayer.setAutoPlay(true);
+        loop();
     }
 
     /**
@@ -92,10 +93,27 @@ public class AudioPlayer {
      * restart the sound (used for the sound effects)
      */
     public void restart(){
-        mediaPlayer = new MediaPlayer(currMedia);
-        mediaPlayer.setRate(1);
-        mediaPlayer.setVolume(volume);
+        mediaPlayer.seek(Duration.ZERO);
+    }
 
+    /**
+     * Loop the current media
+     */
+    public void loop(){
+        mediaPlayer.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                mediaPlayer.seek(Duration.ZERO);
+                mediaPlayer.play();
+            }
+        });
+    }
+
+    /**
+     * Stop the loop mode of the current media
+     */
+    public void stopLoop(){
+        mediaPlayer.setOnEndOfMedia(null);
     }
 
 }

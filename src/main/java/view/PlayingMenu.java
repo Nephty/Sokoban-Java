@@ -13,12 +13,17 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Timer;
 
 import org.json.simple.parser.ParseException;
 
-public class PlayingMenu extends Menu {
+import javax.swing.*;
+
+public class PlayingMenu extends Menu{
 
     //---------//
     // Objects //
@@ -61,8 +66,9 @@ public class PlayingMenu extends Menu {
     private boolean currentLevelIsWon = false;
     private AudioPlayer beatPlayer;
     private AudioPlayer effectPlayer;
+    private StopWatch stopWatch;
 
-    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_, AudioPlayer beatPlayer) throws IOException {
+    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_, AudioPlayer beatPlayer)throws IOException {
         super(parent_, width_, height_, WR_, HR_);
         this.leftMenu = new Pane();
         this.rightMenu = new Pane();
@@ -217,10 +223,11 @@ public class PlayingMenu extends Menu {
 
         this.middleMenu.getChildren().addAll(this.gamePane, this.youWonText);
         this.finalPane.getChildren().addAll(this.leftMenu, this.middleMenu, this.rightMenu,this.rickRollImage);
+
     }
 
     private void applyMove(Direction direction) {
-        if (direction != Direction.NULL) {
+        if (direction != Direction.NULL && direction != Direction.RESTART) {
             BooleanCouple moveResult = game.getBoard().move(direction);
             if (moveResult.isA()) {
                 movesHistory.add(direction);
@@ -424,8 +431,8 @@ public class PlayingMenu extends Menu {
     }
 
     private void prepareTimeText() {
-        String timeStr = "00:00:00";
-        this.timeText = new Text(105 * this.WR, 515 * this.WR, timeStr);
+        this.timeText = new Text(105 * this.WR, 515 * this.WR, "");
+        stopWatch = new StopWatch(timeText);
         this.timeText.setFont(this.font);
         this.timeText.setFill(this.color);
     }
@@ -508,9 +515,9 @@ public class PlayingMenu extends Menu {
             for (int x = 0; x < blockList[y].length; x++) {
                 Block currentItem = blockList[y][x];
 
-                if (currentItem != null && !(currentItem instanceof  Player)) {
+                if (currentItem != null && !(currentItem instanceof Player)) {
                     fileName = currentItem.getTexture();
-                }else if (currentItem != null) {
+                }else if (currentItem instanceof  Player) {
                     switch (this.game.getPlayerFacing()) {
                         case DOWN:
                             fileName = "player down.png";
@@ -604,21 +611,28 @@ public class PlayingMenu extends Menu {
 
     public void setLevel(Byte nbr) throws IOException, FileNotFoundException{
         this.currentLevel = nbr;
+        prepareCurrentLevelText();
         this.currentLevelIsWon = false;
         this.loadLevelFileAndInitializeBoard();
         this.prepareMapSize();
         this.resetCounters();
         this.updateMapTiles();
+        stopWatch.restart();
+
     }
 
     public void setLevel(String name) throws IOException{
         this.currentLevelName = name;
+        String[] tmp = name.split(".xsb");
+        this.currentLevelText.setX(currentLevelImgContainer.getX() + (currentLevelImgContainer.getWidth_()/tmp[0].length()));
+        this.currentLevelText.setText(tmp[0]);
         this.currentLevelIsWon = false;
         this.currentLevelString = Fichier.loadFile(currentLevelName, "freePlay");
         this.game.setBoard(new Board(this.currentLevelString));
         this.prepareMapSize();
         this.resetCounters();
         this.updateMapTiles();
+        stopWatch.restart();
     }
 
     private void resetCounters(){
