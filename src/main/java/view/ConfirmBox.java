@@ -8,12 +8,27 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * The <code>CompleteFieldBox</code> is a pop up window that can have a title, display a message, ask
+ * the user for some input and have a prompt message to invite the user to give their input.
+ * The input will be given in a <code>TextField</code> (see <code>javafx.scene.control.TextField</code>).
+ * According to the selected method, the pop up can contain a <code>FileChooser</code>
+ * (see <code>javafx.stage.FileChooser</code>). Upon selecting a file, its name is written into the TextField and
+ * the user can still modify it or confirm.
+ */
+
+/**
+ * The <code>ConfirmBox</code> is a pop up window that can have a title and display a message, usually a
+ * closed-ended question. The user can choose to reply with the "Yes" or the "No" button. The method will then
+ * return a boolean with the value <code>true</code> if the user clicked on the "Yes" button, or with the
+ * value <code>false</code> otherwise.
+ */
 public class ConfirmBox {
 
     static boolean reply = false;
 
     /**
-     * Static method to apply to the ConfirmBox class that pops up and pauses the execution of the
+     * Static method to apply to the <code>ConfirmBox</code> class that pops up and pauses the execution of the
      * main window until the user closes the pop up. The user can answer to a question by yes or no
      * and the value will be returned as a boolean.
      * @param title The title of the pop up window

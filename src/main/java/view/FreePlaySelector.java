@@ -11,18 +11,38 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 
+/**
+ * The <code>FreePlaySelector</code> is a user interface used to display all the different levels, their
+ * corresponding information such as the level number, difficulty, average rating, best time and a small image
+ * to give the user a sneak peak into the level. The user can go back to the main menu, selected a level or
+ * deselect one, start a new level or resume the on-going game. If there are too many levels to display on the
+ * screen, multiple pages will be created and can be accessed to find the levels which could not have been displayed
+ * on the first page. Locked levels are not playable until the user finished the previous level. Locked levels also
+ * have a small lock icon on them to make it easier to tell them apart from unlocked levels.
+ * The <code>FreePlaySelector</code> is used for the levels defined in the resources\level\freePlay directory.
+ */
 public class FreePlaySelector extends LevelSelector{
 
     private  String selectedLevel;
 
+    /**
+     * Create a new <code>FreePlaySelector</code> object used as a level selector where the user can select
+     * and start a level or resume one.
+     * @param parent_ The <code>Parent</code> object that will contain the entire CampaignSelector
+     * @param width_ The width of the menu (preferably the size of the window)
+     * @param height_ The height of the menu (preferably the size of the window)
+     * @param WR The width ratio that will be used to resize the components
+     * @param HR The height ratio that will be used to resize the components
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     */
     public FreePlaySelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException, ParseException {
+            throws IOException {
         super(parent_, width_, height_, WR, HR);
     }
 
 
     /**
-     * Create the button for the level selection.
+     * Create the  buttons for the level selection.
      * Read the completed levels in the data.json file and create the correct amount of buttons.
      */
     @Override
@@ -48,12 +68,12 @@ public class FreePlaySelector extends LevelSelector{
 
                 Text nbr;
                 if (i < 9) {
-                    nbr = new Text(tmpButton.getX_() + 35 * WR, tmpButton.getY_() + 65 * WR, Integer.toString(i+1));
+                    nbr = new Text(tmpButton.getX() + 35 * WR, tmpButton.getY() + 65 * WR, Integer.toString(i+1));
                 } else {
-                    nbr = new Text(tmpButton.getX_() + 25 * WR, tmpButton.getY_() + 65 * WR, Integer.toString(i+1));
+                    nbr = new Text(tmpButton.getX() + 25 * WR, tmpButton.getY() + 65 * WR, Integer.toString(i+1));
                 }
-                nbr.maxWidth(tmpButton.getWidth_());
-                nbr.maxHeight(tmpButton.getHeight_());
+                nbr.maxWidth(tmpButton.getWidth());
+                nbr.maxHeight(tmpButton.getHeight());
                 nbr.setFont(new Font("Microsoft YaHei", 40 * WR));
                 nbr.setFill(Color.rgb(88, 38, 24));
                 selectLevel(nbr,level);
@@ -71,9 +91,9 @@ public class FreePlaySelector extends LevelSelector{
                 if (length == 1) {
                     length++;
                 }
-                Text name = new Text(tmpButton.getX_() -8 + (tmpButton.getWidth_() /length), tmpButton.getY_() -10*WR, levelName);
-                name.maxWidth(tmpButton.getWidth_());
-                name.maxHeight(tmpButton.getHeight_());
+                Text name = new Text(tmpButton.getX() -8 + (tmpButton.getWidth() /length), tmpButton.getY() -10*WR, levelName);
+                name.maxWidth(tmpButton.getWidth());
+                name.maxHeight(tmpButton.getHeight());
                 name.setFont(new Font("Microsoft YaHei", 25 * WR));
                 name.setFill(Color.rgb(88, 38, 24));
                 selectLevel(name,level);

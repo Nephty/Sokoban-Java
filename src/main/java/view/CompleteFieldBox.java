@@ -11,18 +11,25 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The <code>CompleteFieldBox</code> is a pop up window that can have a title, display a message, ask
+ * the user for some input and have a prompt message to invite the user to give their input.
+ * The input will be given in a <code>TextField</code> (see <code>javafx.scene.control.TextField</code>).
+ * According to the selected method, the pop up can contain a <code>FileChooser</code>
+ * (see <code>javafx.stage.FileChooser</code>). Upon selecting a file, its name is written into the TextField and
+ * the user can still modify it or confirm.
+ */
 public class CompleteFieldBox {
     /**
-     * Static method to apply to the CompleteFieldBox class that pops up and pauses the execution of the
+     * Static method to apply to the <code>CompleteFieldBox</code> class that pops up and pauses the execution of the
      * main window until the user enters a string and confirms.
      * @param title The title of the pop up window
      * @param message The message displayed in the pop up window
      * @param promptText The text to prompt in the text field for the user
-     * @return The string user entered
+     * @return The string the user entered
      */
     public static String display(String title, String message, String promptText) {
         Stage window = new Stage();
@@ -54,14 +61,14 @@ public class CompleteFieldBox {
     }
 
     /**
-     * Static method to apply to the CompleteFieldBox class that pops up and pauses the execution of the
+     * Static method to apply to the <code>CompleteFieldBox</code> class that pops up and pauses the execution of the
      * main window until the user enters a string and confirms. There is a button "Open..." that allows the user to
      * select a file, and the file's name will be entered in the text field box for the user to confirm the choice.
      * It is also checking if the file ends with ".mov" and is in the saves directory.
      * @param title The title of the pop up window
      * @param message The message displayed in the pop up window
      * @param promptText The text to prompt in the text field for the user
-     * @return The name of the file
+     * @return The string the user entered
      */
     public static String displayFileSelector(String title, String message, String promptText) {
         Stage window = new Stage();

@@ -10,6 +10,13 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * A <code>Main</code> is a user interface and is the first UI displayed when the game is launched.
+ * It contains a "Play" button that shows a "Campaign", "Tutorial" and "Freeplay" button. The first button
+ * allows the user to play on the campaign levels, the second button shows the tutorial to the user and the third
+ * button allows the user to play on the freeplay levels. It also contains the "Options" button that opens the options
+ * menu, a "Quests" button that opens the achievements menu and a "Quit" button that closes the game.
+ */
 public class MainMenu
         extends Menu {
 
@@ -28,15 +35,18 @@ public class MainMenu
 
     static AtomicBoolean playInterface = new AtomicBoolean(false);
 
-
-    public MainMenu(Parent parent_, double width_, double height_, float WR, float HR, Stage window_)
-            throws IOException, ParseException {
-        super(parent_, width_, height_, WR, HR);
-        window = window_;
-        setButtons();
-        prepareButtonsActions();
-    }
-
+    /**
+     * Create a new <code>MainMenu</code> object and prepare its attributes
+     * @param parent_ The main <code>Pane</code> that we will be using to store the content. This pane should (but it's not
+     *                mandatory) be the size of the window in order to be able to display content anywhere on
+     *                the said window.
+     * @param width_ The width of the menu (preferably the size of the window)
+     * @param height_ The height of the menu (preferably the size of the window)
+     * @param WR_ The width ratio that will be used to resize the components
+     * @param HR_ The height ratio that will be used to resize the components
+     * @param window_ The window containing everything
+     * @param background_ The background that will be displayed for the menu
+     */
     public MainMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_, CustomImage background_)
             throws IOException, ParseException {
         super(parent_, width_, height_, WR_, HR_, background_);
@@ -46,7 +56,12 @@ public class MainMenu
         prepareButtonsActions();
     }
 
-
+    /**
+     * Prepare the "Play", "Options", "Quests", "Quit", "Campaign", "Tutorial" and "Freeplay" buttons.
+     * The <code>EventHandlers</code> are not set here.
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
+     */
     private void setButtons()
             throws IOException, ParseException {
         Dimension dimension = resolutionIDToDimension();
@@ -91,6 +106,9 @@ public class MainMenu
         this.freePlayButton.setVisible(false);
     }
 
+    /**
+     * Prepare the <code>EventHandlers</code> for the buttons and their overlays according to their respective function.
+     */
     private void prepareButtonsActions() {
         this.playButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if (!playInterface.get()) {
@@ -141,38 +159,76 @@ public class MainMenu
         });
     }
 
+    /**
+     * Return the playInterface boolean that will be <code>true</code> if the three buttons "Campaign", "Tutorial" and
+     * "Freeplay" are currently displayed on the screen, and <code>false</code> otherwise.
+     * @return The display state of the three "Campaign", "Tutorial" and "Freeplay" buttons
+     */
     public static boolean getPlayInterface() {
         return playInterface.get();
     }
 
+    /**
+     * Set a new value of the playInterface boolean. Must be set to <code>true</code> if the three buttons "Campaign",
+     * "Tutorial" and "Freeplay" buttons are currently visible, and <code>false</code> otherwise.
+     * @param value The new value for the playInterface boolean
+     */
     public static void setPlayInterface(boolean value) {
         playInterface.set(value);
     }
 
+    /**
+     * Return the "Play" button used to switch to the <code>PlayingMenu</code>.
+     * @return The "Play" button currently used
+     */
     public CustomButton getPlayButton() {
         return playButton;
     }
 
+    /**
+     * Return the "Options" button used to switch to the <code>PlayingMenu</code>.
+     * @return The "Options" button currently used
+     */
     public CustomButton getOptionsButton() {
         return optionsButton;
     }
 
+    /**
+     * Return the "Quit" button used to switch to the <code>PlayingMenu</code>.
+     * @return The "Quit" button currently used
+     */
     public CustomButton getQuitButton() {
         return quitButton;
     }
 
+    /**
+     * Return the "Achievements" button used to switch to the <code>PlayingMenu</code>.
+     * @return The "Achievements" button currently used
+     */
     public CustomButton getAchievementsButton() {
         return achievementsButton;
     }
 
+    /**
+     * Return the "Campaign" button used to switch to the <code>PlayingMenu</code>.
+     * @return The "Campaign" button currently used
+     */
     public CustomButton getCampaignButton() {
         return campaignButton;
     }
 
+    /**
+     * Return the "Tutorial" button used to switch to the <code>PlayingMenu</code>.
+     * @return The "Tutorial" button currently used
+     */
     public CustomButton getTutorialButton() {
         return tutorialButton;
     }
 
+    /**
+     * Return the "Freeplay" button used to switch to the <code>PlayingMenu</code>.
+     * @return The "Freeplay" button currently used
+     */
     public CustomButton getFreePlayButton() {
         return freePlayButton;
     }
