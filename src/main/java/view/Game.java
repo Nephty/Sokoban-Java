@@ -16,71 +16,126 @@ public class Game {
     //------//
 
     private int totalMoves = 0;
-    private byte totalMovesPow = 1;
+    private byte totalMovesMagnitude = 1;
     private int totalPushes = 0;
-    private byte totalPushesPow = 1;
+    private byte totalPushesMagnitude = 1;
     Direction playerFacing = Direction.DOWN;
     private boolean isCurrentLevelWon = false;
 
+    /**
+     * Create a new <code>Game</code> object without any defined Board.
+     */
     public Game() {
     }
 
+    /**
+     * Create a new <code>Game</code> object with a defined Board.
+     * @param board The Board on which the game will be playedµ
+     */
     public Game(Board board) {
         this.board = board;
     }
 
+    /**
+     * Return the total amount of moves made during the current game.
+     * @return The attribute containing the total amount of moves
+     */
     public int getTotalMoves() {
         return totalMoves;
     }
 
+    /**
+     * Set the total amount of moves made during the current game.
+     */
     public void setTotalMoves(int totalMoves) {
         this.totalMoves = totalMoves;
     }
 
-    public byte getTotalMovesPow() {
-        return totalMovesPow;
+    /**
+     * Return the current magnitude of the current total amount of moves.
+     * @return The attribute containing the magnitude of the total amount of moves
+     */
+    public byte getTotalMovesMagnitude() {
+        return totalMovesMagnitude;
     }
 
+    /**
+     * Return the total amount of pushes made during the current game.
+     * @return The attribute containing the total amount of pushes
+     */
     public int getTotalPushes() {
         return totalPushes;
     }
 
+    /**
+     * Set the total amount of pushes made during the current game.
+     */
     public void setTotalPushes(int totalPushes) {
         this.totalPushes = totalPushes;
     }
 
-    public byte getTotalPushesPow() {
-        return totalPushesPow;
+    /**
+     * Return the total amount of pushes made during the current game.
+     * @return The attribute containing the magnitude of the total amount of pushes
+     */
+    public byte getTotalPushesMagnitude() {
+        return totalPushesMagnitude;
     }
 
+    /**
+     * Increment the total amount of moves made during the current game.
+     */
     public void addTotalMoves(byte value) {
         this.totalMoves += value;
     }
 
+    /**
+     * Increment the total amount of pushes made during the current game.
+     */
     public void addTotalPushes(byte value) {
         this.totalPushes += value;
     }
 
-    public void addTotalPushesPow(byte value) {
-        this.totalPushesPow += value;
+    /**
+     * Increment the current magnitude of the total amount of moves made during the current game.
+     */
+    public void addTotalPushesMagnitude(byte value) {
+        this.totalPushesMagnitude += value;
     }
 
-    public void addTotalMovesPow(byte value) {
-        this.totalMovesPow += value;
+    /**
+     * Increment the current magnitude of the total amount of pushes made during the current game.
+     */
+    public void addTotalMovesMagnitude(byte value) {
+        this.totalMovesMagnitude += value;
     }
 
+    /**
+     * Return the current <code>Direction</code> towards which the player is facing.
+     * @return The attribute containing the facing direction
+     */
     public Direction getPlayerFacing() {
         return playerFacing;
     }
 
+    /**
+     * Set the current <code>Direction</code> towards which the player is facing.
+     */
     public void setPlayerFacing(Direction playerFacing) {
         this.playerFacing = playerFacing;
     }
 
+    /**
+     * Set the current <code>Board</code> on which the game is played.
+     */
     public void setBoard(Board board) {
         this.board = board;
     }
 
+    /**
+     * Return the current <code>Board</code> on which the game is played.
+     * @return The attribute containing the current Board
+     */
     public Board getBoard() {
         return this.board;
     }
