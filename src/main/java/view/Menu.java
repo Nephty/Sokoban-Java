@@ -11,6 +11,13 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
+/**
+ * A <code>Menu</code> is a user interface used to build different types of menus. The <code>Menu</code> is
+ * not a visually implementable class : we can not create a new <code>Menu</code> object and have it working as
+ * others menus, it is more of a template rather than a functional menu. For example, creating a new <code>Menu</code>
+ * and expecting it to work as a <code>MainMenu</code> or a <code>PlayingMenu</code> is not intended nor recommended.
+ */
 public class Menu
         extends Scene {
 
@@ -36,7 +43,16 @@ public class Menu
     protected Font font;
     protected Color color;
 
-
+    /**
+     * Create a new <code>Menu</code> object and prepare its attributes
+     * @param parent_ The main <code>Pane</code> that we will be using to store the content. This pane should (but it's not
+     *                mandatory) be the size of the window in order to be able to display content anywhere on
+     *                the said window.
+     * @param width_ The width of the menu (preferably the size of the window)
+     * @param height_ The height of the menu (preferably the size of the window)
+     * @param WR_ The width ratio that will be used to resize the components
+     * @param HR_ The height ratio that will be used to resize the components
+     */
     public Menu(Parent parent_, double width_, double height_, float WR_, float HR_) {
         super(parent_, width_, height_);
         this.WR = WR_;
@@ -47,6 +63,17 @@ public class Menu
         this.color = Color.rgb(88, 38, 24);
     }
 
+    /**
+     * Create a new <code>Menu</code> object and prepare its attributes
+     * @param parent_ The main <code>Pane</code> that we will be using to store the content. This pane should (but it's not
+     *                mandatory) be the size of the window in order to be able to display content anywhere on
+     *                the said window.
+     * @param width_ The width of the menu (preferably the size of the window)
+     * @param height_ The height of the menu (preferably the size of the window)
+     * @param WR_ The width ratio that will be used to resize the components
+     * @param HR_ The height ratio that will be used to resize the components
+     * @param background_ The background of the menu
+     */
     public Menu(Parent parent_, double width_, double height_, float WR_, float HR_, CustomImage background_) {
         super(parent_, width_, height_);
         this.background = background_;
@@ -57,56 +84,50 @@ public class Menu
         final Font font = new Font("Microsoft YaHei", 35*WR);
         final Color color = Color.rgb(88, 38, 24);
     }
-    
-    //-------------------//
-    // GETTERS & SETTERS //
-    //-------------------//
 
-    public CustomImage getBackground() {
-        return background;
-    }
-
-    public void setBackground(CustomImage background) {
-        this.background = background;
-    }
-
-    public ArrayList<CustomImage> getImages() {
-        return this.images;
-    }
-
-    public void setImages(ArrayList<CustomImage> images) {
-        this.images = images;
-    }
-
-    public ArrayList<CustomButton> getButtons() {
-        return buttons;
-    }
-
-    public void setButtons(ArrayList<CustomButton> buttons) {
-        this.buttons = buttons;
-    }
-
-
-
-
+    /**
+     * Read the data.json file and get the resolution ID written in the file.
+     * @return The resolution ID of the selected resolution
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
+     */
     public static byte getResolutionID() throws IOException, ParseException {
         JSONReader JSONDataReader = new JSONReader("data.json");
-        byte RESOLUTION_ID = JSONDataReader.getByte("resolution");
-        return RESOLUTION_ID;
+        return JSONDataReader.getByte("resolution");
     }
 
+    /**
+     * Use the Toolkit abstract class to get the resolution of the screen as a <code>Dimension</code> object.
+     * @return The resolution of the screen. The first attribute is the width and the second attribute is the height
+     */
     public static Dimension getScreenDimension() {
         return java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     }
 
+    /**
+     * Compute the width ratio according to the width of the selected resolution and the reference width.
+     * @param targetWidth The desired width
+     * @return The ratio between the desired width and the reference width
+     */
     public static float getWidthRatio(int targetWidth) {
         return (float) targetWidth/ORIGINAL_WIDTH;
     }
 
+    /**
+     * Compute the height ratio according to the height of the selected resolution and the reference height.
+     * @param targetHeight The desired height
+     * @return The ratio between the desired height and the reference height
+     */
     public static float getHeightRatio(int targetHeight) {
         return (float) targetHeight/ORIGINAL_HEIGHT;
     }
 
+    /**
+     * Switch returning a <code>Dimension</code> object according to the byte of the selected resolution.
+     * @return The <code>Dimension</code> object corresponding to the byte
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
+     */
     public static Dimension resolutionIDToDimension() throws IOException, ParseException {
         byte resolutionID = getResolutionID();
         switch (resolutionID) {

@@ -28,19 +28,6 @@ public class LevelBox extends CustomImage {
         }
     }
 
-    public LevelBox(int x_, int y_, int width_, int height_, String fileName, byte level_, byte completedLevels)
-            throws IOException, ParseException {
-        super(x_, y_, width_, height_, fileName);
-        this.lockImg = new CustomImage(x_, y_, width_, height_, "lock overlay.png");
-        this.level = level_;
-
-        this.updateLockStatus(completedLevels);
-
-        if (this.isUnlocked) {
-            this.lockImg.setVisible(false);
-        }
-    }
-
     public void updateLockStatus(byte completedLevels) {
         if (this.level >= completedLevels) {
             this.isUnlocked = true;

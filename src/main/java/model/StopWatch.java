@@ -76,11 +76,13 @@ public class StopWatch {
      * Restart the timer
      */
     public void restart(){
+        this.stop();
         elapsedTime = 0;
         minutes = 0;
         hours = 0;
         seconds = 0;
         timeText.setText(toString());
+        this.start();
     }
 
     /**

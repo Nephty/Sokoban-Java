@@ -20,8 +20,18 @@ public class LevelSelector
 
     protected Pane finalPane;
 
+    /**
+     * Create a new <code>LevelSelector</code> object used a level selector where the user can select and start a level
+     * or resume one.
+     * @param parent_ The <code>Parent</code> object that will contain the entire CampaignSelector
+     * @param width_ The width of the menu (preferably the size of the window)
+     * @param height_ The height of the menu (preferably the size of the window)
+     * @param WR The width ratio that will be used to resize the components
+     * @param HR The height ratio that will be used to resize the components
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     */
     public LevelSelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException, ParseException{
+            throws IOException {
         super(parent_, width_, height_, WR, HR);
 
         this.rightMenu = new Pane();
@@ -118,7 +128,7 @@ public class LevelSelector
     }
 
     /**
-     * Set the EvenHandler for the nextPageButton
+     * Set the EvenHandler for the nextPageButton.
      */
     private void prepareNextPageButton(){
         this.nextPageButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
@@ -130,7 +140,7 @@ public class LevelSelector
     }
 
     /**
-     * Set the EvenHandler for the previousPageButton
+     * Set the EvenHandler for the previousPageButton.
      */
     private void preparePreviousPageButton(){
         previousPageButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
@@ -143,7 +153,7 @@ public class LevelSelector
 
 
     /**
-     * Configure the middlePane and the rightPane
+     * Configure the middlePane and the rightPane.
      */
     private void setPaneSizes(){
         this.setMiddlePaneSize();
@@ -151,7 +161,7 @@ public class LevelSelector
     }
 
     /**
-     * Configure the middlePane
+     * Configure the middlePane.
      */
     private void setMiddlePaneSize() {
         this.middleMenu.setPrefWidth(1570 * WR);
@@ -165,7 +175,7 @@ public class LevelSelector
     }
 
     /**
-     * Configure the RightPane
+     * Configure the RightPane.
      */
     private void setRightPaneSize() {
         this.rightMenu.setPrefWidth(350 * WR);
@@ -180,16 +190,16 @@ public class LevelSelector
 
 
     /**
-     * middleMenu accessor
-     * @return (Pane) middleMenu
+     * Return the middle mennu component.
+     * @return The middle menu
      */
     public Pane getMiddleMenu() {
         return this.middleMenu;
     }
 
     /**
-     * selectedLevel accessor
-     * @return (byte) selectedLevel
+     * Return the currently selected level.
+     * @return The currently selected level.
      */
     public byte getSelectedLevel(){
         return 0;

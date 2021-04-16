@@ -2,10 +2,16 @@ package view;
 
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
+import java.io.File;
 import javafx.util.Duration;
 
-import java.io.File;
-
+/**
+ * The <code>AudioPlayer</code> is a support for playing audio files. The simple methods and constructors make it
+ * very easy to add sound effects to the game. By default, the volume is on 0.5 (equivalent to 50%) and the rate is
+ * on 1 (equivalent to 100%). These values can be changed to get a higher or lower volume or play the sound
+ * slower or faster. The default track (main theme music) is also by default on auto play if implemented with
+ * the appropriate constructor. Other AudioPlayers (those you assign a file to) will not be on auto play by default.
+ */
 public class AudioPlayer {
     private String audioFile = System.getProperty("user.dir").concat("\\src\\main\\resources\\sound\\");
 
@@ -14,60 +20,49 @@ public class AudioPlayer {
 
     private double volume = 0.5;
 
-    private String beat = "beat.mp3";
+    private final String fileName = "beat.mp3";
 
     /**
-     * Default constructor which uses the default beat of the game
+     * Create a new <code>AudioPlayer</code> object with the main theme music as default music.
+     * Automatically plays the music upon creation.
      */
     public AudioPlayer(){
-        setMusic(beat);
+        prepareMusic(fileName);
+        mediaPlayer.setAutoPlay(true);
         loop();
     }
 
     /**
-     * AudioPlayer constructor with a special sound (not the beat)
-     * @param fileName The name of the sound we want to set (Only in the sound directory)
+     * Create a new <code>AudioPlayer</code> object without automatically playing the music.
+     * The object will remain silent if no playing method is applied.
+     * @param fileName The name of the media file containing the sound
      */
-    public AudioPlayer(String fileName){
+    public AudioPlayer(String fileName) {
         prepareMusic(fileName);
     }
 
     /**
-     * MediaPlayer accessor
-     * @return The current MediaPlayer
+     * Return the <code>MediaPlayer</code> attribute.
+     * @return The <code>MediaPlayer</code> attribute.
      */
-    public MediaPlayer getMediaPlayer(){
+    public MediaPlayer getMediaPlayer() {
         return this.mediaPlayer;
     }
 
     /**
-     * Beat accessor
-     * @return The name of the default beat of the game
+     * Return the fileName attribute.
+     * @return The fileName in use.
      */
-    public String getBeat(){
-        return beat;
+    public String getFileName() {
+        return fileName;
     }
 
     /**
-     * Change the music of the game
-     * @param musicName The fileName of the sound we want to use (Only in the sound directory)
+     * Create the <code>Media</code> object and the <code>MediaPlayer</code> object in use and sets the default
+     * values for the rate and volume.
+     * @param fileName The name of the file that will be used as the audio track
      */
-    public void setMusic(String musicName){
-        if (mediaPlayer != null){
-            mediaPlayer.stop();
-        }
-        currMedia = new Media(new File(audioFile.concat(musicName)).toURI().toString());
-        mediaPlayer = new MediaPlayer(currMedia);
-        mediaPlayer.play();
-        mediaPlayer.setRate(1);
-        mediaPlayer.setVolume(volume);
-    }
-
-    /**
-     * Change the music but doesn't play it
-     * @param fileName The fileName of the sound we want to use (Only in the sound directory)
-     */
-    public void prepareMusic(String fileName){
+    public void prepareMusic(String fileName) {
         if (mediaPlayer != null){
             mediaPlayer.stop();
         }
@@ -77,20 +72,25 @@ public class AudioPlayer {
         mediaPlayer.setVolume(volume);
     }
 
-
     /**
-     * Change the volume of the mediaPlayer
-     * @param volume A number between 0 and 1.
+     * Set the volume of the <code>MediaPlayer</code> in use.
+     * @param volume_ The new volume
+     * @throws NumberFormatException Exception thrown when the volume isn't a number between 0 and 1
      */
-    public void changeVolume(double volume){
-        this.volume = volume;
-        if (mediaPlayer != null){
-            mediaPlayer.setVolume(volume);
+    public void setVolume(double volume_) throws NumberFormatException {
+        if (volume > 1 || volume < 0){
+            throw new NumberFormatException("Volume must be between 0 and 1");
+        }else {
+            this.volume = volume;
+            if (mediaPlayer != null){
+                this.volume = volume_;
+                mediaPlayer.setVolume(volume);
+            }
         }
     }
 
     /**
-     * restart the sound (used for the sound effects)
+     * Restart the current audio track.
      */
     public void restart(){
         mediaPlayer.seek(Duration.ZERO);
