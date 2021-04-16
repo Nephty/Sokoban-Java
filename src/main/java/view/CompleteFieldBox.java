@@ -22,6 +22,7 @@ public class CompleteFieldBox {
      * @param title The title of the pop up window
      * @param message The message displayed in the pop up window
      * @param promptText The text to prompt in the text field for the user
+     * @return The string user entered
      */
     public static String display(String title, String message, String promptText) {
         Stage window = new Stage();
@@ -60,6 +61,7 @@ public class CompleteFieldBox {
      * @param title The title of the pop up window
      * @param message The message displayed in the pop up window
      * @param promptText The text to prompt in the text field for the user
+     * @return The name of the file
      */
     public static String displayFileSelector(String title, String message, String promptText) {
         Stage window = new Stage();

@@ -276,7 +276,6 @@ public class Main extends Application {
                     freePlaySelector.getPlayButton().setVisible(false);
                     window.setScene(playingMenu);
                     window.setFullScreen(fullscreen);
-                    audioPlayer.setMusic("secret.mp3");
                     freePlaySelector.getResumeButton().setVisible(true);
                     freePlaySelector.hasSelected = true;
                 }catch(Exception exc){
