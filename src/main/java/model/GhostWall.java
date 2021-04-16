@@ -3,8 +3,8 @@ package model;
 
 public class GhostWall extends Wall{
 
-    public GhostWall(int x_, int y_,String texture) {
-        super(x_, y_,texture);
+    public GhostWall(int x_, int y_,String image,String texture) {
+        super(x_, y_,image, texture);
     }
 
     /**

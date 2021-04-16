@@ -51,46 +51,46 @@ public class Board {
                         break;
 
                     case '#':
-                        Wall wall = new Wall(x,y,"wall.png");
+                        Wall wall = new Wall(x,y,"wall.png","#");
                         walls.add(wall);
                         x++;
                         break;
 
                     case '$':
-                        Box newBox = new Box(x,y,"box.png", false);
+                        Box newBox = new Box(x,y,"box.png","$",false);
                         boxes.add(newBox);
                         x++;
                         break;
 
                     case '.':
-                        Goal newGoal = new Goal(x,y,"objective.png");
+                        Goal newGoal = new Goal(x,y,"objective.png", ".");
                         goals.add(newGoal);
                         x++;
                         break;
 
                     case '@':
-                        player1 = new Player(x,y,"player down.png",false);
+                        player1 = new Player(x,y,"player down.png","@",false);
                         x++;
                         break;
 
                     case '+':
-                        player1 = new Player(x,y,"player down.png",true);
+                        player1 = new Player(x,y,"player down.png","+",true);
                         x++;
                         break;
 
                     case '*':
-                        Box newBoxOnObj = new Box(x, y, "box.png", true);
+                        Box newBoxOnObj = new Box(x, y, "box.png", "*",true);
                         boxes.add(newBoxOnObj);
                         currBoxOnObj++;
                         x++;
                         break;
                     case '=':
-                        Wall newWall = new GhostWall(x,y, "wall.png");
+                        Wall newWall = new GhostWall(x,y, "wall.png","=");
                         walls.add(newWall);
                         x++;
                         break;
                     case '^':
-                        plate = new PressurePlate(x,y,"air.png","RickRoll");
+                        plate = new PressurePlate(x,y,"air.png","^","RickRoll");
                         x++;
                         break;
                     default:
@@ -297,4 +297,5 @@ public class Board {
     public Player getPlayer1(){
         return player1;
     }
+
 }
