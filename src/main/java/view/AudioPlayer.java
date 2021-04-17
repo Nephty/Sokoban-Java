@@ -28,7 +28,7 @@ public class AudioPlayer {
      */
     public AudioPlayer(){
         prepareMusic(fileName);
-        mediaPlayer.setAutoPlay(true);
+        play();
         loop();
     }
 
@@ -77,13 +77,12 @@ public class AudioPlayer {
      * @param volume_ The new volume
      * @throws NumberFormatException Exception thrown when the volume isn't a number between 0 and 1
      */
-    public void setVolume(double volume_) throws NumberFormatException {
+    public void setVolume(double volume) throws NumberFormatException {
         if (volume > 1 || volume < 0){
             throw new NumberFormatException("Volume must be between 0 and 1");
         }else {
             this.volume = volume;
             if (mediaPlayer != null){
-                this.volume = volume_;
                 mediaPlayer.setVolume(volume);
             }
         }
@@ -96,6 +95,12 @@ public class AudioPlayer {
         mediaPlayer.seek(Duration.ZERO);
     }
 
+    /**
+     * Resume the current audio track.
+     */
+    public void play(){
+        mediaPlayer.play();
+    }
     /**
      * Loop the current media
      */

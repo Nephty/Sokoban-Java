@@ -2,6 +2,12 @@ package view;
 
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import model.JSONReader;
 import model.JSONWriter;
 import org.json.simple.parser.ParseException;
 
@@ -16,7 +22,14 @@ import java.util.concurrent.atomic.AtomicReference;
 public class OptionsMenu
         extends Menu {
 
-    ComboBox<String> comboBox;
+    private HBox resolution;
+    private HBox musicVolume;
+    private HBox effectVolume;
+    private CustomButton backButtonOptions;
+    private String starterMusicVolume;
+    private String starterEffectVolume;
+    private TextField musicField;
+    private TextField effectField;
 
     /**
      * Create a new <code>OptionsMenu</code> and pepare the attributes and the resolution list & choice.
@@ -34,8 +47,26 @@ public class OptionsMenu
     public OptionsMenu(Parent parent_, double width_, double height_, float WR, float HR, CustomImage background_)
             throws IOException, ParseException {
         super(parent_, width_, height_, WR, HR, background_);
+        this.backButtonOptions = new CustomButton((int)((width_-480-5)), (int)((height_-96-5)), WR, HR, "back button.png");
         this.background = background_;
+        prepareVolume();
         this.setComboBox();
+        this.setMusicVolume();
+        this.setEffectVolume();
+    }
+
+    /**
+     * Set the starterMusicVolume and the starterEffectVolume of the game
+     * Used to know what's the value of the volume when the game just opened
+     */
+    private void prepareVolume(){
+        try {
+            JSONReader reader = new JSONReader("data.json");
+            starterMusicVolume = reader.getString("music");
+            starterEffectVolume = reader.getString("effect");
+        } catch (IOException | ParseException exc) {
+            exc.printStackTrace();
+        }
     }
 
     /**
@@ -45,30 +76,136 @@ public class OptionsMenu
      * @throws ParseException Exception thrown if the .json file could not be parsed
      */
     public void setComboBox() throws IOException, ParseException {
-        AtomicReference<Byte> RESOLUTION_ID = new AtomicReference<>(getResolutionID());
-        this.comboBox = new ComboBox<>();
-        this.comboBox.getItems().addAll("Native resolution", "1280x720", "1600x900", "1920x1080", "2560x1440", "3840x2160");
-        this.comboBox.getSelectionModel().select(RESOLUTION_ID.get());
-        this.comboBox.setLayoutX(500*this.WR);
-        this.comboBox.setLayoutY(150*this.HR);
+        Label resolutionLabel = new Label("Resolution :");
+        resolutionLabel.setLayoutX(10*WR);
+        resolutionLabel.setTextFill(Color.rgb(88, 38, 24));
+        resolutionLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
 
-        this.comboBox.setOnAction(e -> {
+        AtomicReference<Byte> RESOLUTION_ID = new AtomicReference<>(getResolutionID());
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll("Native resolution", "1280x720", "1600x900", "1920x1080", "2560x1440", "3840x2160");
+        comboBox.getSelectionModel().select(RESOLUTION_ID.get());
+
+        comboBox.setOnAction(e -> {
             try {
                 JSONWriter resolutionModifier = new JSONWriter("data.json");
-                RESOLUTION_ID.set((byte) (this.comboBox.getSelectionModel().getSelectedIndex()));
+                RESOLUTION_ID.set((byte) (comboBox.getSelectionModel().getSelectedIndex()));
                 resolutionModifier.set("resolution", String.valueOf(RESOLUTION_ID.get()));
             } catch (IOException | ParseException ioException) {
                 ioException.printStackTrace();
             }
         });
+
+        resolution = new HBox();
+        resolution.setLayoutX(100*WR);
+        resolution.setLayoutY(150*HR);
+        resolution.setSpacing(10);
+        resolution.getChildren().addAll(resolutionLabel,comboBox);
     }
 
     /**
-     * Return the <code>ComboBox</code> used to display the available resolutions and allowing the user to change
-     * the resolution.
-     * @return The currently used <c
+     * Set the Label and the TextField for the MusicVolume
      */
-    public ComboBox<String> getComboBox() {
-        return this.comboBox;
+    private void setMusicVolume(){
+        Label musicLabel = new Label("Music (0-1) :");
+        musicLabel.setTextFill(Color.rgb(88, 38, 24));
+        musicLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
+
+        musicField = new TextField(starterMusicVolume);
+        musicField.setFont(new Font("Microsoft YaHei", 20 * WR));
+        musicField.setMaxWidth(60*WR);
+
+
+
+        musicVolume = new HBox();
+        musicVolume.setLayoutX(100*WR);
+        musicVolume.setLayoutY(250*HR);
+        musicVolume.setSpacing(10);
+        musicVolume.getChildren().addAll(musicLabel, musicField);
+    }
+
+    /**
+     * Set the Label and the TextField for the EffectVolume
+     */
+    private void setEffectVolume(){
+        Label effectLabel = new Label("Sound effect (0-1) :");
+        effectLabel.setTextFill(Color.rgb(88, 38, 24));
+        effectLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
+
+        effectField = new TextField(starterEffectVolume);
+        effectField.setFont(new Font("Microsoft YaHei", 20 * WR));
+        effectField.setMaxWidth(60*WR);
+
+
+
+        effectVolume = new HBox();
+        effectVolume.setLayoutX(100*HR);
+        effectVolume.setLayoutY(350*WR);
+        effectVolume.setSpacing(10);
+        effectVolume.getChildren().addAll(effectLabel, effectField);
+    }
+
+    /**
+     * Resolution HBox accessor
+     * @return The Resolution HBox with the Label and the ComboBox
+     */
+    public HBox getResolution(){
+        return resolution;
+    }
+
+    /**
+     * MusicVolume HBox accessor
+     * @return The MusicVolume HBox with the label and the TextField
+     */
+    public HBox getMusicVolume(){
+        return musicVolume;
+    }
+
+    /**
+     * EffectVolume HBox accessor
+     * @return The EffectVolume HBox with the label and the TextField
+     */
+    public HBox getEffectVolume(){
+        return effectVolume;
+    }
+
+    /**
+     * MusicField accessor
+     * @return The MusicField TextField to get the input of the User
+     */
+    public TextField getMusicField(){
+        return musicField;
+    }
+
+    /**
+     * EffectField accessor
+     * @return The MusicField TextField to get the input of the User
+     */
+    public TextField getEffectField(){
+        return effectField;
+    }
+
+    /**
+     * StarterMusicVolume accessor
+     * @return The value of the musicVolume when the game opened
+     */
+    public String getStarterMusicVolume(){
+        return starterMusicVolume;
+    }
+
+    /**
+     * StarterEffectVolume accessor
+     * @return The value of the Effect Volume when the game opened
+     */
+    public String getStarterEffectVolume(){
+        return starterEffectVolume;
+    }
+
+    /**
+     * BackButtonOptions accessor
+     * @return The BackButtonOptions
+     */
+    public CustomButton getBackButtonOptions(){
+        return backButtonOptions;
     }
 }

@@ -24,6 +24,7 @@ public class Main extends Application {
     Scene achievementsMenu;
 
     static AudioPlayer audioPlayer;
+    static AudioPlayer effectPlayer;
 
     static final int windowX = 0;
     static final int windowY = 0;
@@ -54,14 +55,13 @@ public class Main extends Application {
 
 
         CustomButton backButtonGame = new CustomButton(0, 0, WR, HR, "back button.png");
-        CustomButton backButtonOptions = new CustomButton((int)((windowWidth-480-5)), (int)((windowHeight-96-5)), WR, HR, "back button.png");
         CustomButton backButtonAchievements = new CustomButton((int)((windowWidth-480-10)), (int)((windowHeight-96-10)), WR, HR, "back button.png");
 
         // --------------------
 
         //MUSIC --------------
 
-        audioPlayer = new AudioPlayer();
+        setAudioPlayers();
         // --------------------
         // BUTTONS ACTIONS (SCENE SWITCHERS) ----
 
@@ -78,10 +78,6 @@ public class Main extends Application {
             }
         });
 
-        backButtonOptions.setOnClick(e -> {
-            window.setScene(mainMenu);
-            window.setFullScreen(fullscreen);
-        });
         backButtonAchievements.setOnClick(e -> {
             window.setScene(mainMenu);
             window.setFullScreen(fullscreen);
@@ -93,6 +89,7 @@ public class Main extends Application {
                 mainMenu.getCampaignButton().setVisible(false);
                 mainMenu.getTutorialButton().setVisible(false);
                 mainMenu.getFreePlayButton().setVisible(false);
+                mainMenu.getRandomButton().setVisible(false);
                 mainMenu.setPlayInterface(false);
             }
         });
@@ -107,6 +104,7 @@ public class Main extends Application {
                 mainMenu.getTutorialButton(), mainMenu.getTutorialButton().overlay,
                 mainMenu.getCampaignButton(), mainMenu.getCampaignButton().overlay,
                 mainMenu.getFreePlayButton(), mainMenu.getFreePlayButton().overlay,
+                mainMenu.getRandomButton(), mainMenu.getRandomButton().overlay,
                 mainMenu.getAchievementsButton(), mainMenu.getAchievementsButton().overlay);
 
 
@@ -117,7 +115,36 @@ public class Main extends Application {
 
         OptionsMenu optionsMenu = new OptionsMenu(optionsPane, windowWidth, windowHeight, WR, HR, optionsBackground);
 
-        optionsPane.getChildren().addAll(optionsBackground, backButtonOptions, backButtonOptions.overlay, optionsMenu.getComboBox());
+        optionsMenu.getBackButtonOptions().setOnClick(e -> {
+            String music = optionsMenu.getMusicField().getText();
+            String effect = optionsMenu.getEffectField().getText();
+
+            //If the user return to the main menu and leaves the field blank, we set the volume with
+            //the volume he had when he openned the game.
+            if (music.isEmpty() || (Double.valueOf(music) > 1 || Double.valueOf(music) < 0)){
+                music = optionsMenu.getStarterMusicVolume();
+                optionsMenu.getMusicField().setText(music);
+            }
+            if (effect.isEmpty() || (Double.valueOf(effect) > 1 || Double.valueOf(effect) < 0) ){
+                effect = optionsMenu.getStarterEffectVolume();
+                optionsMenu.getEffectField().setText(effect);
+            }
+            try {
+                JSONWriter writer = new JSONWriter("data.json");
+                writer.set("music",music);
+                writer.set("effect", effect);
+                audioPlayer.setVolume(Double.valueOf(music));
+                effectPlayer.setVolume(Double.valueOf(effect));
+                window.setScene(mainMenu);
+                window.setFullScreen(fullscreen);
+            } catch (IOException | ParseException exc) {
+                exc.printStackTrace();
+            }
+
+        });
+        optionsPane.getChildren().addAll(optionsBackground, optionsMenu.getBackButtonOptions(),
+                optionsMenu.getBackButtonOptions().overlay,
+                optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume());
 
         mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
@@ -237,7 +264,7 @@ public class Main extends Application {
 
         // PLAY ---------------
         Pane playingMenuPanel = new Pane();
-        PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, window, audioPlayer);
+        PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, audioPlayer, effectPlayer);
 
         playingMenuPanel.getChildren().addAll(
             playingMenu.getFinalPane()
@@ -292,12 +319,26 @@ public class Main extends Application {
             }
         });
 
+        mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                try{
+                    Generate tmpGen = new Generate();
+                    playingMenu.setLevel(tmpGen.content);
+                    window.setScene(playingMenu);
+                    window.setFullScreen(fullscreen);
+                }catch(Exception exc){
+                    exc.printStackTrace();
+                }
+            }
+        });
+
         playingMenu.getRickRollImage().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 window.setScene(mainMenu);
                 window.setFullScreen(fullscreen);
                 playingMenu.getRickRollImage().setVisible(false);
-                audioPlayer.setMusic(audioPlayer.getBeat());
+                audioPlayer.prepareMusic(audioPlayer.getFileName());
+                audioPlayer.play();
             }
          });
         // --------------------
@@ -358,6 +399,7 @@ public class Main extends Application {
         RESOLUTION_ID = JSONDataReader.getByte("resolution");
         return RESOLUTION_ID;
     }
+
 
     /**
      * Create a dimension object with the screen width and height as parameters and returns it.
@@ -457,6 +499,14 @@ public class Main extends Application {
         if (closeReply) {
             window.close();
         }
+    }
+
+    private void setAudioPlayers() throws IOException, ParseException{
+        audioPlayer = new AudioPlayer();
+        effectPlayer = new AudioPlayer();
+        JSONReader reader= new JSONReader("data.json");
+        audioPlayer.setVolume(Double.valueOf(reader.getString("music")));
+        effectPlayer.setVolume(Double.valueOf(reader.getString("effect")));
     }
 
     public static boolean isFullscreen(){
