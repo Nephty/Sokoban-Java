@@ -121,11 +121,11 @@ public class Main extends Application {
 
             //If the user return to the main menu and leaves the field blank, we set the volume with
             //the volume he had when he openned the game.
-            if (music.isEmpty()){
+            if (music.isEmpty() || (Double.valueOf(music) > 1 || Double.valueOf(music) < 0)){
                 music = optionsMenu.getStarterMusicVolume();
                 optionsMenu.getMusicField().setText(music);
             }
-            if (effect.isEmpty()){
+            if (effect.isEmpty() || (Double.valueOf(effect) > 1 || Double.valueOf(effect) < 0) ){
                 effect = optionsMenu.getStarterEffectVolume();
                 optionsMenu.getEffectField().setText(effect);
             }
@@ -133,8 +133,8 @@ public class Main extends Application {
                 JSONWriter writer = new JSONWriter("data.json");
                 writer.set("music",music);
                 writer.set("effect", effect);
-                audioPlayer.changeVolume(Double.valueOf(music));
-                effectPlayer.changeVolume(Double.valueOf(effect));
+                audioPlayer.setVolume(Double.valueOf(music));
+                effectPlayer.setVolume(Double.valueOf(effect));
                 window.setScene(mainMenu);
                 window.setFullScreen(fullscreen);
             } catch (IOException | ParseException exc) {
@@ -264,7 +264,7 @@ public class Main extends Application {
 
         // PLAY ---------------
         Pane playingMenuPanel = new Pane();
-        PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, window, audioPlayer, effectPlayer);
+        PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, audioPlayer, effectPlayer);
 
         playingMenuPanel.getChildren().addAll(
             playingMenu.getFinalPane()
@@ -337,7 +337,8 @@ public class Main extends Application {
                 window.setScene(mainMenu);
                 window.setFullScreen(fullscreen);
                 playingMenu.getRickRollImage().setVisible(false);
-                audioPlayer.setMusic(audioPlayer.getBeat());
+                audioPlayer.prepareMusic(audioPlayer.getFileName());
+                audioPlayer.play();
             }
          });
         // --------------------
@@ -504,8 +505,8 @@ public class Main extends Application {
         audioPlayer = new AudioPlayer();
         effectPlayer = new AudioPlayer();
         JSONReader reader= new JSONReader("data.json");
-        audioPlayer.changeVolume(Double.valueOf(reader.getString("music")));
-        effectPlayer.changeVolume(Double.valueOf(reader.getString("effect")));
+        audioPlayer.setVolume(Double.valueOf(reader.getString("music")));
+        effectPlayer.setVolume(Double.valueOf(reader.getString("effect")));
     }
 
     public static boolean isFullscreen(){
