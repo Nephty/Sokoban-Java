@@ -649,6 +649,7 @@ public class PlayingMenu extends Menu {
             if (plate.getEffect().equals("RickRoll")){
                 this.rickRollImage.setVisible(true);
                 this.beatPlayer.prepareMusic("secret.mp3");
+                this.beatPlayer.play();
             }
         }
     }
