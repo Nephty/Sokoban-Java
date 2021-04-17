@@ -25,7 +25,7 @@ public class MainMenu
     //---------//
 
     private CustomButton playButton, optionsButton, quitButton, achievementsButton, campaignButton, tutorialButton,
-                        freePlayButton;
+                        freePlayButton, randomButton;
     private CustomImage background;
     private static Stage window;
 
@@ -100,10 +100,15 @@ public class MainMenu
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
                 (int) (((ORIGINAL_HEIGHT/2)+15+(96/2))),
                 WR, HR, "achievements button.png");
+        this.randomButton = new CustomButton(
+                (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
+                (int) (((ORIGINAL_HEIGHT/2)+96+25+(96/2))),
+                WR, HR, "options button.png");
 
         this.campaignButton.setVisible(false);
         this.tutorialButton.setVisible(false);
         this.freePlayButton.setVisible(false);
+        this.randomButton.setVisible(false);
     }
 
     /**
@@ -115,12 +120,14 @@ public class MainMenu
                 this.campaignButton.setVisible(true);
                 this.tutorialButton.setVisible(true);
                 this.freePlayButton.setVisible(true);
+                this.randomButton.setVisible(true);
                 playInterface.set(true);
             }
             else {
                 this.campaignButton.setVisible(false);
                 this.tutorialButton.setVisible(false);
                 this.freePlayButton.setVisible(false);
+                this.randomButton.setVisible(false);
                 playInterface.set(false);
             }
         });
@@ -132,6 +139,7 @@ public class MainMenu
                 this.campaignButton.setVisible(false);
                 this.tutorialButton.setVisible(false);
                 this.freePlayButton.setVisible(false);
+                this.randomButton.setVisible(false);
                 this.campaignButton.overlay.setVisible(false);
             }
         });
@@ -143,6 +151,7 @@ public class MainMenu
                 this.campaignButton.setVisible(false);
                 this.tutorialButton.setVisible(false);
                 this.freePlayButton.setVisible(false);
+                this.randomButton.setVisible(false);
                 this.tutorialButton.overlay.setVisible(false);
             }
         });
@@ -154,6 +163,19 @@ public class MainMenu
                 this.campaignButton.setVisible(false);
                 this.tutorialButton.setVisible(false);
                 this.freePlayButton.setVisible(false);
+                this.randomButton.setVisible(false);
+                this.freePlayButton.overlay.setVisible(false);
+            }
+        });
+
+        this.randomButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                window.setFullScreen(fullscreen);
+                playInterface.set(false);
+                this.campaignButton.setVisible(false);
+                this.tutorialButton.setVisible(false);
+                this.freePlayButton.setVisible(false);
+                this.randomButton.setVisible(false);
                 this.freePlayButton.overlay.setVisible(false);
             }
         });
@@ -178,7 +200,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Play" button used to switch to the <code>PlayingMenu</code>.
+     * Return the "Play" button used to show the Playing 
      * @return The "Play" button currently used
      */
     public CustomButton getPlayButton() {
@@ -186,7 +208,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Options" button used to switch to the <code>PlayingMenu</code>.
+     * Return the "Options" button used to switch to the <code>Options</code>.
      * @return The "Options" button currently used
      */
     public CustomButton getOptionsButton() {
@@ -194,7 +216,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Quit" button used to switch to the <code>PlayingMenu</code>.
+     * Return the "Quit" button used to quit
      * @return The "Quit" button currently used
      */
     public CustomButton getQuitButton() {
@@ -202,7 +224,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Achievements" button used to switch to the <code>PlayingMenu</code>.
+     * Return the "Achievements" button used to switch to the <code>Achievements</code>.
      * @return The "Achievements" button currently used
      */
     public CustomButton getAchievementsButton() {
@@ -210,7 +232,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Campaign" button used to switch to the <code>PlayingMenu</code>.
+     * Return the "Campaign" button used to switch to the <code>CampaignSelector</code>.
      * @return The "Campaign" button currently used
      */
     public CustomButton getCampaignButton() {
@@ -218,7 +240,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Tutorial" button used to switch to the <code>PlayingMenu</code>.
+     * Return the "Tutorial" button used to switch to the <code>Tutorial</code>.
      * @return The "Tutorial" button currently used
      */
     public CustomButton getTutorialButton() {
@@ -226,10 +248,18 @@ public class MainMenu
     }
 
     /**
-     * Return the "Freeplay" button used to switch to the <code>PlayingMenu</code>.
+     * Return the "Freeplay" button used to switch to the <code>FreePlaySelector</code>.
      * @return The "Freeplay" button currently used
      */
     public CustomButton getFreePlayButton() {
         return freePlayButton;
+    }
+
+    /**
+     * Return the "Random" button used to switch to the <code>
+     * @return
+     */
+    public CustomButton getRandomButton(){
+        return randomButton;
     }
 }
