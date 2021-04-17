@@ -1,6 +1,7 @@
 import model.Board;
 import model.Direction;
 import model.Fichier;
+import model.LevelSaver;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -70,18 +71,18 @@ class test{
     @Test
     void loadMoves(){
         //Load a .mov file
-        ArrayList<Direction> moves = Fichier.toDirectionList("testMoves.mov", "test");
+        ArrayList<Direction> moves = LevelSaver.getHistory("testMovesSerial.mov", "test");
         Assertions.assertEquals(moves.get(2), Direction.RIGHT);
     }
 
     @Test
     void applyMoves(){
         //apply the .move file to a .xsb file
-        ArrayList<Direction> moves = Fichier.toDirectionList("testMoves.mov", "test");
         ArrayList<String> map = Fichier.loadFile("testMov.xsb", "test");
         ArrayList<String> mapFinal = Fichier.loadFile("testMov_final.xsb", "test");
         Board board = new Board(map);
-        board.applyMoves(moves);
+        ArrayList<Direction> res = LevelSaver.getHistory("testMovesSerial.mov", "test");
+        board.applyMoves(res);
         Board boardFinal = new Board(mapFinal);
         Assertions.assertTrue(board.isEquals(boardFinal));
     }

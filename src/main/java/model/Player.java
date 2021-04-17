@@ -3,8 +3,8 @@ package model;
 public class Player extends Block {
     private boolean isOnGoal;
     private PressurePlate plate;
-    public Player(int x_, int y_,String texture, boolean isOnGoal) {
-        super(x_, y_,texture);
+    public Player(int x_, int y_,String image,String texture, boolean isOnGoal) {
+        super(x_, y_,image,texture);
         this.isOnGoal = isOnGoal;
     }
 
@@ -28,7 +28,7 @@ public class Player extends Block {
         if (nextObj == null) {
             if (this.amIOnGoal()){
                 this.changeGoalValue();
-                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png");
+                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png",".");
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
             } else if (isOnPressurePlate()){

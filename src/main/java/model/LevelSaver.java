@@ -6,12 +6,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class LevelSaver {
-    final String dateTimeFormat = "dd-MM-yyyy @ HH-mm-ss";
-    final String savesPath = "src\\main\\resources\\level\\saves\\";
-    public LevelSaver() {
-    }
+    final static String dateTimeFormat = "dd-MM-yyyy @ HH-mm-ss";
+    final static String savesPath = "src\\main\\resources\\level\\saves\\";
 
-    public void saveLevel(ArrayList<Direction> movesHistory, byte level, String userFileName) throws IOException {
+
+    public static void saveLevel(ArrayList<Direction> movesHistory, byte level, String userFileName) throws IOException {
         String fileName;
         if (userFileName.equals("")) {
             fileName = "level" + (level < 10 ? "0" + level : level);
@@ -35,7 +34,7 @@ public class LevelSaver {
         }
     }
 
-    public void saveLevel(ArrayList<Direction> movesHistory, String fileName) throws IOException {
+    public static void saveLevel(ArrayList<Direction> movesHistory, String fileName) throws IOException {
         File saveFile = new File(savesPath + fileName);
 
         try (FileOutputStream FileOutputStream = new FileOutputStream(savesPath + fileName);
@@ -46,8 +45,14 @@ public class LevelSaver {
         }
     }
 
-    public ArrayList<Direction> getHistory(String fileName) {
-        try (FileInputStream FileInputStream = new FileInputStream(savesPath + fileName);
+    public static ArrayList<Direction> getHistory(String fileName, String origin) {
+        String savePath;
+        if (origin.equals("test")){
+            savePath = "src\\test\\resources\\";
+        }else{
+            savePath = savesPath;
+        }
+        try (FileInputStream FileInputStream = new FileInputStream(savePath + fileName);
              ObjectInputStream ObjectInputStream = new ObjectInputStream(FileInputStream)) {
             return (ArrayList<Direction>) ObjectInputStream.readObject();
         } catch (IOException | ClassNotFoundException exception) {

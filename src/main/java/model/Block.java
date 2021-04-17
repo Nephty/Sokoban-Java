@@ -4,6 +4,7 @@ public class Block {
     private int x;
     private int y;
     private String texture;
+    private String image;
 
     /**
      * Block default constructor
@@ -11,10 +12,11 @@ public class Block {
      * @param y_ The line of the block in the blockList
      * @param texture The file name of the image of the block
      */
-    public Block(int x_, int y_, String texture) {
+    public Block(int x_, int y_, String image, String texture) {
         x = x_;
         y = y_;
         this.texture = texture;
+        this.image = image;
         
     }
 
@@ -66,6 +68,14 @@ public class Block {
      */
     public String getTexture(){
         return texture;
+    }
+
+    /**
+     * Image accessor
+     * @return name of the image of the block
+     */
+    public String getImage(){
+        return image;
     }
 
     /**

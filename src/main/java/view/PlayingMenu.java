@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
+import presenter.Main;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -52,7 +53,6 @@ public class PlayingMenu extends Menu {
     LevelSaver levelSaver = new LevelSaver();
     private StopWatch stopWatch;
 
-
     private byte currentLevel = 6;
     private String currentLevelName = "level06.xsb";
     private int maxWidth, limit, availableSpace, imageLength, remainingSpace, firstPosX;
@@ -86,7 +86,7 @@ public class PlayingMenu extends Menu {
 
         this.effectPlayer = new AudioPlayer("crash.mp3");
 
-        if (Main.fullscreen) {
+        if (Main.isFullscreen()) {
             this.leftMenuImage = new CustomImage(0, 0, WR, HR, "side menu perfect fit.png");
             this.rightMenuImage = new CustomImage(0, 0, WR, HR, "side menu perfect fit.png");
         } else {
@@ -191,6 +191,7 @@ public class PlayingMenu extends Menu {
                     break;
                 default:
                     direction = Direction.NULL;
+                
             }
             applyMove(direction);
         };
@@ -653,7 +654,6 @@ public class PlayingMenu extends Menu {
             }
         }
         if (this.game.getBoard().isWin() && !currentLevelIsWon){
-            //AlertBox.display("Victory !", "You won !");
             youWonText.setVisible(true);
             currentLevelIsWon = true;
             addLevel();

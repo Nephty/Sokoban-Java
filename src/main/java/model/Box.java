@@ -2,8 +2,8 @@ package model;
 
 public class Box extends Block {
     private boolean isOnGoal;
-    public Box(int x_, int y_, String texture, boolean isOnGoal) {
-        super(x_, y_,texture);
+    public Box(int x_, int y_, String image, String texture, boolean isOnGoal) {
+        super(x_, y_,image,texture);
         this.isOnGoal = isOnGoal;
     }
 
@@ -62,7 +62,7 @@ public class Box extends Block {
         if (nextObj == null){
             //if the box is on a Goal
             if (amIOnGoal()){
-                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png");
+                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png",".");
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
                 this.changeGoalValue();
