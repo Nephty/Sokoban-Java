@@ -89,8 +89,8 @@ public class Board {
                         walls.add(newWall);
                         x++;
                         break;
-                    case '^':
-                        plate = new PressurePlate(x,y,"air.png","^","RickRoll");
+                    case '1':
+                        plate = new PressurePlate(x,y,"air.png","1","RickRoll");
                         x++;
                         break;
                     default:
