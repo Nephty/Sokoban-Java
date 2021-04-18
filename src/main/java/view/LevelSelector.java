@@ -1,12 +1,12 @@
 package view;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import java.io.IOException;
-import org.json.simple.parser.ParseException;
+
+import presenter.Main;
 
 public class LevelSelector
         extends Menu {
@@ -265,5 +265,13 @@ public class LevelSelector
      */
     public CustomButton getPlayButton(){
         return playButton;
+    }
+
+    /**
+     * Set the value of the attribute hasSelected to the given boolean
+     * @param value The new value
+     */
+    public void setHasSelected(boolean value) {
+        this.hasSelected = value;
     }
 }
