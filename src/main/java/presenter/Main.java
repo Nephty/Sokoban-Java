@@ -9,15 +9,17 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.*;
-import view.*;
 import org.json.simple.parser.ParseException;
+import view.*;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
 @SuppressWarnings("ALL")
+/**
+ * The <code>Main</code> class is the class that will be executed when running the program.
+ */
 public class Main extends Application {
 
     Stage window;
@@ -25,6 +27,7 @@ public class Main extends Application {
 
     static AudioPlayer audioPlayer;
     static AudioPlayer effectPlayer;
+
 
     static final int windowX = 0;
     static final int windowY = 0;
@@ -36,8 +39,15 @@ public class Main extends Application {
     static float WR, HR;
     static byte RESOLUTION_ID;
 
-    static boolean fullscreen = false;
+    public static boolean fullscreen = false;
 
+    /**
+     * The main method that will be ran when starting the game.
+     * @param primaryStage The window that will contain almost all the content
+     * @throws Exception Any Exception can be thrown during the execution
+     * TODO : try to change "throws Exception" to try/catches and make it so no exception can be thrown, or at least
+     *  the programming errors such as "not finding an image file because the name was not written correctly".
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -49,20 +59,22 @@ public class Main extends Application {
 
         CustomImage background = new CustomImage(windowX, windowY, WR, HR, "background.png");
         MainMenu mainMenu = new MainMenu(mainMenuPanel, windowWidth, windowHeight, WR, HR, window, background);
-        // TODO : move the resolution setup
 
         // Set all buttons & overlays
-
 
         CustomButton backButtonGame = new CustomButton(0, 0, WR, HR, "back button.png");
         CustomButton backButtonAchievements = new CustomButton((int)((windowWidth-480-10)), (int)((windowHeight-96-10)), WR, HR, "back button.png");
 
         // --------------------
 
+
         //MUSIC --------------
 
-        setAudioPlayers();
+       setAudioPlayers();
+
         // --------------------
+
+
         // BUTTONS ACTIONS (SCENE SWITCHERS) ----
 
         mainMenu.getAchievementsButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
@@ -243,7 +255,7 @@ public class Main extends Application {
         // --------------------
 
 
-        //FREE PLAY ------
+        // FREE PLAY ------
         Pane freePlayPanel = new Pane();
         LevelSelector freePlaySelector = new FreePlaySelector(freePlayPanel, windowWidth, windowHeight, WR, HR);
 
@@ -267,12 +279,13 @@ public class Main extends Application {
         PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, audioPlayer, effectPlayer);
 
         playingMenuPanel.getChildren().addAll(
-            playingMenu.getFinalPane()
+                playingMenu.getFinalPane()
         );
 
         playingMenu.getMainMenuButton().overlay.setOnMouseClicked(e -> {
             window.setScene(mainMenu);
             window.setFullScreen(fullscreen);
+            playingMenu.getStopWatch().stop();
         });
 
         campaignSelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
@@ -283,7 +296,7 @@ public class Main extends Application {
                     window.setScene(playingMenu);
                     window.setFullScreen(fullscreen);
                     campaignSelector.getResumeButton().setVisible(true);
-                    campaignSelector.setHasSelected(true);
+                    freePlaySelector.setHasSelected(true);
                 }catch(Exception exc){
                     exc.printStackTrace();
                 }
@@ -294,6 +307,7 @@ public class Main extends Application {
             if (e.getButton() == MouseButton.PRIMARY) {
                 window.setScene(playingMenu);
                 window.setFullScreen(fullscreen);
+                playingMenu.getStopWatch().start();
             }
         });
 
@@ -340,7 +354,7 @@ public class Main extends Application {
                 audioPlayer.prepareMusic(audioPlayer.getFileName());
                 audioPlayer.play();
             }
-         });
+        });
         // --------------------
 
         // TUTORIAl -----------
@@ -381,47 +395,42 @@ public class Main extends Application {
 
         // --------------------
 
-        // TODO : make a border image for full screen and one for not fullscreen
-
         window.setScene(mainMenu);
-
         window.show();
     }
 
     /**
-    * Reads the ID of the selected resolution in the data.json file and returns it.
-     * @return byte The selected ID written in the data.json file
-     * @throws IOException Occurs if the provided file isn't found
-     * @throws ParseException Occurs if the file is not readable
-    */
+     * Read the data.json file and get the resolution ID written in the file.
+     * @return The resolution ID of the selected resolution
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
+     */
     public static byte getResolutionID() throws IOException, ParseException {
         JSONReader JSONDataReader = new JSONReader("data.json");
-        RESOLUTION_ID = JSONDataReader.getByte("resolution");
-        return RESOLUTION_ID;
+        return JSONDataReader.getByte("resolution");
     }
 
-
     /**
-     * Create a dimension object with the screen width and height as parameters and returns it.
-     * @return Dimension Dimension object containing the width and the height of the screen
+     * Use the Toolkit abstract class to get the resolution of the screen as a <code>Dimension</code> object.
+     * @return The resolution of the screen. The first attribute is the width and the second attribute is the height
      */
     public static Dimension getScreenDimension() {
         return java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     }
 
     /**
-     * Computes the width ratio to scale down the images according to the selected resolution.
-     * @param targetWidth The width selected by the user
-     * @return float The ratio between the reference width (1920) and the desired width
+     * Compute the width ratio according to the width of the selected resolution and the reference width.
+     * @param targetWidth The desired width
+     * @return The ratio between the desired width and the reference width
      */
     public static float getWidthRatio(int targetWidth) {
         return (float) targetWidth/ORIGINAL_WIDTH;
     }
 
     /**
-     * Computes the height ratio to scale down the images according to the selected resolution.
-     * @param targetHeight The height selected by the user
-     * @return float The ratio between the reference height (1080) and the desired height
+     * Compute the height ratio according to the height of the selected resolution and the reference height.
+     * @param targetHeight The desired height
+     * @return The ratio between the desired height and the reference height
      */
     public static float getHeightRatio(int targetHeight) {
         return (float) targetHeight/ORIGINAL_HEIGHT;
@@ -432,8 +441,8 @@ public class Main extends Application {
      * variable according to the selected resolution, the width, the height and the position of the window,
      * as well as its title and fullscreen mode.
      * @param window The window that will be prepared
-     * @throws IOException Occurs if the file read for the resolution ID isn't found
-     * @throws ParseException Occurs if the file read for the resolution ID in not readable
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
     public static void prepareResolution(Stage window) throws IOException, ParseException {
         // Available resolutions :
@@ -513,6 +522,10 @@ public class Main extends Application {
         return fullscreen;
     }
 
+    /**
+     * The very first method on the execution pile.
+     * @param args args
+     */
     public static void main(String[] args) {
         if (args != null && args.length != 0) {
             if (args.length != 3){
