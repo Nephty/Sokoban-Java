@@ -1,6 +1,6 @@
 package model;
 
-public class PressurePlate extends Block{
+public class PressurePlate extends Block {
 
     private String effect;
     public PressurePlate(int x_, int y_,String image,String texture, String effect) {

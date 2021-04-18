@@ -76,6 +76,7 @@ public class StopWatch {
      * Restart the timer
      */
     public void restart(){
+        stop();
         elapsedTime = 0;
         minutes = 0;
         hours = 0;

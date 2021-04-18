@@ -17,7 +17,7 @@ public class Block {
         y = y_;
         this.texture = texture;
         this.image = image;
-        
+
     }
 
     /**

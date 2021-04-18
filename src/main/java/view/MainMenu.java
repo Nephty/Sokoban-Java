@@ -99,11 +99,12 @@ public class MainMenu
         this.freePlayButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
                 (int) (((ORIGINAL_HEIGHT/2)+15+(96/2))),
-                WR, HR, "achievements button.png");
+                WR, HR, "freeplay button.png");
+
         this.randomButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
                 (int) (((ORIGINAL_HEIGHT/2)+96+25+(96/2))),
-                WR, HR, "options button.png");
+                WR, HR, "random button.png");
 
         this.campaignButton.setVisible(false);
         this.tutorialButton.setVisible(false);
@@ -139,8 +140,8 @@ public class MainMenu
                 this.campaignButton.setVisible(false);
                 this.tutorialButton.setVisible(false);
                 this.freePlayButton.setVisible(false);
-                this.randomButton.setVisible(false);
                 this.campaignButton.overlay.setVisible(false);
+                this.randomButton.setVisible(false);
             }
         });
 
@@ -152,7 +153,6 @@ public class MainMenu
                 this.tutorialButton.setVisible(false);
                 this.freePlayButton.setVisible(false);
                 this.randomButton.setVisible(false);
-                this.tutorialButton.overlay.setVisible(false);
             }
         });
 
@@ -164,7 +164,6 @@ public class MainMenu
                 this.tutorialButton.setVisible(false);
                 this.freePlayButton.setVisible(false);
                 this.randomButton.setVisible(false);
-                this.freePlayButton.overlay.setVisible(false);
             }
         });
 
@@ -176,7 +175,6 @@ public class MainMenu
                 this.tutorialButton.setVisible(false);
                 this.freePlayButton.setVisible(false);
                 this.randomButton.setVisible(false);
-                this.freePlayButton.overlay.setVisible(false);
             }
         });
     }
@@ -200,7 +198,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Play" button used to show the Playing 
+     * Return the "Play" button used to switch to the <code>PlayingMenu</code>.
      * @return The "Play" button currently used
      */
     public CustomButton getPlayButton() {
@@ -208,7 +206,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Options" button used to switch to the <code>Options</code>.
+     * Return the "Options" button used to switch to the <code>OptionsMenu</code>.
      * @return The "Options" button currently used
      */
     public CustomButton getOptionsButton() {
@@ -216,7 +214,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Quit" button used to quit
+     * Return the "Quit" button used to quit the game
      * @return The "Quit" button currently used
      */
     public CustomButton getQuitButton() {
@@ -224,7 +222,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Achievements" button used to switch to the <code>Achievements</code>.
+     * Return the "Achievements" button used to switch to the <code>AchievementsMenu</code>.
      * @return The "Achievements" button currently used
      */
     public CustomButton getAchievementsButton() {
@@ -256,7 +254,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Random" button used to switch to the <code>
+     * Return the "Random" button used to switch to the <code></code>
      * @return
      */
     public CustomButton getRandomButton(){

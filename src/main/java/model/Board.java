@@ -15,9 +15,16 @@ public class Board {
 
     private PressurePlate plate;
 
+    /**
+     * Creates a new <code>Board</code> objects that has no level.
+     */
     public Board() {
     }
 
+    /**
+     * Creates a new <code>Board</code> object with a starting level.
+     * @param level The level contained in the Board
+     */
     public Board(ArrayList<String> level) {
         this.level = level;
         loadMap(level);
@@ -125,7 +132,7 @@ public class Board {
      */
     private ArrayList<Block> getWorld(){
         ArrayList<Block> world = new ArrayList<>();
-        
+
         world.addAll(walls);
         world.addAll(boxes);
         world.addAll(goals);
@@ -297,5 +304,4 @@ public class Board {
     public Player getPlayer1(){
         return player1;
     }
-
 }

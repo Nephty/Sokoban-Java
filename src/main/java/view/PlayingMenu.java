@@ -13,7 +13,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
-import presenter.Main;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -53,6 +52,7 @@ public class PlayingMenu extends Menu {
     LevelSaver levelSaver = new LevelSaver();
     private StopWatch stopWatch;
 
+
     private byte currentLevel = 6;
     private String currentLevelName = "level06.xsb";
     private int maxWidth, limit, availableSpace, imageLength, remainingSpace, firstPosX;
@@ -77,16 +77,17 @@ public class PlayingMenu extends Menu {
      * @param beatPlayer The <code>AudioPlayer</code> that will play the main theme music
      * @throws IOException Exception thrown when any provided file could not be found
      */
-    public PlayingMenu(Parent parent_, int width_, int height_, float WR_, float HR_, AudioPlayer beatPlayer, AudioPlayer effectPlayer)
+    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, AudioPlayer beatPlayer, AudioPlayer effectPlayer)
             throws IOException {
         super(parent_, width_, height_, WR_, HR_);
         this.leftMenu = new Pane();
         this.rightMenu = new Pane();
         this.beatPlayer = beatPlayer;
+
         this.effectPlayer = effectPlayer;
         this.effectPlayer.prepareMusic("crash.mp3");
 
-        if (Main.isFullscreen()) {
+        if (Main.fullscreen) {
             this.leftMenuImage = new CustomImage(0, 0, WR, HR, "side menu perfect fit.png");
             this.rightMenuImage = new CustomImage(0, 0, WR, HR, "side menu perfect fit.png");
         } else {
@@ -139,15 +140,7 @@ public class PlayingMenu extends Menu {
                     game.setPlayerFacing(direction);
                     break;
                 case R:
-                    game.getBoard().restart();
-                    resetCounters();
-                    try {
-                        updateMapTiles();
-                    } catch (FileNotFoundException fileNotFoundException) {
-                        fileNotFoundException.printStackTrace();
-                    }
-                    this.stopWatch.restart();
-
+                    this.resetCounters();
                     game.setPlayerFacing(Direction.DOWN);
                     direction = Direction.RESTART;
                     break;
@@ -173,7 +166,6 @@ public class PlayingMenu extends Menu {
                     break;
                 default:
                     direction = Direction.NULL;
-                
             }
             applyMove(direction);
         };
@@ -220,7 +212,7 @@ public class PlayingMenu extends Menu {
      * Try to move the player in the given <code>Direction</code>, increase the total moves count if the player was
      * able to move, increase the total pushes count if the player pushed a <code>Box</code> and update the
      * user interface with the new images for the on-going game.
-     * @param direction
+     * @param direction The <code>Direction</code> in which the player tries to move
      */
     private void applyMove(Direction direction) {
         if (direction != Direction.NULL && direction != Direction.RESTART) {
@@ -608,7 +600,6 @@ public class PlayingMenu extends Menu {
         for (int y = 0; y < this.game.getBoard().getLevelHeight(); y++) {
             for (int x = 0; x < blockList[y].length; x++) {
                 Block currentItem = blockList[y][x];
-
                 if (currentItem != null && !(currentItem instanceof Player)) {
                     fileName = currentItem.getImage();
                 } else if (currentItem != null) {  // No need to check if a player because the two possible cases are null or player
@@ -636,6 +627,7 @@ public class PlayingMenu extends Menu {
             }
         }
         if (this.game.getBoard().isWin() && !currentLevelIsWon){
+            //AlertBox.display("Victory !", "You won !");
             youWonText.setVisible(true);
             currentLevelIsWon = true;
             stopWatch.stop();
@@ -711,16 +703,16 @@ public class PlayingMenu extends Menu {
     /**
      * Add one level to the completed level count in the data.json file.
      */
-    private void addLevel(){
-        if (currentLevel != -1){
-            try{
+    private void addLevel() {
+        if (currentLevel != -1) {
+            try {
                 JSONReader reader = new JSONReader("data.json");
                 int currentCompletedLevels = reader.getByte("completed levels");
-                if (currentCompletedLevels == (currentLevel-1)){
+                if (currentCompletedLevels == (currentLevel - 1)) {
                     JSONWriter writer = new JSONWriter("data.json");
-                    writer.set("completed levels", String.valueOf((currentCompletedLevels+1)));
+                    writer.set("completed levels", String.valueOf((currentCompletedLevels + 1)));
                 }
-            } catch (IOException | ParseException exc){
+            } catch (IOException | ParseException exc) {
                 exc.printStackTrace();
             }
         }
@@ -733,19 +725,19 @@ public class PlayingMenu extends Menu {
      */
     public void setLevel(Byte level)
             throws IOException {
-            this.currentLevel = level;
-            this.currentLevelText.setText(String.valueOf(level));
-            if (level > 9){
-                this.currentLevelText.setX((currentLevelPosX-10)*WR);
-            } else {
-                this.currentLevelText.setX(currentLevelPosX*WR);
-            }
-            this.currentLevelIsWon = false;
-            this.loadLevelFileAndInitializeBoard();
-            this.prepareMapSize();
-            this.resetCounters();
-            this.updateMapTiles();
-            stopWatch.restart();
+        this.currentLevel = level;
+        this.currentLevelText.setText(String.valueOf(level));
+        if (level > 9){
+            this.currentLevelText.setX((currentLevelPosX-10)*WR);
+        } else {
+            this.currentLevelText.setX(currentLevelPosX*WR);
+        }
+        this.currentLevelIsWon = false;
+        this.loadLevelFileAndInitializeBoard();
+        this.prepareMapSize();
+        this.resetCounters();
+        this.updateMapTiles();
+        stopWatch.restart();
     }
 
     /**
@@ -754,32 +746,32 @@ public class PlayingMenu extends Menu {
      * @throws IOException Exception thrown when a provided file name doesn't match any file
      */
     public void setLevel(String name)
-            throws IOException{
-            this.currentLevel = -1;
-            this.currentLevelName = name;
-            String[] tmp = name.split(".xsb");
-            String levelName = tmp[0];
-            if (levelName.length() > 7){
-                String tmpName ="";
-                for (int j=0;j<=5;j++){
-                    tmpName += levelName.charAt(j);
-                }
-                tmpName += "...";
-                levelName = tmpName;
+            throws IOException {
+        this.currentLevel = -1;
+        this.currentLevelName = name;
+        String[] tmp = name.split(".xsb");
+        String levelName = tmp[0];
+        if (levelName.length() > 7){
+            String tmpName ="";
+            for (int j=0;j<=5;j++){
+                tmpName += levelName.charAt(j);
             }
-            this.currentLevelText.setX(currentLevelImgContainer.getX() + (currentLevelImgContainer.getWidth()/tmp[0].length()));
-            this.currentLevelText.setText(levelName);
-            this.currentLevelIsWon = false;
-            this.currentLevelString = Fichier.loadFile(currentLevelName, "freePlay");
-            this.game.setBoard(new Board(this.currentLevelString));
-            this.prepareMapSize();
-            this.resetCounters();
-            this.updateMapTiles();
-            stopWatch.restart();
+            tmpName += "...";
+            levelName = tmpName;
+        }
+        this.currentLevelText.setX(currentLevelImgContainer.getX() + (currentLevelImgContainer.getWidth()/tmp[0].length()));
+        this.currentLevelText.setText(levelName);
+        this.currentLevelIsWon = false;
+        this.currentLevelString = Fichier.loadFile(currentLevelName, "freePlay");
+        this.game.setBoard(new Board(this.currentLevelString));
+        this.prepareMapSize();
+        this.resetCounters();
+        this.updateMapTiles();
+        stopWatch.restart();
     }
 
     /**
-     * Change the current level to the random level generated 
+     * Change the current level to the random level generated
      * @param random The <code>ArrayList<String></code> of the level
      * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
@@ -799,7 +791,11 @@ public class PlayingMenu extends Menu {
      * Reset the counters of the amount of moves and pushes.
      */
     private void resetCounters(){
+        game.getBoard().restart();
+        movesHistory = new ArrayList<>();
         this.game.setPlayerFacing(Direction.DOWN);
+        game.setTotalMoves(0);
+        game.setTotalPushes(0);
         this.totalMovesText.setText("0");
         this.totalPushesText.setText("0");
         this.objectivesText.setText(
@@ -814,7 +810,19 @@ public class PlayingMenu extends Menu {
             this.game.addTotalPushesMagnitude((byte) -1);
             this.totalPushesText.setX(this.totalPushesText.getX() + 10);
         }
-        this.game.setTotalMoves(0);
-        this.game.setTotalPushes(0);
+        try {
+            updateMapTiles();
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        }
+        this.stopWatch.restart();
+    }
+
+    /**
+     * Return the currently used <code>StopWatch</code>
+     * @return The currently used <code>StopWatch</code>
+     */
+    public StopWatch getStopWatch() {
+        return this.stopWatch;
     }
 }

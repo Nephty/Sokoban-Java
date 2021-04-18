@@ -14,7 +14,21 @@ public class Achievement {
     AtomicBoolean locked;
     boolean done = false;
 
-    public Achievement(CustomImage image_, CustomImage text_, int posX, int posY, float WR, float HR, GridPane grid) throws FileNotFoundException {
+    /**
+     * Creates an Achievement objects that represent any kind of achievement. The condition to unlock the achievement
+     * must not be specified in the Achievement object but must be written in an if statement that can unlock
+     * the said Achievement.
+     * @param image_ The image of the icon of the Achievement
+     * @param text_ The image of the text box to display
+     * @param posX The X position on the screen
+     * @param posY The Y position on the screen
+     * @param WR The width ratio used to resize the icon according to the resolution
+     * @param HR The height ratio used to resize the icon according to the resolution
+     * @param grid The grid that will contain the components
+     * @throws FileNotFoundException Exception thrown when the icon can not be found
+     */
+    public Achievement(CustomImage image_, CustomImage text_, int posX, int posY, float WR, float HR, GridPane grid)
+            throws FileNotFoundException {
         this.image = image_;
         this.overlay = new CustomImage(0, 0, WR, HR, "achievement overlay.png");
         this.overlayDone = new CustomImage(0, 0, WR, HR, "achievement done overlay.png");
@@ -62,6 +76,9 @@ public class Achievement {
         GridPane.setConstraints(this.text, posX+1, posY);
     }
 
+    /**
+     * Mark the Achievement as completed.
+     */
     public void complete() {
         this.overlayDone.setVisible(true);
     }

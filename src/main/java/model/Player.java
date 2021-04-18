@@ -23,7 +23,7 @@ public class Player extends Block {
      * @return currBoxOnObj because we need to return it to update the counter if it changes
      */
     public int move(int nextX, int nextY, int nextX2, int nextY2, Block[][] blockList,
-                            BooleanCouple returnValue, int currBoxOnObj, int levelHeight, int levelWidth){
+                    BooleanCouple returnValue, int currBoxOnObj, int levelHeight, int levelWidth){
         Block nextObj = blockList[nextY][nextX];
         if (nextObj == null) {
             if (this.amIOnGoal()){
@@ -42,8 +42,8 @@ public class Player extends Block {
                 this.setValues(nextX, nextY);
             }
             returnValue.setA(true);
-            
-        } 
+
+        }
         else if (nextX2 < levelWidth && nextX2 >= 0 && nextY2 < levelHeight && nextY2 >= 0){
             if (nextObj.canPass(blockList[nextY2][nextX2])) {
                 currBoxOnObj = nextObj.push(nextX2, nextY2, blockList, this,returnValue, currBoxOnObj);
