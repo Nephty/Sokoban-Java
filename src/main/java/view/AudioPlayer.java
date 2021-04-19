@@ -22,6 +22,9 @@ public class AudioPlayer {
 
     private final String fileName = "beat.mp3";
 
+    public static final byte MINIMUM_VOLUME = 0;
+    public static final byte MAXIMUM_VOLUME = 1;
+
     /**
      * Create a new <code>AudioPlayer</code> object with the main theme music as default music.
      * Automatically plays the music upon creation.
@@ -74,11 +77,11 @@ public class AudioPlayer {
 
     /**
      * Set the volume of the <code>MediaPlayer</code> in use.
-     * @param volume_ The new volume
+     * @param volume The new volume
      * @throws NumberFormatException Exception thrown when the volume isn't a number between 0 and 1
      */
     public void setVolume(double volume) throws NumberFormatException {
-        if (volume > 1 || volume < 0){
+        if (volume > MAXIMUM_VOLUME || volume < MINIMUM_VOLUME){
             throw new NumberFormatException("Volume must be between 0 and 1");
         }else {
             this.volume = volume;
