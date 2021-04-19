@@ -105,12 +105,9 @@ public class AudioPlayer {
      * Loop the current media
      */
     public void loop(){
-        mediaPlayer.setOnEndOfMedia(new Runnable() {
-            @Override
-            public void run() {
-                mediaPlayer.seek(Duration.ZERO);
-                mediaPlayer.play();
-            }
+        mediaPlayer.setOnEndOfMedia(() -> {
+            mediaPlayer.seek(Duration.ZERO);
+            mediaPlayer.play();
         });
     }
 
@@ -120,5 +117,4 @@ public class AudioPlayer {
     public void stopLoop(){
         mediaPlayer.setOnEndOfMedia(null);
     }
-
 }

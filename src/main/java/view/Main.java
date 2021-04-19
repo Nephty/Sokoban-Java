@@ -1,4 +1,4 @@
-package presenter;
+package view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -10,12 +10,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.*;
 import org.json.simple.parser.ParseException;
-import view.*;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("ALL")
 /**
@@ -26,8 +24,8 @@ public class Main extends Application {
     Stage window;
     Scene achievementsMenu;
 
-    public static AudioPlayer audioPlayer;
-    public static AudioPlayer effectPlayer;
+    static AudioPlayer audioPlayer;
+    static AudioPlayer effectPlayer;
 
 
     static final int windowX = 0;
@@ -40,7 +38,7 @@ public class Main extends Application {
     static float WR, HR;
     static byte RESOLUTION_ID;
 
-    public static boolean fullscreen = false;
+    static boolean fullscreen = false;
 
     /**
      * The main method that will be ran when starting the game.
@@ -107,7 +105,6 @@ public class Main extends Application {
             }
         });
         // --------------------
-
         // --------------------
 
 
@@ -298,7 +295,7 @@ public class Main extends Application {
                     window.setScene(playingMenu);
                     window.setFullScreen(fullscreen);
                     campaignSelector.getResumeButton().setVisible(true);
-                    freePlaySelector.setHasSelected(true);
+                    freePlaySelector.hasSelected = true;
                 }catch(Exception exc){
                     exc.printStackTrace();
                 }
@@ -321,7 +318,7 @@ public class Main extends Application {
                     window.setScene(playingMenu);
                     window.setFullScreen(fullscreen);
                     freePlaySelector.getResumeButton().setVisible(true);
-                    freePlaySelector.setHasSelected(true);
+                    freePlaySelector.hasSelected = true;
                 }catch(Exception exc){
                     exc.printStackTrace();
                 }
@@ -396,8 +393,6 @@ public class Main extends Application {
         });
 
         // --------------------
-
-        Console.prepare();
 
         window.setScene(mainMenu);
         window.show();
@@ -544,11 +539,11 @@ public class Main extends Application {
                 try {
                     Fichier.saveFile(args[2], "freePlay", stringMap);
                     System.exit(0);
-                } catch (IOException e){
+                }catch (IOException e){
                     e.printStackTrace();
                 }
             }
-        } else {
+        }else {
             launch(args);
         }
     }

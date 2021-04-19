@@ -95,8 +95,8 @@ public class Box extends Block {
      * @return Return the image fileName if the box is on a obj or not
      */
     @Override
-    public String getTexture(){
-        String res = super.getTexture();
+    public String getImage(){
+        String res = super.getImage();
         if (amIOnGoal()){
             res = "boxonobjective.png";
         }

@@ -48,6 +48,10 @@ public class OptionsMenu
             throws IOException, ParseException {
         super(parent_, width_, height_, WR, HR, background_);
         this.backButtonOptions = new CustomButton((int)((width_-480-5)), (int)((height_-96-5)), WR, HR, "back button.png");
+        if (!Main.fullscreen) {
+            this.backButtonOptions.setLayoutY(-50);
+            this.backButtonOptions.overlay.setLayoutY(-50);
+        }
         this.background = background_;
         prepareVolume();
         this.setComboBox();
@@ -104,7 +108,7 @@ public class OptionsMenu
     }
 
     /**
-     * Set the Label and the TextField for the MusicVolume
+     * Set the <code>Label</code> and the <code>TextField</code> for the <code>MusicVolume</code>
      */
     private void setMusicVolume(){
         Label musicLabel = new Label("Music (0-1) :");
@@ -125,7 +129,7 @@ public class OptionsMenu
     }
 
     /**
-     * Set the Label and the TextField for the EffectVolume
+     * Set the <code>Label</code> and the <code>TextField</code> for the <code>EffectVolume</code>
      */
     private void setEffectVolume(){
         Label effectLabel = new Label("Sound effect (0-1) :");
@@ -146,8 +150,8 @@ public class OptionsMenu
     }
 
     /**
-     * Resolution HBox accessor
-     * @return The Resolution HBox with the Label and the ComboBox
+     * Return the resolution of the <code>HBox</code>
+     * @return The Resolution <code>HBox</code> containing the <code>Label</code> and the <code>ComboBox</code>
      */
     public HBox getResolution(){
         return resolution;
@@ -162,8 +166,8 @@ public class OptionsMenu
     }
 
     /**
-     * EffectVolume HBox accessor
-     * @return The EffectVolume HBox with the label and the TextField
+     * EffectVolume <code>HBox</code> accessor
+     * @return The EffectVolume <code>HBox</code> with the <code>Label</code> and the <code>TextField</code>
      */
     public HBox getEffectVolume(){
         return effectVolume;
@@ -171,7 +175,7 @@ public class OptionsMenu
 
     /**
      * MusicField accessor
-     * @return The MusicField TextField to get the input of the User
+     * @return The MusicField <code>TextField</code> to get the input of the user
      */
     public TextField getMusicField(){
         return musicField;
@@ -179,7 +183,7 @@ public class OptionsMenu
 
     /**
      * EffectField accessor
-     * @return The MusicField TextField to get the input of the User
+     * @return The MusicField <code>TextField</code> to get the input of the user
      */
     public TextField getEffectField(){
         return effectField;

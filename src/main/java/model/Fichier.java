@@ -39,7 +39,7 @@ public class Fichier {
      * @param levelName Le nom du fichier dans lequel en sauvegarde.
      * @param _def Si le fichier doit etre un fichier "move" ou un fichier "save" ou juste un fichier "" (niveau).
      * @param content Le contenu a sauvegarder dans le fichier.
-     * @throws IOException File not found.
+     * @throws IOException Exception thrown when the given file could not be found
      */
     public static void saveFile(String levelName, String _def, ArrayList<String> content) throws IOException {
         // Donne le repertoire courant.
@@ -63,6 +63,7 @@ public class Fichier {
     }
 
     /**
+     * TODO /!\ A finaliser /!\   isFile() & isDirectory()
      * Donne sous forme d'un tableau, les niveaux presents dans un fichier.
      * @param dir The directory where we want to make the list
      * @return Un tableau avec le nom des niveaux.
@@ -79,12 +80,13 @@ public class Fichier {
      * @param dir The directory where we want to count
      * @return Le nombre de niveaux dans un fichier
      */
-    public static int howManyLevel(String dir){
+    public static int howManyLevel(String dir) {
         String[] list = levelList(dir);
         return list.length;
     }
 
     /**
+     * /!\ A finaliser /!\   isFile() & isDirectory()
      * Donne sous forme d'un tableau, les niveaux presents dans un fichier.
      * @return Un tableau avec le nom des niveaux.
      */
@@ -121,14 +123,16 @@ public class Fichier {
      */
     public static String directory(String levelName, String _def) {
         String directory = directory();
-        if (_def.equals("campaign")){
-            directory = directory.concat("main\\resources\\level\\campaign\\"+levelName);
-        }else if (_def.equals("test")){
-            directory = directory.concat("test\\resources\\"+levelName);
-        }else if (_def.equals("freePlay")) {
-            directory = directory.concat("main\\resources\\level\\freePlay\\"+levelName);
-        } else{
-            directory = directory.concat("main\\resources\\level\\campaign\\"+levelName);
+        if (_def.equals("moves")) {
+            directory = directory.concat("main\\resources\\level\\moves\\" + levelName);
+        } else if (_def.equals("campaign")) {
+            directory = directory.concat("main\\resources\\level\\campaign\\" + levelName);
+        } else if (_def.equals("test")) {
+            directory = directory.concat("test\\resources\\" + levelName);
+        } else if (_def.equals("freePlay")) {
+            directory = directory.concat("main\\resources\\level\\freePlay\\" + levelName);
+        } else {
+            directory = directory.concat("main\\resources\\level\\campaign\\" + levelName);
         }
         return directory;
     }
