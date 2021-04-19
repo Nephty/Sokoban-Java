@@ -125,18 +125,14 @@ public class Fichier {
         String directory = directory();
         if (_def.equals("moves")) {
             directory = directory.concat("main\\resources\\level\\moves\\" + levelName);
-        } else if (_def.equals("console")) {
-            directory = directory.concat("main\\resources\\level\\save_console\\" + levelName);
         } else if (_def.equals("campaign")) {
-            if (_def.equals("campaign")) {
-                directory = directory.concat("main\\resources\\level\\campaign\\" + levelName);
-            } else if (_def.equals("test")) {
-                directory = directory.concat("test\\resources\\" + levelName);
-            } else if (_def.equals("freePlay")) {
-                directory = directory.concat("main\\resources\\level\\freePlay\\" + levelName);
-            } else {
-                directory = directory.concat("main\\resources\\level\\campaign\\" + levelName);
-            }
+            directory = directory.concat("main\\resources\\level\\campaign\\" + levelName);
+        } else if (_def.equals("test")) {
+            directory = directory.concat("test\\resources\\" + levelName);
+        } else if (_def.equals("freePlay")) {
+            directory = directory.concat("main\\resources\\level\\freePlay\\" + levelName);
+        } else {
+            directory = directory.concat("main\\resources\\level\\campaign\\" + levelName);
         }
         return directory;
     }
