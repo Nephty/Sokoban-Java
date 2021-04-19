@@ -94,13 +94,12 @@ public class MainMenu
                 WR, HR, "campaign button.png");
         this.tutorialButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
-                (int) (((ORIGINAL_HEIGHT/2)-96+5+(96/2))),
+                (int) (((ORIGINAL_HEIGHT/2)+15+(96/2))),
                 WR, HR, "tutorial button.png");
         this.freePlayButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
-                (int) (((ORIGINAL_HEIGHT/2)+15+(96/2))),
+                (int) (((ORIGINAL_HEIGHT/2)-96+5+(96/2))),
                 WR, HR, "freeplay button.png");
-
         this.randomButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
                 (int) (((ORIGINAL_HEIGHT/2)+96+25+(96/2))),
