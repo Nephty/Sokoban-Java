@@ -1,4 +1,4 @@
-package  model;
+package model;
 
 import java.io.*;
 import java.nio.file.*;
@@ -63,7 +63,7 @@ public class Fichier {
     }
 
     /**
-     * TODO /!\ A finaliser /!\   isFile() & isDirectory()
+     * TODO /!\ A finaliser /!\   isFile() et isDirectory()
      * Donne sous forme d'un tableau, les niveaux presents dans un fichier.
      * @param dir The directory where we want to make the list
      * @return Un tableau avec le nom des niveaux.
@@ -86,7 +86,7 @@ public class Fichier {
     }
 
     /**
-     * /!\ A finaliser /!\   isFile() & isDirectory()
+     * /!\ A finaliser /!\   isFile() et isDirectory()
      * Donne sous forme d'un tableau, les niveaux presents dans un fichier.
      * @return Un tableau avec le nom des niveaux.
      */
