@@ -15,6 +15,7 @@ import view.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("ALL")
 /**
@@ -25,8 +26,8 @@ public class Main extends Application {
     Stage window;
     Scene achievementsMenu;
 
-    static AudioPlayer audioPlayer;
-    static AudioPlayer effectPlayer;
+    public static AudioPlayer audioPlayer;
+    public static AudioPlayer effectPlayer;
 
 
     static final int windowX = 0;
@@ -106,6 +107,7 @@ public class Main extends Application {
             }
         });
         // --------------------
+
         // --------------------
 
 
@@ -395,6 +397,8 @@ public class Main extends Application {
 
         // --------------------
 
+        Console.prepare();
+
         window.setScene(mainMenu);
         window.show();
     }
@@ -540,11 +544,11 @@ public class Main extends Application {
                 try {
                     Fichier.saveFile(args[2], "freePlay", stringMap);
                     System.exit(0);
-                }catch (IOException e){
+                } catch (IOException e){
                     e.printStackTrace();
                 }
             }
-        }else {
+        } else {
             launch(args);
         }
     }
