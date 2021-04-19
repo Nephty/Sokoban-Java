@@ -781,7 +781,7 @@ public class PlayingMenu extends Menu {
 
     /**
      * Change the current level to the random level generated
-     * @param random The <code>ArrayList<String></code> of the level
+     * @param random The <code>ArrayList(String)</code> of the level
      * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
     public void setLevel(ArrayList<String> random) throws FileNotFoundException{

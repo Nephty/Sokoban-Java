@@ -74,8 +74,8 @@ public class Tutorial extends Menu {
      * @throws FileNotFoundException Exception thrown when a specified file could not be found
      */
     public void prepareArrowButtons() throws FileNotFoundException {
-        this.leftArrow = new CustomImage(100, 880, this.WR, this.HR, "temp arrow left.png");
-        this.rightArrow = new CustomImage(1720, 880, this.WR, this.HR, "temp arrow right.png");
+        this.leftArrow = new CustomImage(100, 880, this.WR, this.HR, "left arrow.png");
+        this.rightArrow = new CustomImage(1720, 880, this.WR, this.HR, "right arrow.png");
         this.leftArrow.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 this.images.get(this.currentImage).setVisible(false);

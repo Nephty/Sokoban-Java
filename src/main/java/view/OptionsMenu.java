@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 import model.JSONReader;
 import model.JSONWriter;
 import org.json.simple.parser.ParseException;
+import presenter.Main;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,7 +33,7 @@ public class OptionsMenu
     private TextField effectField;
 
     /**
-     * Create a new <code>OptionsMenu</code> and pepare the attributes and the resolution list & choice.
+     * Create a new <code>OptionsMenu</code> and pepare the attributes and the resolution list and choice.
      * @param parent_ The main <code>Pane</code> that we will be using to store the content. This pane should (but it's not
      *                mandatory) be the size of the window in order to be able to display content anywhere on
      *                the said window.
