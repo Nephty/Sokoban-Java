@@ -14,7 +14,7 @@ public class LevelSelector
 	protected Pane middleMenu, rightMenu, levelViewer, selectedLevelViewer;
 	protected CustomImage middleMenuBackground, rightMenuImage;
     protected int completedLevels;
-    protected  byte page=0;
+    protected byte page=0;
     protected CustomButton backButton, resumeButton, playButton, nextPageButton, previousPageButton;
     protected boolean hasSelected = false;
 
@@ -41,8 +41,8 @@ public class LevelSelector
             this.rightMenuImage = new CustomImage(0,0,WR,HR,"right side menu.png");
         }
 
-        this.nextPageButton = new CustomButton(75,(int)height_-100, WR, HR, "pushes.png");
-        this.previousPageButton = new CustomButton(75, (int)height_-150, WR, HR, "restart.png");
+        this.nextPageButton = new CustomButton(75,(int)height_-100, WR, HR, "right arrow.png");
+        this.previousPageButton = new CustomButton(75, (int)height_-150, WR, HR, "left arrow.png");
         nextPageButton.setVisible(false);
         previousPageButton.setVisible(false);
         prepareNextPageButton();
