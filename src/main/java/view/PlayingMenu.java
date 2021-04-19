@@ -3,7 +3,6 @@ package view;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -11,13 +10,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import model.*;
 
 import java.io.*;
 import java.util.ArrayList;
 
 import org.json.simple.parser.ParseException;
+import presenter.Main;
 
 /**
  * A <code>PlayingMenu</code> is a user interface used when the user is playing. It displays the total amount of moves
@@ -162,6 +161,16 @@ public class PlayingMenu extends Menu {
                         applyMove(dir);
                         System.out.println("applied : " + dir);
                     }
+                    direction = Direction.NULL;
+                    break;
+                case K:
+                    Console.open();
+                    System.out.println("opened");
+                    direction = Direction.NULL;
+                    break;
+                case L:
+                    Console.close();
+                    System.out.println("closed");
                     direction = Direction.NULL;
                     break;
                 default:
