@@ -1,8 +1,17 @@
 package model;
 
+
 public class Player extends Block {
     private boolean isOnGoal;
     private PressurePlate plate;
+    /**
+     * <code>Player</code> constructor
+     * @param x_ The row of the Player in the blockList
+     * @param y_ The line of the Player in the blockList
+     * @param image The name of the image of the Player
+     * @param texture The texture of the Player (Texture : @ | +)
+     * @param isOnGoal Is the Player is on a goal.
+     */
     public Player(int x_, int y_,String image,String texture, boolean isOnGoal) {
         super(x_, y_,image,texture);
         this.isOnGoal = isOnGoal;
@@ -58,7 +67,7 @@ public class Player extends Block {
     }
 
     /**
-     * @return (boolean) True if the Player is on a Goal.
+     * @return True if the Player is on a Goal.
      */
     @Override
     public boolean amIOnGoal(){

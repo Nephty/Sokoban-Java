@@ -82,7 +82,7 @@ public class AudioPlayer {
      */
     public void setVolume(double volume) throws NumberFormatException {
         if (volume > MAXIMUM_VOLUME || volume < MINIMUM_VOLUME){
-            throw new NumberFormatException("Volume must be between 0 and 1");
+            throw new NumberFormatException("Volume must be between 0 and 1 not " + volume);
         }else {
             this.volume = volume;
             if (mediaPlayer != null){

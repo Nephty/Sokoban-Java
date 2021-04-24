@@ -2,6 +2,15 @@ package model;
 
 public class Box extends Block {
     private boolean isOnGoal;
+
+    /**
+     * Box constructor
+     * @param x_ The row of the block in the blockList
+     * @param y_ The line of the block in the blockList
+     * @param image The name of the image of the block
+     * @param texture The texture of the block (Texture : $)
+     * @param isOnGoal Is the Box is on a goal.
+     */
     public Box(int x_, int y_, String image, String texture, boolean isOnGoal) {
         super(x_, y_,image,texture);
         this.isOnGoal = isOnGoal;
@@ -35,7 +44,7 @@ public class Box extends Block {
     }
 
     /**
-     * Change the value of isOnGoal
+     * Change the value of isOnGoal.
      */
     public void changeGoalValue(){
         if (isOnGoal == true){

@@ -4,11 +4,15 @@ import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.json.simple.parser.ParseException;
 import presenter.Main;
 
-public class LevelSelector
+public abstract class LevelSelector
         extends Menu {
 
 	protected Pane middleMenu, rightMenu, levelViewer, selectedLevelViewer;
@@ -29,9 +33,10 @@ public class LevelSelector
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
      * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
     public LevelSelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException {
+            throws IOException, ParseException {
         super(parent_, width_, height_, WR, HR);
 
         this.rightMenu = new Pane();
@@ -116,17 +121,13 @@ public class LevelSelector
      * Create the button for the level selection.
      * Read the completed levels in the data.json file and create the good number of buttons.
      */
-    public void setSelectors(){
-        try {
-            middleMenu.getChildren().removeAll(middleMenu.getChildren());
-            this.middleMenuBackground = new CustomButton(0, 0, WR, HR, "background empty.png");
-            this.middleMenu.getChildren().add(this.middleMenuBackground);
-            middleMenu.getChildren().addAll(resumeButton, resumeButton.overlay,
-                    playButton, playButton.overlay,
-                    backButton, backButton.overlay);
-        } catch (IOException exc){
-            exc.printStackTrace();
-        }
+    public void setSelectors() throws IOException, ParseException {
+        middleMenu.getChildren().removeAll(middleMenu.getChildren());
+        this.middleMenuBackground = new CustomButton(0, 0, WR, HR, "background empty.png");
+        this.middleMenu.getChildren().add(this.middleMenuBackground);
+        middleMenu.getChildren().addAll(resumeButton, resumeButton.overlay,
+                playButton, playButton.overlay,
+                backButton, backButton.overlay);
     }
 
     /**
@@ -134,10 +135,14 @@ public class LevelSelector
      */
     private void prepareNextPageButton(){
         this.nextPageButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-            page++;
-            nextPageButton.setVisible(false);
-            previousPageButton.setVisible(true);
-            this.setSelectors();
+            try {
+                page++;
+                nextPageButton.setVisible(false);
+                previousPageButton.setVisible(true);
+                this.setSelectors();
+            } catch (IOException | ParseException exc){
+                AlertBox.display("Error", exc.getMessage());
+            }
         });
     }
 
@@ -146,10 +151,14 @@ public class LevelSelector
      */
     private void preparePreviousPageButton(){
         previousPageButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-            page--;
-            nextPageButton.setVisible(true);
-            previousPageButton.setVisible(false);
-            this.setSelectors();
+            try {
+                page--;
+                nextPageButton.setVisible(true);
+                previousPageButton.setVisible(false);
+                this.setSelectors();
+            } catch (IOException | ParseException exc){
+                AlertBox.display("Error", exc.getMessage());
+            }
         });
     }
 

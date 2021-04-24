@@ -9,6 +9,7 @@ import javafx.scene.text.Text;
 import model.Fichier;
 import org.json.simple.parser.ParseException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -34,79 +35,76 @@ public class FreePlaySelector extends LevelSelector{
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
      * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
     public FreePlaySelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException {
+            throws IOException, ParseException {
         super(parent_, width_, height_, WR, HR);
     }
 
 
     /**
      * Create the  buttons for the level selection.
-     * Read the completed levels in the data.json file and create the correct amount of buttons.
+     * Read the .xsb files in the freePlay folder and displays it
      */
     @Override
-    public void setSelectors() {
+    public void setSelectors() throws IOException, ParseException {
         super.setSelectors();
-        try {
-            String[] files = Fichier.levelList("main\\resources\\level\\freePlay\\");
-            int xScale = 0;
-            int yScale = 0;
-            int nbrFiles = files.length;
-            for (int i=0; i< (nbrFiles - (page*36)); i++){
-                if (i > 35){
-                    this.nextPageButton.setVisible(true);
-                    break;
-                }
-                String level = files[i+(page*36)];
-                String[] tmp = level.split(".xsb");
-                String levelName = tmp[0];
-                CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level_box.png");
-                this.middleMenu.getChildren().addAll(tmpButton);
-
-                selectLevel(tmpButton, level);
-
-                Text nbr;
-                if (i < 9) {
-                    nbr = new Text(tmpButton.getX() + 35 * WR, tmpButton.getY() + 65 * WR, Integer.toString(i+1));
-                } else {
-                    nbr = new Text(tmpButton.getX() + 25 * WR, tmpButton.getY() + 65 * WR, Integer.toString(i+1));
-                }
-                nbr.maxWidth(tmpButton.getWidth());
-                nbr.maxHeight(tmpButton.getHeight());
-                nbr.setFont(new Font("Microsoft YaHei", 40 * WR));
-                nbr.setFill(Color.rgb(88, 38, 24));
-                selectLevel(nbr,level);
-                this.middleMenu.getChildren().add(nbr);
-
-                if (levelName.length() > 5){
-                    String tmpName ="";
-                    for (int j=0;j<=5;j++){
-                        tmpName += levelName.charAt(j);
-                    }
-                    tmpName += "...";
-                    levelName = tmpName;
-                }
-                int length = levelName.length();
-                if (length == 1) {
-                    length++;
-                }
-                Text name = new Text(tmpButton.getX() -8 + (tmpButton.getWidth() /length), tmpButton.getY() -10*WR, levelName);
-                name.maxWidth(tmpButton.getWidth());
-                name.maxHeight(tmpButton.getHeight());
-                name.setFont(new Font("Microsoft YaHei", 25 * WR));
-                name.setFill(Color.rgb(88, 38, 24));
-                selectLevel(name,level);
-                this.middleMenu.getChildren().add(name);
-
-                xScale++;
-                if (xScale > 8) {
-                    yScale++;
-                    xScale = 0;
-                }
+        String[] files = Fichier.levelList("main\\resources\\level\\freePlay\\");
+        int xScale = 0;
+        int yScale = 0;
+        int nbrFiles = files.length;
+        for (int i=0; i< (nbrFiles - (page*36)); i++){
+            if (i > 35){
+                this.nextPageButton.setVisible(true);
+                break;
             }
-        } catch (IOException exc){
-            exc.printStackTrace();
+            String level = files[i+(page*36)];
+            String[] tmp = level.split(".xsb");
+            String levelName = tmp[0];
+            CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level_box.png");
+            this.middleMenu.getChildren().addAll(tmpButton);
+
+            selectLevel(tmpButton, level);
+
+            Text nbr;
+            if (i < 9) {
+                nbr = new Text(tmpButton.getX() + 35 * WR, tmpButton.getY() + 65 * WR, Integer.toString(i+1));
+            } else {
+                nbr = new Text(tmpButton.getX() + 25 * WR, tmpButton.getY() + 65 * WR, Integer.toString(i+1));
+            }
+            nbr.maxWidth(tmpButton.getWidth());
+            nbr.maxHeight(tmpButton.getHeight());
+            nbr.setFont(new Font("Microsoft YaHei", 40 * WR));
+            nbr.setFill(Color.rgb(88, 38, 24));
+            selectLevel(nbr,level);
+            this.middleMenu.getChildren().add(nbr);
+
+            if (levelName.length() > 5){
+                String tmpName ="";
+                for (int j=0;j<=5;j++){
+                    tmpName += levelName.charAt(j);
+                }
+                tmpName += "...";
+                levelName = tmpName;
+            }
+            int length = levelName.length();
+            if (length == 1) {
+                length++;
+            }
+            Text name = new Text(tmpButton.getX() -8 + (tmpButton.getWidth() /length), tmpButton.getY() -10*WR, levelName);
+            name.maxWidth(tmpButton.getWidth());
+            name.maxHeight(tmpButton.getHeight());
+            name.setFont(new Font("Microsoft YaHei", 25 * WR));
+            name.setFill(Color.rgb(88, 38, 24));
+            selectLevel(name,level);
+            this.middleMenu.getChildren().add(name);
+
+            xScale++;
+            if (xScale > 8) {
+                yScale++;
+                xScale = 0;
+                }
         }
     }
 

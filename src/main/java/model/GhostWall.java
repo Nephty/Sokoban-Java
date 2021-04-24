@@ -1,14 +1,25 @@
 package model;
 
 
+/**
+ * The <code>GhostWall</code> is a block which has the same image than a wall but the player can move towards it.
+ * It's used for the EasterEggs.
+ */
 public class GhostWall extends Wall{
 
+    /**
+     * <code>GhostWall</code> constructor
+     * @param x_ The row of the block in the blockList
+     * @param y_ The line of the block in the blockList
+     * @param image The name of the image of the <code>GhostWall</code>
+     * @param texture The texture of the <Code>GhostWall</Code> (Texture : =)
+     */
     public GhostWall(int x_, int y_,String image,String texture) {
         super(x_, y_,image, texture);
     }
 
     /**
-     * @return (boolean) Always True
+     * @return Always True
      */
     @Override
     public boolean canPass(){

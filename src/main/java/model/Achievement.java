@@ -83,9 +83,4 @@ public class Achievement {
         this.overlayDone.setVisible(true);
     }
 
-    /*
-    public void onCompletion(EventHandler<? super MouseEvent> eventHandler) {
-        String
-    }
-     */
 }
