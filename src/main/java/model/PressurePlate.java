@@ -1,15 +1,28 @@
 package model;
 
+/**
+ * The <code>Pressure Plate</code> is a special Block of the game. It starts a new event when the player walk on it
+ * Used for the EasterEggs.
+ */
 public class PressurePlate extends Block {
 
     private String effect;
+
+    /**
+     * <code>PressurePlate</code> constructor
+     * @param x_ The row of the <code>PressurePlate</code>
+     * @param y_ The line of the <code>PressurePlate</code>
+     * @param image The name of the image of the <code>PressurePlate</code>
+     * @param texture The Texture of the PressurePlate (Texture depends on the effect)
+     * @param effect The name of the effect which starts when the player walks on the PressurePlate
+     */
     public PressurePlate(int x_, int y_,String image,String texture, String effect) {
         super(x_, y_, image,texture);
         this.effect = effect;
     }
 
     /**
-     * @return (boolean) Always True
+     * @return Always True
      */
     @Override
     public boolean canPass(){

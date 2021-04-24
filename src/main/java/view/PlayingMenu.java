@@ -149,17 +149,23 @@ public class PlayingMenu extends Menu {
                                 "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
                                 "File name..."));
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        AlertBox.display("Error", "An error occurred while trying to save the level");
                     }
                     direction = Direction.NULL;
                     break;
                 case G:
                     // TODO : what's taking so long to apply a lot of moves (200+ for example) ?
                     String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
-                    ArrayList<Direction> res = levelSaver.getHistory(fileName, "");  // will never throw errors so no need to make a try/catch
-                    for (Direction dir : res) {
-                        applyMove(dir);
-                        System.out.println("applied : " + dir);
+                    if (fileName != null && !fileName.equals("")) {
+                        try {
+                            ArrayList<Direction> res = levelSaver.getHistory(fileName, "");
+                            for (Direction dir : res) {
+                                applyMove(dir);
+                                System.out.println("applied : " + dir);
+                            }
+                        } catch (IOException | ClassNotFoundException exception){
+                            AlertBox.display("Error", "Error : "+exception.getMessage());
+                        }
                     }
                     direction = Direction.NULL;
                     break;
@@ -250,7 +256,8 @@ public class PlayingMenu extends Menu {
                 try {
                     updateMapTiles();
                 } catch (FileNotFoundException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
+                    AlertBox.display("Fatal Error", fileNotFoundException.getMessage());
+                    System.exit(-1);
                 }
             }else{
                 effectPlayer.getMediaPlayer().play();
@@ -314,7 +321,7 @@ public class PlayingMenu extends Menu {
     /**
      * Load the file corresponding to the selected level and set the new <code>Board</code> for the <code>Game</code>.
      */
-    private void loadLevelFileAndInitializeBoard() {
+    private void loadLevelFileAndInitializeBoard() throws IOException{
         String levelFileName = "level";
         if (this.currentLevel < 10) {
             levelFileName += "0";
@@ -457,7 +464,8 @@ public class PlayingMenu extends Menu {
                 try {
                     this.updateMapTiles();
                 } catch (FileNotFoundException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
+                    AlertBox.display("Fatal Error", fileNotFoundException.getMessage());
+                    System.exit(-1);
                 }
                 this.stopWatch.restart();
             }
@@ -722,7 +730,7 @@ public class PlayingMenu extends Menu {
                     writer.set("completed levels", String.valueOf((currentCompletedLevels + 1)));
                 }
             } catch (IOException | ParseException exc) {
-                exc.printStackTrace();
+                AlertBox.display("Error", "Error while trying to edit completed levels\n"+exc.getMessage());
             }
         }
     }
@@ -784,7 +792,7 @@ public class PlayingMenu extends Menu {
      * @param random The <code>ArrayList(String)</code> of the level
      * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    public void setLevel(ArrayList<String> random) throws FileNotFoundException{
+    public void setLevel(ArrayList<String> random) throws IOException{
         this.currentLevel = -1;
         this.currentLevelString = random;
         this.currentLevelText.setX(currentLevelImgContainer.getX()+20*WR);
@@ -822,7 +830,8 @@ public class PlayingMenu extends Menu {
         try {
             updateMapTiles();
         } catch (FileNotFoundException fileNotFoundException) {
-            fileNotFoundException.printStackTrace();
+            AlertBox.display("Fatal Error", fileNotFoundException.getMessage());
+            System.exit(-1);
         }
         this.stopWatch.restart();
     }

@@ -10,6 +10,14 @@ public class LevelSaver {
     final static String savesPath = "src\\main\\resources\\level\\saves\\";
 
 
+    /**
+     * Use the serialization to save the <code>movesHistory</code> in a file.
+     * If the player leaves the name empty, we create a name for the file based on the date when he saves it.
+     * @param movesHistory The ArrayList with all the Direction the player made before he saved the game.
+     * @param level The level where we're saving the moves.
+     * @param userFileName The name the player gave for the save file
+     * @throws IOException Exception thrown when a error occurred while saving the level.
+     */
     public static void saveLevel(ArrayList<Direction> movesHistory, byte level, String userFileName) throws IOException {
         String fileName;
         if (userFileName.equals("")) {
@@ -26,26 +34,30 @@ public class LevelSaver {
             }
         }
 
-        try (FileOutputStream FileOutputStream = new FileOutputStream(savesPath + fileName);
-             ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(FileOutputStream)) {
-            ObjectOutputStream.writeObject(movesHistory);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        FileOutputStream FileOutputStream = new FileOutputStream(savesPath + fileName);
+        ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(FileOutputStream);
+        ObjectOutputStream.writeObject(movesHistory);
+
     }
 
     public static void saveLevel(ArrayList<Direction> movesHistory, String fileName) throws IOException {
         File saveFile = new File(savesPath + fileName);
 
-        try (FileOutputStream FileOutputStream = new FileOutputStream(savesPath + fileName);
-             ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(FileOutputStream)) {
-            ObjectOutputStream.writeObject(movesHistory);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        FileOutputStream FileOutputStream = new FileOutputStream(savesPath + fileName);
+        ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(FileOutputStream);
+        ObjectOutputStream.writeObject(movesHistory);
     }
 
-    public static ArrayList<Direction> getHistory(String fileName, String origin) {
+    /**
+     * Read the contend of the a .mov file saved with the serialization
+     * @param fileName The name of the file
+     * @param origin The directory where we want to read the file.
+     *               Only used if the we want to used it for the test, otherwise it reads in the saves folder
+     * @throws IOException Exception thrown when there's an error while reading the file
+     * @throws ClassNotFoundException Class of a serialized object cannot be found.
+     * @return An arrayList of Direction read in the file
+     */
+    public static ArrayList<Direction> getHistory(String fileName, String origin) throws IOException, ClassNotFoundException{
         String savePath;
         if (origin.equals("test")){
             savePath = "src\\test\\resources\\";
@@ -55,9 +67,11 @@ public class LevelSaver {
         try (FileInputStream FileInputStream = new FileInputStream(savePath + fileName);
              ObjectInputStream ObjectInputStream = new ObjectInputStream(FileInputStream)) {
             return (ArrayList<Direction>) ObjectInputStream.readObject();
-        } catch (IOException | ClassNotFoundException exception) {
-            exception.printStackTrace();
+        } catch (ClassNotFoundException e1){
+            throw new ClassNotFoundException("A serialized object cannot be found");
         }
-        return new ArrayList<>();
+        catch (IOException exception) {
+            throw new IOException("The object in the .mov file isn't in the good format");
+        }
     }
 }

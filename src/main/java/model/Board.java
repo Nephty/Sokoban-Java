@@ -25,16 +25,16 @@ public class Board {
      * Creates a new <code>Board</code> object with a starting level.
      * @param level The level contained in the Board
      */
-    public Board(ArrayList<String> level) {
+    public Board(ArrayList<String> level) throws IllegalArgumentException{
         this.level = level;
         loadMap(level);
         setBlockList();
     }
     /**
      * Read the String level and create the Arraylists of the walls/boxes and goals
-     * @param level
+     * @param level The level contained in the Board
      */
-    private void  loadMap(ArrayList<String> level){
+    private void  loadMap(ArrayList<String> level) throws IllegalArgumentException{
         walls = new ArrayList<>();
         boxes = new ArrayList<>();
         goals = new ArrayList<>();
@@ -101,14 +101,15 @@ public class Board {
                         x++;
                         break;
                     default:
-                        throw new IllegalArgumentException("Le contenu du fichier n'est pas compatible");
+                        throw new IllegalArgumentException(item + " isn't a supported character.\nPlease read the " +
+                                "game documentation to know the supported characters");
                 }
             }
         }
         this.levelHeight = y+1;
     }
     /**
-     * Create a 2D table y x with all the items of the game
+     * Create a 2D table with all the items of the game
      */
     private void setBlockList(){
         ArrayList<Block> world = getWorld();
@@ -119,8 +120,8 @@ public class Board {
     }
 
     /**
-     * Return the current BlockList of the game.
-     * @return current blocklist (Block[][])
+     * Return the current <code>blockList</code> of the game.
+     * @return current 2D table
     */
     public Block[][] getBlockList(){
         return blockList;
@@ -161,17 +162,17 @@ public class Board {
     }
 
     /**
-     * Check if the all the boxes are on an goal AND if all the boxes are placed.
-     * @return True if the game is won, false if not.
+     * Check if the all the boxes are on an goal.
+     * @return True if the game is won
      */
     public boolean isWin(){
         return currBoxOnObj == boxes.size();
     }
 
-    public ArrayList<Goal> getGoals() {
-        return goals;
-    }
-
+    /**
+     * Boxes arrayList accessor
+     * @return An arrayList with all the boxes of the game
+     */
     public ArrayList<Box> getBoxes() {
         return boxes;
     }
@@ -181,16 +182,15 @@ public class Board {
     }
 
     /**
-     *
-     * @param direction The direction of the move (RIGHT-UP-LEFT-DOWN)
-     * @return (BooleanCouple) used to know if the player moved and if he pushed a box
+     * Set up all the parameters and try to move the player.
+     * @param direction The direction of the move
+     * @return BooleanCouple which is used to know if the player moved and if he pushed a box
      */
     public BooleanCouple move(Direction direction){
         int pRow = player1.getX();
         int pLine = player1.getY();
         int nextX;
         int nextY;
-        Block nextObj;
         int nextX2;
         int nextY2;
 
@@ -266,14 +266,13 @@ public class Board {
             }
             return true;
         } catch (IndexOutOfBoundsException exception) {
-            exception.printStackTrace();
             return false;
         }
     }
 
     /**
-     * Take the blockList and return the ArrayList String made from it.
-     * @return String ArrayList of the board
+     * Convert the blockList to an ArrayList String and returns it.
+     * @return String ArrayList made from the blockList
      */
     public ArrayList<String> toArrayList(){
         ArrayList<String> res = new ArrayList<>();
@@ -301,6 +300,10 @@ public class Board {
         }
     }
 
+    /**
+     * Player1 accessor
+     * @return The current instance of the player1
+     */
     public Player getPlayer1(){
         return player1;
     }

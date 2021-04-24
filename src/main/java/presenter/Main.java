@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import view.*;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -45,362 +46,395 @@ public class Main extends Application {
     /**
      * The main method that will be ran when starting the game.
      * @param primaryStage The window that will contain almost all the content
-     * @throws Exception Any Exception can be thrown during the execution
      * TODO : try to change "throws Exception" to try/catches and make it so no exception can be thrown, or at least
      *  the programming errors such as "not finding an image file because the name was not written correctly".
      */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage){
+        try {
+            window = primaryStage;
 
-        window = primaryStage;
+            prepareResolution(window);
 
-        prepareResolution(window);
+            Pane mainMenuPanel = new Pane();
 
-        Pane mainMenuPanel = new Pane();
+            CustomImage background = new CustomImage(windowX, windowY, WR, HR, "background.png");
+            MainMenu mainMenu = new MainMenu(mainMenuPanel, windowWidth, windowHeight, WR, HR, window, background);
 
-        CustomImage background = new CustomImage(windowX, windowY, WR, HR, "background.png");
-        MainMenu mainMenu = new MainMenu(mainMenuPanel, windowWidth, windowHeight, WR, HR, window, background);
+            // Set all buttons & overlays
 
-        // Set all buttons & overlays
+            CustomButton backButtonGame = new CustomButton(0, 0, WR, HR, "back button.png");
+            CustomButton backButtonAchievements = new CustomButton((int) ((windowWidth - 480 - 10)), (int) ((windowHeight - 96 - 10)), WR, HR, "back button.png");
 
-        CustomButton backButtonGame = new CustomButton(0, 0, WR, HR, "back button.png");
-        CustomButton backButtonAchievements = new CustomButton((int)((windowWidth-480-10)), (int)((windowHeight-96-10)), WR, HR, "back button.png");
-
-        // --------------------
-
-
-        //MUSIC --------------
-
-       setAudioPlayers();
-
-        // --------------------
+            // --------------------
 
 
-        // BUTTONS ACTIONS (SCENE SWITCHERS) ----
+            //MUSIC --------------
 
-        mainMenu.getAchievementsButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                window.setScene(achievementsMenu);
-                window.setFullScreen(fullscreen);
-            }
-        });
+            setAudioPlayers(); // TODO : Set the exceptions messages
 
-        mainMenu.getQuitButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                closeProgram();
-            }
-        });
-
-        backButtonAchievements.setOnClick(e -> {
-            window.setScene(mainMenu);
-            window.setFullScreen(fullscreen);
-        });
-
-        // EXCEPTION FOR CUSTOMIMAGE
-        background.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (mainMenu.getPlayInterface()) {
-                mainMenu.getCampaignButton().setVisible(false);
-                mainMenu.getTutorialButton().setVisible(false);
-                mainMenu.getFreePlayButton().setVisible(false);
-                mainMenu.getRandomButton().setVisible(false);
-                mainMenu.setPlayInterface(false);
-            }
-        });
-        // --------------------
-
-        // --------------------
+            // --------------------
 
 
-        mainMenuPanel.getChildren().addAll(background,
-                mainMenu.getPlayButton(), mainMenu.getPlayButton().overlay,
-                mainMenu.getOptionsButton(), mainMenu.getOptionsButton().overlay,
-                mainMenu.getQuitButton(), mainMenu.getQuitButton().overlay,
-                mainMenu.getTutorialButton(), mainMenu.getTutorialButton().overlay,
-                mainMenu.getCampaignButton(), mainMenu.getCampaignButton().overlay,
-                mainMenu.getFreePlayButton(), mainMenu.getFreePlayButton().overlay,
-                mainMenu.getRandomButton(), mainMenu.getRandomButton().overlay,
-                mainMenu.getAchievementsButton(), mainMenu.getAchievementsButton().overlay);
+            // BUTTONS ACTIONS (SCENE SWITCHERS) ----
 
+            mainMenu.getAchievementsButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    window.setScene(achievementsMenu);
+                    window.setFullScreen(fullscreen);
+                }
+            });
 
-        // OPTIONS ------------
-        CustomImage optionsBackground = new CustomImage(windowX, windowY, WR, HR, "background empty.png");
+            mainMenu.getQuitButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    closeProgram();
+                }
+            });
 
-        Pane optionsPane = new Pane();
-
-        OptionsMenu optionsMenu = new OptionsMenu(optionsPane, windowWidth, windowHeight, WR, HR, optionsBackground);
-
-        optionsMenu.getBackButtonOptions().setOnClick(e -> {
-            String music = optionsMenu.getMusicField().getText();
-            String effect = optionsMenu.getEffectField().getText();
-
-            //If the user return to the main menu and leaves the field blank, we set the volume with
-            //the volume he had when he openned the game.
-            if (music.isEmpty() || (Double.valueOf(music) > 1 || Double.valueOf(music) < 0)){
-                music = optionsMenu.getStarterMusicVolume();
-                optionsMenu.getMusicField().setText(music);
-            }
-            if (effect.isEmpty() || (Double.valueOf(effect) > 1 || Double.valueOf(effect) < 0) ){
-                effect = optionsMenu.getStarterEffectVolume();
-                optionsMenu.getEffectField().setText(effect);
-            }
-            try {
-                JSONWriter writer = new JSONWriter("data.json");
-                writer.set("music",music);
-                writer.set("effect", effect);
-                audioPlayer.setVolume(Double.valueOf(music));
-                effectPlayer.setVolume(Double.valueOf(effect));
+            backButtonAchievements.setOnClick(e -> {
                 window.setScene(mainMenu);
                 window.setFullScreen(fullscreen);
-            } catch (IOException | ParseException exc) {
-                exc.printStackTrace();
-            }
+            });
 
-        });
-        optionsPane.getChildren().addAll(optionsBackground, optionsMenu.getBackButtonOptions(),
-                optionsMenu.getBackButtonOptions().overlay,
-                optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume());
-
-        mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                window.setScene(optionsMenu);
-                window.setFullScreen(fullscreen);
-            }
-        });
-
-        // --------------------
-
-
-        // ACHIEVEMENTS --------
-        GridPane achievementsPane = new GridPane();
-        achievementsPane.setVgap(50);
-        achievementsPane.setHgap(50);
-
-        GridPane.setConstraints(backButtonAchievements, 10, 10);
-
-        CustomImage achievement1Image = new CustomImage(0, 0,WR, HR, "achievement1.png");
-        CustomImage achievement1Text = new CustomImage(0, 0,WR, HR, "achievement1 text.png");
-        Achievement achievement1 = new Achievement(achievement1Image, achievement1Text, 2, 1, WR, HR, achievementsPane);
-
-        CustomImage achievement2Image = new CustomImage(0, 0, WR, HR, "achievement2.png");
-        CustomImage achievement2Text = new CustomImage(0, 0,WR, HR, "achievement2 text.png");
-        Achievement achievement2 = new Achievement(achievement2Image, achievement2Text, 2, 2, WR, HR, achievementsPane);
-
-        CustomImage achievement3Image = new CustomImage(0, 0, WR, HR, "achievement3.png");
-        CustomImage achievement3Text = new CustomImage(0, 0, WR, HR, "achievement3 text.png");
-        Achievement achievement3 = new Achievement(achievement3Image, achievement3Text, 2, 3, WR, HR, achievementsPane);
-
-
-        CustomImage achievementBackground = new CustomImage(windowX, windowY, WR, HR, "background empty.png");
-        GridPane.setConstraints(achievementBackground, 0, 0);
-
-        Button addLevel = new Button("Complete one level");
-        addLevel.setOnAction(e -> {
-            try {
-                JSONWriter temporaryWriter = new JSONWriter("data.json");
-                JSONReader temporaryReader = new JSONReader("data.json");
-                int initValue = temporaryReader.getInt("completed levels");
-                temporaryWriter.set("completed levels", String.valueOf(initValue +1));
-                if (initValue == 0) {
-                    achievement1.complete();
-                } else if (initValue == 4) {
-                    achievement2.complete();
-                } else if (initValue == 9) {
-                    achievement3.complete();
+            background.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (mainMenu.getPlayInterface()) {
+                    mainMenu.getCampaignButton().setVisible(false);
+                    mainMenu.getTutorialButton().setVisible(false);
+                    mainMenu.getFreePlayButton().setVisible(false);
+                    mainMenu.getRandomButton().setVisible(false);
+                    mainMenu.setPlayInterface(false);
                 }
-            } catch (IOException | ParseException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-        addLevel.setLayoutX(600);
-        addLevel.setLayoutY(600);
+            });
 
-        Pane achievementsBackgroundPane = new Pane();
-        achievementsBackgroundPane.setPrefWidth(windowWidth*WR);
-        achievementsBackgroundPane.setPrefHeight(windowHeight*WR);
-        achievementsBackgroundPane.getChildren().addAll(achievementBackground, backButtonAchievements, backButtonAchievements.overlay, addLevel);
-
-        achievementsPane.getChildren().addAll(
-                achievement1.image, achievement1.overlay, achievement1.text, achievement1.overlayDone,
-                achievement2.image, achievement2.overlay, achievement2.text, achievement2.overlayDone,
-                achievement3.image, achievement3.overlay, achievement3.text, achievement3.overlayDone,
-                addLevel);
-
-        Pane finalAchievementPane = new Pane();
-        finalAchievementPane.setPrefWidth(windowWidth);
-        finalAchievementPane.setPrefHeight(windowHeight);
-        finalAchievementPane.getChildren().addAll(achievementsBackgroundPane, achievementsPane);
+            mainMenuPanel.getChildren().addAll(background,
+                    mainMenu.getPlayButton(), mainMenu.getPlayButton().overlay,
+                    mainMenu.getOptionsButton(), mainMenu.getOptionsButton().overlay,
+                    mainMenu.getQuitButton(), mainMenu.getQuitButton().overlay,
+                    mainMenu.getTutorialButton(), mainMenu.getTutorialButton().overlay,
+                    mainMenu.getCampaignButton(), mainMenu.getCampaignButton().overlay,
+                    mainMenu.getFreePlayButton(), mainMenu.getFreePlayButton().overlay,
+                    mainMenu.getRandomButton(), mainMenu.getRandomButton().overlay,
+                    mainMenu.getAchievementsButton(), mainMenu.getAchievementsButton().overlay);
 
 
-        achievementsMenu = new Scene(finalAchievementPane, windowWidth, windowHeight);
-        // --------------------
+            // OPTIONS ------------
+            CustomImage optionsBackground = new CustomImage(windowX, windowY, WR, HR, "background empty.png");
 
+            Pane optionsPane = new Pane();
 
-        // LEVEL SELECTOR ----
+            OptionsMenu optionsMenu = new OptionsMenu(optionsPane, windowWidth, windowHeight, WR, HR, optionsBackground);
 
-        Pane campaignSelectorPanel = new Pane();
-        LevelSelector campaignSelector = new CampaignSelector(campaignSelectorPanel,windowWidth, windowHeight, WR, HR);
+            optionsMenu.getBackButtonOptions().setOnClick(e -> {
+                String music = optionsMenu.getMusicField().getText();
+                String effect = optionsMenu.getEffectField().getText();
 
-        campaignSelectorPanel.getChildren().addAll(campaignSelector.getFinalPane());
-
-        campaignSelector.getBackButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            window.setScene(mainMenu);
-            window.setFullScreen(fullscreen);
-        });
-
-        mainMenu.getCampaignButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                window.setScene(campaignSelector);
-                window.setFullScreen(fullscreen);
-                campaignSelector.setSelectors();
-            }
-        });
-        // --------------------
-
-
-        // FREE PLAY ------
-        Pane freePlayPanel = new Pane();
-        LevelSelector freePlaySelector = new FreePlaySelector(freePlayPanel, windowWidth, windowHeight, WR, HR);
-
-        freePlayPanel.getChildren().addAll(freePlaySelector.getFinalPane());
-
-        freePlaySelector.getBackButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            window.setScene(mainMenu);
-            window.setFullScreen(fullscreen);
-        });
-
-        mainMenu.getFreePlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                window.setScene(freePlaySelector);
-                window.setFullScreen(fullscreen);
-                freePlaySelector.setSelectors();
-            }
-        });
-
-        // PLAY ---------------
-        Pane playingMenuPanel = new Pane();
-        PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, audioPlayer, effectPlayer);
-
-        playingMenuPanel.getChildren().addAll(
-                playingMenu.getFinalPane()
-        );
-
-        playingMenu.getMainMenuButton().overlay.setOnMouseClicked(e -> {
-            window.setScene(mainMenu);
-            window.setFullScreen(fullscreen);
-            playingMenu.getStopWatch().stop();
-        });
-
-        campaignSelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                try{
-                    playingMenu.setLevel(campaignSelector.getSelectedLevel());
-                    campaignSelector.getPlayButton().setVisible(false);
-                    window.setScene(playingMenu);
+                //If the user return to the main menu and leaves the field blank, we set the volume with
+                //the volume he had when he openned the game.
+                /*
+                if (music.isEmpty() || (Double.valueOf(music) > 1 || Double.valueOf(music) < 0)) {
+                    music = optionsMenu.getStarterMusicVolume();
+                    optionsMenu.getMusicField().setText(music);
+                }
+                if (effect.isEmpty() || (Double.valueOf(effect) > 1 || Double.valueOf(effect) < 0)) {
+                    effect = optionsMenu.getStarterEffectVolume();
+                    optionsMenu.getEffectField().setText(effect);
+                }
+                 */
+                try {
+                    if (music.isEmpty()) {
+                        music = optionsMenu.getStarterMusicVolume();
+                        optionsMenu.getMusicField().setText(music);
+                    }
+                    if (effect.isEmpty()) {
+                        effect = optionsMenu.getStarterEffectVolume();
+                        optionsMenu.getEffectField().setText(effect);
+                    }
+                    JSONWriter writer = new JSONWriter("data.json");
+                    writer.set("music", music);
+                    writer.set("effect", effect);
+                    audioPlayer.setVolume(Double.valueOf(music));
+                    effectPlayer.setVolume(Double.valueOf(effect));
+                    window.setScene(mainMenu);
                     window.setFullScreen(fullscreen);
-                    campaignSelector.getResumeButton().setVisible(true);
-                    freePlaySelector.setHasSelected(true);
-                }catch(Exception exc){
-                    exc.printStackTrace();
+                } catch (NumberFormatException e1){
+                    //Volume isn't between 0 and 1
+                    AlertBox.display("Error", e1.getMessage());
+                }catch (IOException | ParseException exc) {
+                    AlertBox.display("Error", "An error occured while writing in the JSON file\n" +
+                            exc.getMessage());
                 }
-            }
-        });
 
-        campaignSelector.getResumeButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                window.setScene(playingMenu);
-                window.setFullScreen(fullscreen);
-                playingMenu.getStopWatch().start();
-            }
-        });
+            });
+            optionsPane.getChildren().addAll(optionsBackground, optionsMenu.getBackButtonOptions(),
+                    optionsMenu.getBackButtonOptions().overlay,
+                    optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume());
 
-        freePlaySelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-            if (e.getButton() == MouseButton.PRIMARY) {
-                try{
-                    playingMenu.setLevel(freePlaySelector.getStringLevel());
-                    freePlaySelector.getPlayButton().setVisible(false);
-                    window.setScene(playingMenu);
+            mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    window.setScene(optionsMenu);
                     window.setFullScreen(fullscreen);
-                    freePlaySelector.getResumeButton().setVisible(true);
-                    freePlaySelector.setHasSelected(true);
-                }catch(Exception exc){
-                    exc.printStackTrace();
                 }
-            }
-        });
+            });
 
-        freePlaySelector.getResumeButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                window.setScene(playingMenu);
-                window.setFullScreen(fullscreen);
-            }
-        });
+            // --------------------
 
-        mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                try{
-                    Generate tmpGen = new Generate();
-                    playingMenu.setLevel(tmpGen.content);
-                    window.setScene(playingMenu);
-                    window.setFullScreen(fullscreen);
-                }catch(Exception exc){
-                    exc.printStackTrace();
+
+            // ACHIEVEMENTS -------- TODO : Set the AchivementMenu
+            GridPane achievementsPane = new GridPane();
+            achievementsPane.setVgap(50);
+            achievementsPane.setHgap(50);
+
+            GridPane.setConstraints(backButtonAchievements, 10, 10);
+
+            CustomImage achievement1Image = new CustomImage(0, 0, WR, HR, "achievement1.png");
+            CustomImage achievement1Text = new CustomImage(0, 0, WR, HR, "achievement1 text.png");
+            Achievement achievement1 = new Achievement(achievement1Image, achievement1Text, 2, 1, WR, HR, achievementsPane);
+
+            CustomImage achievement2Image = new CustomImage(0, 0, WR, HR, "achievement2.png");
+            CustomImage achievement2Text = new CustomImage(0, 0, WR, HR, "achievement2 text.png");
+            Achievement achievement2 = new Achievement(achievement2Image, achievement2Text, 2, 2, WR, HR, achievementsPane);
+
+            CustomImage achievement3Image = new CustomImage(0, 0, WR, HR, "achievement3.png");
+            CustomImage achievement3Text = new CustomImage(0, 0, WR, HR, "achievement3 text.png");
+            Achievement achievement3 = new Achievement(achievement3Image, achievement3Text, 2, 3, WR, HR, achievementsPane);
+
+
+            CustomImage achievementBackground = new CustomImage(windowX, windowY, WR, HR, "background empty.png");
+            GridPane.setConstraints(achievementBackground, 0, 0);
+
+            Button addLevel = new Button("Complete one level");
+            addLevel.setOnAction(e -> {
+                try {
+                    JSONWriter temporaryWriter = new JSONWriter("data.json");
+                    JSONReader temporaryReader = new JSONReader("data.json");
+                    int initValue = temporaryReader.getInt("completed levels");
+                    temporaryWriter.set("completed levels", String.valueOf(initValue + 1));
+                    if (initValue == 0) {
+                        achievement1.complete();
+                    } else if (initValue == 4) {
+                        achievement2.complete();
+                    } else if (initValue == 9) {
+                        achievement3.complete();
+                    }
+                } catch (IOException | ParseException ioException) {
+                    AlertBox.display("Error", "An error occured while writing in the JSON file\n" +
+                            ioException.getMessage());
                 }
-            }
-        });
+            });
+            addLevel.setLayoutX(600);
+            addLevel.setLayoutY(600);
 
-        playingMenu.getRickRollImage().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
+            Pane achievementsBackgroundPane = new Pane();
+            achievementsBackgroundPane.setPrefWidth(windowWidth * WR);
+            achievementsBackgroundPane.setPrefHeight(windowHeight * WR);
+            achievementsBackgroundPane.getChildren().addAll(achievementBackground, backButtonAchievements, backButtonAchievements.overlay, addLevel);
+
+            achievementsPane.getChildren().addAll(
+                    achievement1.image, achievement1.overlay, achievement1.text, achievement1.overlayDone,
+                    achievement2.image, achievement2.overlay, achievement2.text, achievement2.overlayDone,
+                    achievement3.image, achievement3.overlay, achievement3.text, achievement3.overlayDone,
+                    addLevel);
+
+            Pane finalAchievementPane = new Pane();
+            finalAchievementPane.setPrefWidth(windowWidth);
+            finalAchievementPane.setPrefHeight(windowHeight);
+            finalAchievementPane.getChildren().addAll(achievementsBackgroundPane, achievementsPane);
+
+
+            achievementsMenu = new Scene(finalAchievementPane, windowWidth, windowHeight);
+            // --------------------
+
+
+            // LEVEL SELECTOR ----
+
+            Pane campaignSelectorPanel = new Pane();
+            LevelSelector campaignSelector = new CampaignSelector(campaignSelectorPanel, windowWidth, windowHeight, WR, HR);
+
+            campaignSelectorPanel.getChildren().addAll(campaignSelector.getFinalPane());
+
+            campaignSelector.getBackButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 window.setScene(mainMenu);
                 window.setFullScreen(fullscreen);
-                playingMenu.getRickRollImage().setVisible(false);
-                audioPlayer.prepareMusic(audioPlayer.getFileName());
-                audioPlayer.play();
-            }
-        });
-        // --------------------
+            });
 
-        // TUTORIAl -----------
-        Pane tutorialPane = new Pane();
-        Tutorial tutorial = new Tutorial(tutorialPane, windowWidth, windowHeight, WR, HR);
+            mainMenu.getCampaignButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    try {
+                        campaignSelector.setSelectors();
+                        window.setScene(campaignSelector);
+                        window.setFullScreen(fullscreen);
+                    } catch (IOException | ParseException e1) {
+                        AlertBox.display("Error", "An error occured while trying to set the levels\n" +
+                                e1.getMessage());
+                    }
+                }
+            });
+            // --------------------
 
-        tutorialPane.getChildren().addAll(
-                tutorial.getTutorial0(), tutorial.getTutorial1(),
-                tutorial.getTutorial2(), tutorial.getTutorial3(),
-                tutorial.getTutorial4(), tutorial.getTutorial5(),
-                tutorial.getTutorial6(), tutorial.getLeftArrow(), tutorial.getRightArrow()
-        );
 
-        mainMenu.getTutorialButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                window.setScene(tutorial);
+            // FREE PLAY ------
+            Pane freePlayPanel = new Pane();
+            LevelSelector freePlaySelector = new FreePlaySelector(freePlayPanel, windowWidth, windowHeight, WR, HR);
+
+            freePlayPanel.getChildren().addAll(freePlaySelector.getFinalPane());
+
+            freePlaySelector.getBackButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                window.setScene(mainMenu);
                 window.setFullScreen(fullscreen);
-            }
-        });
+            });
 
-        tutorial.getRightArrow().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                if (tutorial.getCurrentImage() == 0) {
-                    window.setScene(mainMenu);
+            mainMenu.getFreePlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    try {
+                        freePlaySelector.setSelectors();
+                        window.setScene(freePlaySelector);
+                        window.setFullScreen(fullscreen);
+                    } catch (IOException | ParseException e1) {
+                        AlertBox.display("Error", "An error occured while trying to set the levels" +
+                                e1.getMessage());
+                    }
+                }
+            });
+
+            // PLAY ---------------
+            Pane playingMenuPanel = new Pane();
+            PlayingMenu playingMenu = new PlayingMenu(playingMenuPanel, windowWidth, windowHeight, WR, HR, audioPlayer, effectPlayer);
+
+            playingMenuPanel.getChildren().addAll(
+                    playingMenu.getFinalPane()
+            );
+
+            playingMenu.getMainMenuButton().overlay.setOnMouseClicked(e -> {
+                window.setScene(mainMenu);
+                window.setFullScreen(fullscreen);
+                playingMenu.getStopWatch().stop();
+            });
+
+            campaignSelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    try {
+                        playingMenu.setLevel(campaignSelector.getSelectedLevel());
+                        campaignSelector.getPlayButton().setVisible(false);
+                        window.setScene(playingMenu);
+                        window.setFullScreen(fullscreen);
+                        campaignSelector.getResumeButton().setVisible(true);
+                        freePlaySelector.setHasSelected(true);
+                    } catch (IOException exc) {
+                        AlertBox.display("Error", "An error occured while trying to load the level\n" +
+                                exc.getMessage());
+                    }
+                }
+            });
+
+            campaignSelector.getResumeButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    window.setScene(playingMenu);
+                    window.setFullScreen(fullscreen);
+                    playingMenu.getStopWatch().start();
+                }
+            });
+
+            freePlaySelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    try {
+                        playingMenu.setLevel(freePlaySelector.getStringLevel());
+                        freePlaySelector.getPlayButton().setVisible(false);
+                        window.setScene(playingMenu);
+                        window.setFullScreen(fullscreen);
+                        freePlaySelector.getResumeButton().setVisible(true);
+                        freePlaySelector.setHasSelected(true);
+                    } catch (IOException exc) {
+                        AlertBox.display("Error", "An error occured while trying to load the level\n" +
+                                exc.getMessage());
+                    }
+                }
+            });
+
+            freePlaySelector.getResumeButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    window.setScene(playingMenu);
                     window.setFullScreen(fullscreen);
                 }
-            }
-        });
+            });
 
-        tutorial.getLeftArrow().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                if (tutorial.getCurrentImage() == 0) {
+            mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    try {
+                        Generate tmpGen = new Generate();
+                        playingMenu.setLevel(tmpGen.content);
+                        window.setScene(playingMenu);
+                        window.setFullScreen(fullscreen);
+                    } catch (IOException exc) {
+                        AlertBox.display("Error", "An error occured while trying to load the level\n" +
+                                exc.getMessage());
+                    }
+                }
+            });
+
+            playingMenu.getRickRollImage().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
                     window.setScene(mainMenu);
                     window.setFullScreen(fullscreen);
+                    playingMenu.getRickRollImage().setVisible(false);
+                    audioPlayer.prepareMusic(audioPlayer.getFileName());
+                    audioPlayer.play();
                 }
+            });
+            // --------------------
+
+            // TUTORIAl -----------
+            Pane tutorialPane = new Pane();
+            Tutorial tutorial = new Tutorial(tutorialPane, windowWidth, windowHeight, WR, HR);
+
+            tutorialPane.getChildren().addAll(
+                    tutorial.getTutorial0(), tutorial.getTutorial1(),
+                    tutorial.getTutorial2(), tutorial.getTutorial3(),
+                    tutorial.getTutorial4(), tutorial.getTutorial5(),
+                    tutorial.getTutorial6(), tutorial.getLeftArrow(), tutorial.getRightArrow()
+            );
+
+            mainMenu.getTutorialButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    window.setScene(tutorial);
+                    window.setFullScreen(fullscreen);
+                }
+            });
+
+            tutorial.getRightArrow().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    if (tutorial.getCurrentImage() == 0) {
+                        window.setScene(mainMenu);
+                        window.setFullScreen(fullscreen);
+                    }
+                }
+            });
+
+            tutorial.getLeftArrow().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    if (tutorial.getCurrentImage() == 0) {
+                        window.setScene(mainMenu);
+                        window.setFullScreen(fullscreen);
+                    }
+                }
+            });
+
+            // --------------------
+
+            Console.prepare();
+
+            window.setScene(mainMenu);
+            window.show();
+        } catch (FileNotFoundException e1) {
+            AlertBox.display("Fatal Error", e1.getMessage());
+            System.out.println(e1.getMessage());
+            System.exit(-1);
+        } catch (Exception e2) {
+            AlertBox.display("Fatal Error", "An error occurred while loading the game\n");
+            if (e2.getMessage() != null) {
+                System.out.println(e2.getMessage());
             }
-        });
-
-        // --------------------
-
-        Console.prepare();
-
-        window.setScene(mainMenu);
-        window.show();
+            System.exit(-1);
+        }
     }
 
     /**
@@ -536,16 +570,16 @@ public class Main extends Application {
                 throw new IllegalArgumentException("Only 3 arguments are allowed (input.xsb map - .mov file" +
                         " - output.xsb file name ");
             }else {
-                ArrayList<String> stringMap = Fichier.loadFile(args[0], "freePlay");
-                ArrayList<Direction> moves = LevelSaver.getHistory(args[1], "");
-                Board map = new Board(stringMap);
-                map.applyMoves(moves);
-                stringMap = map.toArrayList();
-                try {
+                try{
+                    ArrayList<String> stringMap = Fichier.loadFile(args[0], "freePlay");
+                    ArrayList<Direction> moves = LevelSaver.getHistory(args[1], "");
+                    Board map = new Board(stringMap);
+                    map.applyMoves(moves);
+                    stringMap = map.toArrayList();
                     Fichier.saveFile(args[2], "freePlay", stringMap);
                     System.exit(0);
-                } catch (IOException e){
-                    e.printStackTrace();
+                } catch (Exception e){
+                    System.out.println("Error : " + e.getMessage());
                 }
             }
         } else {

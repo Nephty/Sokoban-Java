@@ -138,6 +138,11 @@ public class CompleteFieldBox {
             }
         });
 
+        window.setOnCloseRequest(e-> {
+            e.consume();
+            window.close();
+        });
+
         VBox layout = new VBox(10);
         layout.getChildren().addAll(label, input, openFileSelection, closeButton, fileNotFoundLabel);
         layout.setAlignment(Pos.CENTER);

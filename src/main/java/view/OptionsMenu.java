@@ -46,7 +46,7 @@ public class OptionsMenu
      * @throws ParseException Exception thrown if the .json file could not be parsed (during the <code>setComboBox()</code> method)
      */
     public OptionsMenu(Parent parent_, double width_, double height_, float WR, float HR, CustomImage background_)
-            throws IOException, ParseException {
+            throws IOException, ParseException{
         super(parent_, width_, height_, WR, HR, background_);
         this.backButtonOptions = new CustomButton((int)((width_-480-5)), (int)((height_-96-5)), WR, HR, "back button.png");
         if (!Main.fullscreen) {
@@ -80,7 +80,7 @@ public class OptionsMenu
      * @throws IOException Exception thrown when a provided file name doesn't match any file
      * @throws ParseException Exception thrown if the .json file could not be parsed
      */
-    public void setComboBox() throws IOException, ParseException {
+    public void setComboBox() throws IOException, ParseException{
         Label resolutionLabel = new Label("Resolution :");
         resolutionLabel.setLayoutX(10*WR);
         resolutionLabel.setTextFill(Color.rgb(88, 38, 24));
@@ -97,7 +97,8 @@ public class OptionsMenu
                 RESOLUTION_ID.set((byte) (comboBox.getSelectionModel().getSelectedIndex()));
                 resolutionModifier.set("resolution", String.valueOf(RESOLUTION_ID.get()));
             } catch (IOException | ParseException ioException) {
-                ioException.printStackTrace();
+                AlertBox.display("Error", "Error occurred while trying to save the Resolution" +
+                        ioException.getMessage());
             }
         });
 

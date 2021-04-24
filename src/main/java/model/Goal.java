@@ -1,8 +1,18 @@
 
 package model;
 
-
+/**
+ * <code>Goal</code> is one of the main Blocks of the game.
+ * We have to put the <code>Boxes</code> on it.
+ */
 public class Goal extends Block {
+    /**
+     * <code>Goal</code> constructor
+     * @param x_ The row of the block in the blockList
+     * @param y_ The line of the block in the blockList
+     * @param image The name of the image of the <code>Goal</code>
+     * @param texture The texture of the <Code>Goal/Code> (Texture : .)
+     */
     public Goal(int x_, int y_, String image,String texture) {
         super(x_, y_,image,texture);
     }

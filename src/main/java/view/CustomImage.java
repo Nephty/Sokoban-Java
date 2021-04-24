@@ -34,18 +34,22 @@ public class CustomImage
             throws FileNotFoundException {
         super(x_*WR, y_*HR);
 
-        FileInputStream inputStream = new FileInputStream("src\\main\\resources\\img\\" + fileName);
-        this.image = new Image(inputStream);
-        this.setFill(new ImagePattern(this.image));
+        try {
+            FileInputStream inputStream = new FileInputStream("src\\main\\resources\\img\\" + fileName);
+            this.image = new Image(inputStream);
+            this.setFill(new ImagePattern(this.image));
 
-        this.x_ = (int) (x_*WR);
-        this.y_ = (int) (y_*HR);
-        this.width_ = this.image.getWidth()*WR;
-        this.height_ = this.image.getHeight()*HR;
+            this.x_ = (int) (x_ * WR);
+            this.y_ = (int) (y_ * HR);
+            this.width_ = this.image.getWidth() * WR;
+            this.height_ = this.image.getHeight() * HR;
 
-        this.setWidth(this.width_);
-        this.setHeight(this.height_);
-        this.setX(this.x_);
-        this.setY(this.y_);
+            this.setWidth(this.width_);
+            this.setHeight(this.height_);
+            this.setX(this.x_);
+            this.setY(this.y_);
+        } catch (FileNotFoundException e){
+            throw new FileNotFoundException("Error : " + fileName + " isn't in src\\main\\resources\\img\\");
+        }
     }
 }

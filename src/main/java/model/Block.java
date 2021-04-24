@@ -1,5 +1,6 @@
 package model;
 
+
 public class Block {
     private int x;
     private int y;
@@ -10,7 +11,8 @@ public class Block {
      * Block default constructor
      * @param x_ The row of the block in the blockList
      * @param y_ The line of the block in the blockList
-     * @param texture The file name of the image of the block
+     * @param image The name of the image of the block
+     * @param texture The texture of the block (wall : #)
      */
     public Block(int x_, int y_, String image, String texture) {
         x = x_;
@@ -22,7 +24,7 @@ public class Block {
 
     /**
      * X accessor
-     * @return (int) the x value of the object
+     * @return The row of the object
      */
     public int getX() {
         return this.x;
@@ -30,7 +32,7 @@ public class Block {
 
     /**
      * Y accessor
-     * @return (int) the y value of the object
+     * @return The line of the object
      */
     public int getY() {
         return this.y;
@@ -64,7 +66,7 @@ public class Block {
 
     /**
      * Texture accessor
-     * @return (String) name of the image of the block
+     * @return name of the image of the block
      */
     public String getTexture(){
         return texture;
@@ -91,8 +93,8 @@ public class Block {
     }
 
     /**
-     * Used in the canPass(Block nextObj) method
-     * @return (boolean) true if we can move toward the block
+     * Used for all the blocks except for the boxes.
+     * @return true if we can move toward the block
      */
     public boolean canPass(){
         return false;
@@ -113,8 +115,8 @@ public class Block {
     }
 
     /**
-     * Always false in the Block class.
-     * @return false (but change in the Player class)
+     * This method always returns false in the class but it's implemented in the class <code>Player</code>
+     * @return True if the player is on a goal
      */
     public boolean amIOnGoal(){
         return false;

@@ -4,6 +4,8 @@ package view;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javafx.scene.paint.Color;
@@ -37,9 +39,10 @@ public class CampaignSelector extends LevelSelector{
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
      * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
     public CampaignSelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException {
+            throws IOException, ParseException{
         super(parent_, width_, height_, WR, HR);
     }
 
@@ -49,57 +52,51 @@ public class CampaignSelector extends LevelSelector{
      * Read the completed levels in the data.json file and create the correct amount of buttons.
      */
     @Override
-    public void setSelectors(){
+    public void setSelectors() throws IOException, ParseException {
         super.setSelectors();
-        try{
-            JSONReader reader = new JSONReader("data.json");
-            this.completedLevels = reader.getInt("completed levels");
-            int files = Fichier.howManyLevel("main\\resources\\level\\campaign\\");
-            int xScale=0;
-            int yScale=0;
+        JSONReader reader = new JSONReader("data.json");
+        this.completedLevels = reader.getInt("completed levels");
+        int files = Fichier.howManyLevel("main\\resources\\level\\campaign\\");
+        int xScale=0;
+        int yScale=0;
           
-            for (int i = 0; i<files - (page*36);i++) {
-                if (i > 35){
-                    this.nextPageButton.setVisible(true);
-                    break;
-                }
-                byte level;
-                level = (byte) (i + (page*36)+1);
-                CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level_box.png");
-
-                this.middleMenu.getChildren().addAll(tmpButton);
-                if (i > completedLevels) {
-                    CustomImage lock = new CustomImage(100 + xScale * 150, 250 + yScale * 150, WR, HR, "lock_overlay.png");
-                    showLevel(lock, level);
-                    this.middleMenu.getChildren().add(lock);
-                } else {
-                    selectLevel(tmpButton, level);
-                    showLevel(tmpButton, level);
-
-
-                    Text nbr;
-                    if (i < 9) {
-                        nbr = new Text(tmpButton.getX() + 35 * WR, tmpButton.getY() + 65 * WR, Byte.toString(level));
-                    } else {
-                        nbr = new Text(tmpButton.getX() + 25 * WR, tmpButton.getY() + 65 * WR, Byte.toString(level));
-                    }
-                    nbr.maxWidth(tmpButton.getWidth());
-                    nbr.maxHeight(tmpButton.getHeight());
-                    nbr.setFont(new Font("Microsoft YaHei", 40 * WR));
-                    nbr.setFill(Color.rgb(88, 38, 24));
-
-                    showLevel(nbr, level);
-                    selectLevel(nbr,level);
-                    this.middleMenu.getChildren().add(nbr);
-                }
-                xScale++;
-                if (xScale > 8) {
-                    yScale++;
-                    xScale = 0;
-                }
+        for (int i = 0; i<files - (page*36);i++) {
+            if (i > 35){
+                this.nextPageButton.setVisible(true);
+                break;
             }
-        } catch (ParseException | IOException exc){
-            exc.printStackTrace();
+            byte level;
+            level = (byte) (i + (page*36)+1);
+            CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level_box.png");
+             this.middleMenu.getChildren().addAll(tmpButton);
+             if (i > completedLevels) {
+                 CustomImage lock = new CustomImage(100 + xScale * 150, 250 + yScale * 150, WR, HR, "lock_overlay.png");
+                 showLevel(lock, level);
+                 this.middleMenu.getChildren().add(lock);
+             } else {
+                 selectLevel(tmpButton, level);
+                 showLevel(tmpButton, level);
+
+                 Text nbr;
+                 if (i < 9) {
+                     nbr = new Text(tmpButton.getX() + 35 * WR, tmpButton.getY() + 65 * WR, Byte.toString(level));
+                 } else {
+                     nbr = new Text(tmpButton.getX() + 25 * WR, tmpButton.getY() + 65 * WR, Byte.toString(level));
+                 }
+                 nbr.maxWidth(tmpButton.getWidth());
+                 nbr.maxHeight(tmpButton.getHeight());
+                 nbr.setFont(new Font("Microsoft YaHei", 40 * WR));
+                 nbr.setFill(Color.rgb(88, 38, 24));
+
+                 showLevel(nbr, level);
+                 selectLevel(nbr,level);
+                 this.middleMenu.getChildren().add(nbr);
+             }
+             xScale++;
+             if (xScale > 8) {
+                 yScale++;
+                 xScale = 0;
+             }
         }
     }
 
@@ -117,7 +114,7 @@ public class CampaignSelector extends LevelSelector{
                 CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
                 levelViewer.getChildren().add(lvlImage);
             } catch (IOException exc) {
-                exc.printStackTrace();
+                AlertBox.display("Error", "Error : "+exc.getMessage());
             }
         });
 
@@ -142,7 +139,7 @@ public class CampaignSelector extends LevelSelector{
                 CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
                 selectedLevelViewer.getChildren().add(lvlImage);
             } catch (IOException exc) {
-                exc.printStackTrace();
+                AlertBox.display("Error", "Error : "+exc.getMessage());
             }
         });
     }

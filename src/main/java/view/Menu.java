@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * others menus, it is more of a template rather than a functional menu. For example, creating a new <code>Menu</code>
  * and expecting it to work as a <code>MainMenu</code> or a <code>PlayingMenu</code> is not intended nor recommended.
  */
-public class Menu
+public abstract class Menu
         extends Scene {
 
     //---------//
