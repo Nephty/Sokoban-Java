@@ -100,6 +100,10 @@ public class Board {
                         plate = new PressurePlate(x,y,"air.png","1","RickRoll");
                         x++;
                         break;
+                    case '2':
+                        plate = new PressurePlate(x,y, "air.png", "2", "SecretMap");
+                        x++;
+                        break;
                     default:
                         throw new IllegalArgumentException(item + " isn't a supported character.\nPlease read the " +
                                 "game documentation to know the supported characters");
@@ -107,6 +111,9 @@ public class Board {
             }
         }
         this.levelHeight = y+1;
+        if (player1 == null){
+            throw  new IllegalArgumentException("There must be a player in your map (Texture = @)");
+        }
     }
     /**
      * Create a 2D table with all the items of the game
@@ -254,10 +261,7 @@ public class Board {
                     Block obj1 = this.blockList[i][j];
                     Block obj2 = blockList2[i][j];
                     if (obj1 == null || obj2 == null) {
-                        if (obj1 == obj2) {
-                            return true;
-                        }
-                        return false;
+                        return obj1 == obj2;
                     }
                     if (!obj1.getClass().equals(obj2.getClass())) {
                         return false;
@@ -276,13 +280,13 @@ public class Board {
      */
     public ArrayList<String> toArrayList(){
         ArrayList<String> res = new ArrayList<>();
-        for (int i=0;i<blockList.length;i++){
+        for (Block[] blocks : blockList) {
             String line = "";
-            for (int j=0; j<blockList[i].length;j++){
-                if (blockList[i][j] == null){
+            for (Block block : blocks) {
+                if (block == null) {
                     line += " ";
-                }else {
-                    line += blockList[i][j].getTexture();
+                } else {
+                    line += block.getTexture();
                 }
             }
             res.add(line);
