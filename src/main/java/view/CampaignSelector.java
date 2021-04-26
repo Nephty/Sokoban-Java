@@ -56,11 +56,11 @@ public class CampaignSelector extends LevelSelector{
         super.setSelectors();
         JSONReader reader = new JSONReader("data.json");
         this.completedLevels = reader.getInt("completed levels");
-        int files = Fichier.howManyLevel("main\\resources\\level\\campaign\\");
+        int files = Fichier.howManyLevel("main\\resources\\level\\campaign\\")-1;
         int xScale=0;
         int yScale=0;
           
-        for (int i = 0; i<files - (page*36);i++) {
+        for (int i = 0; (i<files - (page*36));i++) {
             if (i > 35){
                 this.nextPageButton.setVisible(true);
                 break;
