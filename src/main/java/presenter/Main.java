@@ -15,6 +15,7 @@ import view.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -313,7 +314,16 @@ public class Main extends Application {
             campaignSelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
-                        playingMenu.setLevel(campaignSelector.getSelectedLevel());
+                        byte currentLevel = campaignSelector.getSelectedLevel();
+                        String levelFileName = "level";
+                        if (currentLevel < 10) {
+                            levelFileName += "0";
+                        }
+                        levelFileName += String.valueOf(currentLevel);
+                        levelFileName += ".xsb";
+                        ArrayList<String> level = Fichier.loadFile(levelFileName, "campaign");
+                        playingMenu.setLevel(level, String.valueOf(currentLevel), "campaign");
+
                         campaignSelector.getPlayButton().setVisible(false);
                         window.setScene(playingMenu);
                         window.setFullScreen(fullscreen);
@@ -337,13 +347,26 @@ public class Main extends Application {
             freePlaySelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
-                        playingMenu.setLevel(freePlaySelector.getStringLevel());
+                        String levelName = freePlaySelector.getStringLevel();
+                        ArrayList<String> level = Fichier.loadFile(levelName,"freePlay");
+                        String[] tmp = levelName.split(".xsb");
+                        levelName = tmp[0];
+                        if (levelName.length() > 7){
+                            String tmpName ="";
+                            for (int j=0;j<=5;j++){
+                                tmpName += levelName.charAt(j);
+                            }
+                            tmpName += "...";
+                            levelName = tmpName;
+                        }
+                        playingMenu.setLevel(level, levelName, "freePlay");
+
                         freePlaySelector.getPlayButton().setVisible(false);
                         window.setScene(playingMenu);
                         window.setFullScreen(fullscreen);
                         freePlaySelector.getResumeButton().setVisible(true);
                         freePlaySelector.setHasSelected(true);
-                    } catch (IOException exc) {
+                    } catch (IOException | IllegalArgumentException exc) {
                         AlertBox.display("Error", "An error occured while trying to load the level\n" +
                                 exc.getMessage());
                     }
@@ -361,7 +384,7 @@ public class Main extends Application {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
                         Generate tmpGen = new Generate();
-                        playingMenu.setLevel(tmpGen.content);
+                        playingMenu.setLevel(tmpGen.content, "random", "random");
                         window.setScene(playingMenu);
                         window.setFullScreen(fullscreen);
                     } catch (IOException exc) {
