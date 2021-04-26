@@ -329,7 +329,7 @@ public class Main extends Application {
                         window.setFullScreen(fullscreen);
                         campaignSelector.getResumeButton().setVisible(true);
                         freePlaySelector.setHasSelected(true);
-                    } catch (IOException exc) {
+                    } catch (IOException | ParseException exc) {
                         AlertBox.display("Error", "An error occured while trying to load the level\n" +
                                 exc.getMessage());
                     }
@@ -366,7 +366,7 @@ public class Main extends Application {
                         window.setFullScreen(fullscreen);
                         freePlaySelector.getResumeButton().setVisible(true);
                         freePlaySelector.setHasSelected(true);
-                    } catch (IOException | IllegalArgumentException exc) {
+                    } catch (IOException | IllegalArgumentException | ParseException exc) {
                         AlertBox.display("Error", "An error occured while trying to load the level\n" +
                                 exc.getMessage());
                     }
@@ -380,16 +380,17 @@ public class Main extends Application {
                 }
             });
 
-            mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
-                        Generate tmpGen = new Generate();
-                        playingMenu.setLevel(tmpGen.content, "random", "random");
+                        NewGenerator.generate();
+                        NewGenerator.setContentBasedOnCurrentGeneration();
+                        playingMenu.setLevel(NewGenerator.getContent(), "Random", "random");
+                        System.out.println(NewGenerator.getConfig());
                         window.setScene(playingMenu);
                         window.setFullScreen(fullscreen);
-                    } catch (IOException exc) {
-                        AlertBox.display("Error", "An error occured while trying to load the level\n" +
-                                exc.getMessage());
+                    } catch(Exception exc){
+                        exc.printStackTrace();
                     }
                 }
             });
@@ -444,6 +445,8 @@ public class Main extends Application {
             // --------------------
 
             Console.prepare();
+
+            NewGenerator.prepare();
 
             window.setScene(mainMenu);
             window.show();
