@@ -28,7 +28,7 @@ import presenter.Main;
 public class PlayingMenu extends Menu {
 
 
-    ArrayList<String> currentLevelString;
+    private final ArrayList<String> baseLevel = Fichier.loadFile("level06.xsb", "campaign");
     private final Pane leftMenu, middleMenu, rightMenu;
     private CustomImage leftMenuImage, middleMenuImage, rightMenuImage, rickRollImage;
     private Pane gamePane;
@@ -45,21 +45,21 @@ public class PlayingMenu extends Menu {
             currentLevelText, currentLevelAverageRatingText,
             currentLevelDifficultyText, youWonText;
     private Game game;
-    Button moveUp, moveDown, moveLeft, moveRight;
-    Pane finalPane;
-    ArrayList<Direction> movesHistory;
-    LevelSaver levelSaver = new LevelSaver();
+    private Button moveButton;
+    private Pane finalPane;
+    private ArrayList<Direction> movesHistory;
+    private LevelSaver levelSaver = new LevelSaver();
     private StopWatch stopWatch;
 
 
-    private byte currentLevel = 6;
-    private String currentLevelName = "level06.xsb";
+    private String currentMode = "campaign";
+    private byte currentCampaignLevel = 6;
     private int maxWidth, limit, availableSpace, imageLength, remainingSpace, firstPosX;
-    int currentLevelPosX = 148;
-    int difficultyPosX = 0;
-    float currentLevelAverageRating = (float) 0.27;
-    int averageRatingPosX = 140;
-    Difficulty currentLevelDifficulty = Difficulty.NORMAL;
+    private int currentLevelPosX = 148;
+    private int difficultyPosX = 0;
+    private float currentLevelAverageRating;
+    private int averageRatingPosX = 140;
+    private Difficulty currentLevelDifficulty = Difficulty.NORMAL;
     private boolean currentLevelIsWon = false;
     private AudioPlayer beatPlayer;
     private AudioPlayer effectPlayer;
@@ -75,9 +75,10 @@ public class PlayingMenu extends Menu {
      * @param HR_ The height ratio that will be used to resize the components
      * @param beatPlayer The <code>AudioPlayer</code> that will play the main theme music
      * @throws IOException Exception thrown when any provided file could not be found
+     * @throws ParseException Exception thrown when a file could not be parsed
      */
     public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, AudioPlayer beatPlayer, AudioPlayer effectPlayer)
-            throws IOException {
+            throws IOException, ParseException {
         super(parent_, width_, height_, WR_, HR_);
         this.leftMenu = new Pane();
         this.rightMenu = new Pane();
@@ -106,7 +107,7 @@ public class PlayingMenu extends Menu {
         this.movesHistory = new ArrayList<>();
 
         this.setPaneSizes();
-        this.loadLevelFileAndInitializeBoard();
+        this.game.setBoard(new Board(this.baseLevel));
         this.prepareMapSize();
         this.prepareInterfaces();
         this.prepareTextBoxes();
@@ -145,7 +146,7 @@ public class PlayingMenu extends Menu {
                     break;
                 case F:
                     try {
-                        levelSaver.saveLevel(movesHistory, currentLevel, CompleteFieldBox.display("Enter a file name",
+                        levelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
                                 "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
                                 "File name..."));
                     } catch (IOException e) {
@@ -187,9 +188,6 @@ public class PlayingMenu extends Menu {
         prepareMoveButtons(keyEventHandler);
         updateMapTiles();
 
-        System.out.println(this.objectives);
-        System.out.println(this.objectivesContainer);
-
         this.finalPane = new Pane();
         this.finalPane.setLayoutX(0);
         this.finalPane.setLayoutY(0);
@@ -200,7 +198,7 @@ public class PlayingMenu extends Menu {
         this.finalPane.setMinHeight(ORIGINAL_HEIGHT);
         this.finalPane.setMaxHeight(ORIGINAL_HEIGHT);
 
-        this.leftMenu.getChildren().addAll(this.moveDown, this.moveUp, this.moveRight, this.moveLeft);
+        this.leftMenu.getChildren().add(this.moveButton);
         this.leftMenu.getChildren().add(this.leftMenuImage);
         this.leftMenu.getChildren().addAll(
                 this.moves, this.movesContainer, this.totalMovesText,
@@ -255,8 +253,8 @@ public class PlayingMenu extends Menu {
 
                 try {
                     updateMapTiles();
-                } catch (FileNotFoundException fileNotFoundException) {
-                    AlertBox.display("Fatal Error", fileNotFoundException.getMessage());
+                } catch (IOException | ParseException exception) {
+                    AlertBox.display("Fatal Error", exception.getMessage());
                     System.exit(-1);
                 }
             }else{
@@ -316,20 +314,6 @@ public class PlayingMenu extends Menu {
         this.rightMenu.setMinHeight(this.height);
         this.rightMenu.setLayoutX((350 + 1220) * WR);
         this.rightMenu.setLayoutY(0);
-    }
-
-    /**
-     * Load the file corresponding to the selected level and set the new <code>Board</code> for the <code>Game</code>.
-     */
-    private void loadLevelFileAndInitializeBoard() throws IOException{
-        String levelFileName = "level";
-        if (this.currentLevel < 10) {
-            levelFileName += "0";
-        }
-        levelFileName += String.valueOf(this.currentLevel);
-        levelFileName += ".xsb";
-        this.currentLevelString = Fichier.loadFile(levelFileName, "campaign");
-        this.game.setBoard(new Board(this.currentLevelString));
     }
 
     /**
@@ -463,8 +447,8 @@ public class PlayingMenu extends Menu {
                 this.resetCounters();
                 try {
                     this.updateMapTiles();
-                } catch (FileNotFoundException fileNotFoundException) {
-                    AlertBox.display("Fatal Error", fileNotFoundException.getMessage());
+                } catch (IOException | ParseException exception) {
+                    AlertBox.display("Fatal Error", exception.getMessage());
                     System.exit(-1);
                 }
                 this.stopWatch.restart();
@@ -523,10 +507,10 @@ public class PlayingMenu extends Menu {
      * Prepare the current level information display.
      */
     private void prepareCurrentLevelText() {
-        if (this.currentLevel < 10) {
+        if (this.currentCampaignLevel < 10) {
             this.currentLevelPosX += 10;
         }
-        this.currentLevelText = new Text(this.currentLevelPosX * WR, 185 * WR, String.valueOf(currentLevel));
+        this.currentLevelText = new Text(this.currentLevelPosX * WR, 185 * WR, String.valueOf(currentCampaignLevel));
         this.currentLevelText.setFont(this.font);
         this.currentLevelText.setFill(this.color);
     }
@@ -559,7 +543,7 @@ public class PlayingMenu extends Menu {
      * Prepare the current level average rating information display
      */
     private void prepareAverageRatingText() {
-        String averageRatingStr = (int) (this.currentLevelAverageRating * 100) + "%";
+        String averageRatingStr = (int) (this.currentLevelAverageRating) + "%";
         if ((int) (this.currentLevelAverageRating) == 1) {
             this.averageRatingPosX -= 10;
         } else if (this.currentLevelAverageRating <= 0.1) {
@@ -594,6 +578,8 @@ public class PlayingMenu extends Menu {
         }
         // no need to do limit < maxWidth <= 40 because maxWidth will always be > limit if we reach this point
         else if (maxWidth <= (int) ((1000 * WR) / 25)) {
+            System.out.println(availableSpace);
+            System.out.println(maxWidth);
             this.imageLength = (int) (this.availableSpace / this.maxWidth);
         }
 
@@ -602,13 +588,14 @@ public class PlayingMenu extends Menu {
     }
 
     /**
-     * Update the currently displayed map layout based on the new generated <code>Board</code> and its blocklist.
+     * Update the currently displayed map layout based on the new generated <code>Board</code> and its blockList.
      * This method is used every time the user makes a move. Handles the task of showing the congratulations message
      * if the user won the game.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when a file could not be parsed
      */
     private void updateMapTiles()  // was previously called setMap()
-            throws FileNotFoundException {
+            throws IOException, ParseException {
         Block[][] blockList = this.game.getBoard().getBlockList();
         final int spaceConstant = (int) ((this.imageLength)/HR);
         this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
@@ -639,7 +626,7 @@ public class PlayingMenu extends Menu {
                 } else {
                     fileName = "air.png";
                 }
-                CustomImage currentItemImg = new CustomImage((int) (x * spaceConstant), (int) (y * spaceConstant), this.WR, this.HR, fileName);
+                CustomImage currentItemImg = new CustomImage((x * spaceConstant),(y * spaceConstant), this.WR, this.HR, fileName);
                 this.gamePane.getChildren().add(currentItemImg);
             }
         }
@@ -649,16 +636,37 @@ public class PlayingMenu extends Menu {
             currentLevelIsWon = true;
             stopWatch.stop();
             addLevel();
-        } else if (currentLevelIsWon && youWonText.isVisible()){
+
+            if (currentMode.equals("campaign")) {
+                String key = "";
+                key += "c";
+                key += currentCampaignLevel;
+
+                int newRating = Integer.parseInt(CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating..."));
+                JSONReader jsonReader = new JSONReader("avg.json");
+                int prevRating = jsonReader.getInt(key + "r");
+                int qttRating = jsonReader.getInt(key + "q");
+                int newAverage = (int) ((prevRating * qttRating + newRating)/(qttRating+1));
+
+                JSONWriter jsonWriter = new JSONWriter("avg.json");
+                jsonWriter.set(key + "r", String.valueOf(newAverage));
+                jsonWriter.set(key + "q", String.valueOf(qttRating+1));
+            }
+
+        } else if (youWonText.isVisible()){
             youWonText.setVisible(false);
         }
 
         if (game.getBoard().getPlayer1().isOnPressurePlate()){
             PressurePlate plate = game.getBoard().getPlayer1().getPlate();
+
             if (plate.getEffect().equals("RickRoll")){
                 this.rickRollImage.setVisible(true);
                 this.beatPlayer.prepareMusic("secret.mp3");
                 this.beatPlayer.play();
+
+            } else if (plate.getEffect().equals("SecretMap")){
+                setLevel(Fichier.loadFile("secret.xsb","campaign"), "???","secret");
             }
         }
     }
@@ -669,17 +677,8 @@ public class PlayingMenu extends Menu {
      */
     // TODO : can we run this method with only one button and generify it ?
     private void prepareMoveButtons(EventHandler keyEventHandler) {
-        this.moveUp = new Button();
-        this.moveUp.setOnKeyPressed(keyEventHandler);
-
-        this.moveLeft = new Button();
-        this.moveLeft.setOnKeyPressed(keyEventHandler);
-
-        this.moveDown = new Button();
-        this.moveDown.setOnKeyPressed(keyEventHandler);
-
-        this.moveRight = new Button();
-        this.moveRight.setOnKeyPressed(keyEventHandler);
+        this.moveButton = new Button();
+        this.moveButton.setOnKeyPressed(keyEventHandler);
     }
 
     /**
@@ -707,25 +706,15 @@ public class PlayingMenu extends Menu {
         return finalPane;
     }
 
-    public CustomImage getTime() {
-        return this.time;
-    }
-
-    public void applyNewBoard(Board newBoard)
-            throws FileNotFoundException {
-        this.game.setBoard(newBoard);
-        this.updateMapTiles();
-    }
-
     /**
      * Add one level to the completed level count in the data.json file.
      */
     private void addLevel() {
-        if (currentLevel != -1) {
+        if (currentMode.equals("campaign")) {
             try {
                 JSONReader reader = new JSONReader("data.json");
                 int currentCompletedLevels = reader.getByte("completed levels");
-                if (currentCompletedLevels == (currentLevel - 1)) {
+                if (currentCompletedLevels == (currentCampaignLevel - 1)) {
                     JSONWriter writer = new JSONWriter("data.json");
                     writer.set("completed levels", String.valueOf((currentCompletedLevels + 1)));
                 }
@@ -736,68 +725,49 @@ public class PlayingMenu extends Menu {
     }
 
     /**
-     * Change the current level to the given value.
-     * @param level The number of the new level
+     *
+     * @param level
+     * @param name
+     * @param dest
      * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when a file could not be parsed
      */
-    public void setLevel(Byte level)
-            throws IOException {
-        this.currentLevel = level;
-        this.currentLevelText.setText(String.valueOf(level));
-        if (level > 9){
-            this.currentLevelText.setX((currentLevelPosX-10)*WR);
-        } else {
-            this.currentLevelText.setX(currentLevelPosX*WR);
-        }
-        this.currentLevelIsWon = false;
-        this.loadLevelFileAndInitializeBoard();
-        this.prepareMapSize();
-        this.resetCounters();
-        this.updateMapTiles();
-        stopWatch.restart();
-    }
+    public void setLevel(ArrayList<String> level, String name, String dest)
+            throws IOException, ParseException {
+        switch (dest){
+            case "campaign":
+                this.currentCampaignLevel = Byte.valueOf(name);
+                this.currentLevelText.setText(name);
+                JSONReader jsonReader = new JSONReader("avg.json");
+                String key = "c" + this.currentCampaignLevel;
+                this.currentLevelAverageRatingText.setText(jsonReader.getString(key + "r") + "%");
+                if (currentCampaignLevel > 9) {
+                    this.currentLevelText.setX((currentLevelPosX - 10) * WR);
+                } else {
+                    this.currentLevelText.setX(currentLevelPosX * WR);
+                }
 
-    /**
-     * Change the current level to the level matching the given name.
-     * @param name The name of the new level
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     */
-    public void setLevel(String name)
-            throws IOException {
-        this.currentLevel = -1;
-        this.currentLevelName = name;
-        String[] tmp = name.split(".xsb");
-        String levelName = tmp[0];
-        if (levelName.length() > 7){
-            String tmpName ="";
-            for (int j=0;j<=5;j++){
-                tmpName += levelName.charAt(j);
-            }
-            tmpName += "...";
-            levelName = tmpName;
-        }
-        this.currentLevelText.setX(currentLevelImgContainer.getX() + (currentLevelImgContainer.getWidth()/tmp[0].length()));
-        this.currentLevelText.setText(levelName);
-        this.currentLevelIsWon = false;
-        this.currentLevelString = Fichier.loadFile(currentLevelName, "freePlay");
-        this.game.setBoard(new Board(this.currentLevelString));
-        this.prepareMapSize();
-        this.resetCounters();
-        this.updateMapTiles();
-        stopWatch.restart();
-    }
+                break;
+            case "freePlay":
+                this.currentLevelText.setX(currentLevelImgContainer.getX() + (currentLevelImgContainer.getWidth()/name.length()));
+                this.currentLevelText.setText(name);
+                break;
 
-    /**
-     * Change the current level to the random level generated
-     * @param random The <code>ArrayList(String)</code> of the level
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
-     */
-    public void setLevel(ArrayList<String> random) throws IOException{
-        this.currentLevel = -1;
-        this.currentLevelString = random;
-        this.currentLevelText.setX(currentLevelImgContainer.getX()+20*WR);
-        this.currentLevelText.setText("random");
-        this.game.setBoard(new Board(currentLevelString));
+            case "random":
+                this.currentLevelText.setX(currentLevelImgContainer.getX()+20*WR);
+                this.currentLevelText.setText("random");
+                break;
+
+            case "secret":
+                this.currentLevelText.setX(currentLevelImgContainer.getX()+60*WR);
+                this.currentLevelText.setText(name);
+                break;
+            default:
+                throw new IOException(dest + " isn't a valid value");
+        }
+        this.currentMode = dest;
+        this.game.setBoard(new Board(level));
+        this.currentLevelIsWon = false;
         this.prepareMapSize();
         this.resetCounters();
         this.updateMapTiles();
@@ -829,8 +799,8 @@ public class PlayingMenu extends Menu {
         }
         try {
             updateMapTiles();
-        } catch (FileNotFoundException fileNotFoundException) {
-            AlertBox.display("Fatal Error", fileNotFoundException.getMessage());
+        } catch (IOException | ParseException exception) {
+            AlertBox.display("Fatal Error", exception.getMessage());
             System.exit(-1);
         }
         this.stopWatch.restart();
