@@ -44,14 +44,10 @@ public class Box extends Block {
     }
 
     /**
-     * Change the value of isOnGoal.
+     * Invert the value of isOnGoal.
      */
-    public void changeGoalValue(){
-        if (isOnGoal == true){
-            isOnGoal = false;
-        }else{
-            isOnGoal = true;
-        }
+    public void invertIsOnGoal(){
+        isOnGoal = !isOnGoal;
     }
 
     /**
@@ -74,7 +70,7 @@ public class Box extends Block {
                 blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png",".");
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
-                this.changeGoalValue();
+                this.invertIsOnGoal();
                 currBoxOnObj--;
             } else {
                 blockList[nextY][nextX] = this;
@@ -92,7 +88,7 @@ public class Box extends Block {
                 blockList[this.getY()][this.getX()] = null;
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
-                this.changeGoalValue();
+                this.invertIsOnGoal();
                 currBoxOnObj++;
             }
         }
