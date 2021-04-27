@@ -643,10 +643,10 @@ public class PlayingMenu extends Menu {
                 key += "c";
                 key += currentCampaignLevel;
 
-                String enteredString = CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating...");
-                boolean parsed = true;
-                if (!enteredString.equals("")) {
-                    while (!parsed) {
+                boolean parsed = false;
+                while (!parsed) {
+                    String enteredString = CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating...");
+                    if (!enteredString.equals("")) {
                         try {
                             parsed = true;
                             int newRating = Integer.parseInt(enteredString);
@@ -654,7 +654,6 @@ public class PlayingMenu extends Menu {
                             int prevRating = jsonReader.getInt(key + "r");
                             int qttRating = jsonReader.getInt(key + "q");
                             int newAverage = (int) ((prevRating * qttRating + newRating) / (qttRating + 1));
-
                             JSONWriter jsonWriter = new JSONWriter("avg.json");
                             jsonWriter.set(key + "r", String.valueOf(newAverage));
                             jsonWriter.set(key + "q", String.valueOf(qttRating + 1));
@@ -662,6 +661,7 @@ public class PlayingMenu extends Menu {
                             AlertBox.display("Error", "Could not read your number");
                             parsed = false;
                         }
+
                     }
                 }
             }
