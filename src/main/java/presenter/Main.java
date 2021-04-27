@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("ALL")
@@ -299,6 +300,24 @@ public class Main extends Application {
                     }
                 }
             });
+//Random ---------------
+            Pane randomPanel = new Pane();
+            RandomSelector randomMenu = new RandomSelector(randomPanel, windowWidth, windowHeight, WR, HR);
+            randomPanel.getChildren().addAll(randomMenu.getFinalPane());
+
+            randomMenu.getBackButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                window.setScene(mainMenu);
+                window.setFullScreen(fullscreen);
+            });
+
+            mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    window.setScene(randomMenu);
+                    window.setFullScreen(fullscreen);
+                    randomMenu.getPlayButton().setVisible(true);
+
+                }
+            });
 
             // PLAY ---------------
             Pane playingMenuPanel = new Pane();
@@ -317,7 +336,7 @@ public class Main extends Application {
             campaignSelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
-                        byte currentLevel = campaignSelector.getSelectedLevel();
+                        byte currentLevel = (byte) campaignSelector.getSelectedLevel();
                         String levelFileName = "level";
                         if (currentLevel < 10) {
                             levelFileName += "0";
@@ -350,7 +369,7 @@ public class Main extends Application {
             freePlaySelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
-                        String levelName = freePlaySelector.getStringLevel();
+                        String levelName = (String) freePlaySelector.getSelectedLevel();
                         ArrayList<String> level = Fichier.loadFile(levelName,"freePlay");
                         String[] tmp = levelName.split(".xsb");
                         levelName = tmp[0];
@@ -383,12 +402,10 @@ public class Main extends Application {
                 }
             });
 
-            mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
+            randomMenu.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
-                        NewGenerator.generate();
-                        NewGenerator.setContentBasedOnCurrentGeneration();
-                        playingMenu.setLevel(NewGenerator.getContent(), "Random", "random");
+                        playingMenu.setLevel((ArrayList<String>) randomMenu.getSelectedLevel(), "Random", "random");
                         System.out.println(NewGenerator.getConfig());
                         window.setScene(playingMenu);
                         window.setFullScreen(fullscreen);
@@ -595,10 +612,25 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         if (args != null && args.length != 0) {
-            if (args.length != 3){
-                throw new IllegalArgumentException("Only 3 arguments are allowed (input.xsb map - .mov file" +
-                        " - output.xsb file name ");
-            }else {
+            if (args.length == 1){
+                if (args[0].equals("integrityCheck")){
+                    try {
+                        IntegrityChecker.checkFileIntegrity();
+                        System.out.println("Enter something to leave ");
+                        Scanner input = new Scanner(System.in);
+                        input.next();
+                        System.exit(0);
+                    } catch (IOException | ParseException exc) {
+                        System.out.println("An error occured while checking the files");
+                        System.out.println(exc.getMessage());
+                    }
+                } else {
+                    throw new IllegalArgumentException(" Only these configurations are allowed :\n"+
+                            "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n"+
+                            "- 1 argument  : \"integrityCheck\"\n"+
+                            "- 0 argument");
+                }
+            }else if (args.length == 3) {
                 try{
                     ArrayList<String> stringMap = Fichier.loadFile(args[0], "freePlay");
                     ArrayList<Direction> moves = LevelSaver.getHistory(args[1], "");
@@ -610,6 +642,11 @@ public class Main extends Application {
                 } catch (Exception e){
                     System.out.println("Error : " + e.getMessage());
                 }
+            } else {
+                throw new IllegalArgumentException(" Only these configurations are allowed :\n"+
+                        "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n"+
+                        "- 1 argument  : \"integrityCheck\"\n"+
+                        "- 0 argument");
             }
         } else {
             launch(args);
