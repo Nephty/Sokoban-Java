@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Board {
     private ArrayList<String> level;
-    private ArrayList<Wall> walls;
+    private ArrayList<Block> world;
     private ArrayList<Box> boxes;
     private ArrayList<Goal> goals;
     private Block[][] blockList;
@@ -35,9 +35,11 @@ public class Board {
      * @param level The level contained in the Board
      */
     private void  loadMap(ArrayList<String> level) throws IllegalArgumentException{
-        walls = new ArrayList<>();
+        world = new ArrayList<>();
         boxes = new ArrayList<>();
         goals = new ArrayList<>();
+
+        Teleport tmpTeleport = null;
 
         int x = 0;
         int y = -1;
@@ -59,7 +61,7 @@ public class Board {
 
                     case '#':
                         Wall wall = new Wall(x,y,"wall.png","#");
-                        walls.add(wall);
+                        world.add(wall);
                         x++;
                         break;
 
@@ -76,12 +78,25 @@ public class Board {
                         break;
 
                     case '@':
-                        player1 = new Player(x,y,"player down.png","@",false);
+                        player1 = new Player(x,y,"player down.png","@",false, null);
                         x++;
                         break;
 
                     case '+':
-                        player1 = new Player(x,y,"player down.png","+",true);
+                        player1 = new Player(x,y,"player down.png","+",true, null);
+                        x++;
+                        break;
+                    case '%':
+                        if (tmpTeleport == null){
+                            tmpTeleport = new Teleport(x,y,"box.png","%",null);
+                        } else if (tmpTeleport.getNextTP() != null){
+                            throw new IllegalArgumentException("There can only be 2 Teleports in the map !");
+                        } else {
+                            Teleport tp = new Teleport(x,y, "box.png", "%",tmpTeleport);
+                            world.add(tp);
+                            tmpTeleport.setNextTP(tp);
+                            world.add(tmpTeleport);
+                        }
                         x++;
                         break;
 
@@ -93,7 +108,7 @@ public class Board {
                         break;
                     case '=':
                         Wall newWall = new GhostWall(x,y, "wall.png","=");
-                        walls.add(newWall);
+                        world.add(newWall);
                         x++;
                         break;
                     case '1':
@@ -114,12 +129,15 @@ public class Board {
         if (player1 == null){
             throw  new IllegalArgumentException("There must be a player in your map (Texture = @)");
         }
+        if (tmpTeleport != null && tmpTeleport.getNextTP() == null){
+            throw new IllegalArgumentException("There must be 0 or 2 Teleport in the game");
+        }
     }
     /**
      * Create a 2D table with all the items of the game
      */
     private void setBlockList(){
-        ArrayList<Block> world = getWorld();
+        getWorld();
         blockList = new Block[levelHeight][levelWidth];
         for (Block item : world) {
             blockList[item.getY()][item.getX()] = item;
@@ -136,20 +154,14 @@ public class Board {
 
     /**
      * Join all the blocks in one arrayList to set up the world blockList
-     * @return ArrayList<Block> with all the blocks of the game(wall, box, obj, player)
      */
-    private ArrayList<Block> getWorld(){
-        ArrayList<Block> world = new ArrayList<>();
-
-        world.addAll(walls);
+    private void getWorld(){
         world.addAll(boxes);
         world.addAll(goals);
         world.add(player1);
         if (plate != null) {
             world.add(plate);
         }
-
-        return world;
     }
 
     /**

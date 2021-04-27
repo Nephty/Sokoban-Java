@@ -1,7 +1,7 @@
 package model;
 
 
-public class Block {
+public abstract class Block {
     private int x;
     private int y;
     private String texture;

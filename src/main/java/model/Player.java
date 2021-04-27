@@ -4,6 +4,7 @@ package model;
 public class Player extends Block {
     private boolean isOnGoal;
     private PressurePlate plate;
+    private Teleport currTP;
     /**
      * <code>Player</code> constructor
      * @param x_ The row of the Player in the blockList
@@ -12,9 +13,10 @@ public class Player extends Block {
      * @param texture The texture of the Player (Texture : @ | +)
      * @param isOnGoal Is the Player is on a goal.
      */
-    public Player(int x_, int y_,String image,String texture, boolean isOnGoal) {
+    public Player(int x_, int y_,String image,String texture, boolean isOnGoal, Teleport currTP) {
         super(x_, y_,image,texture);
         this.isOnGoal = isOnGoal;
+        this.currTP = currTP;
     }
 
 
@@ -45,7 +47,12 @@ public class Player extends Block {
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
                 this.setPlate(null);
-            } else {
+            } else if (currTP != null){
+                blockList[this.getY()][this.getX()] = currTP;
+                blockList[nextY][nextX] = this;
+                this.setValues(nextX, nextY);
+                this.currTP = null;
+            }else {
                 blockList[nextY][nextX] = this;
                 blockList[this.getY()][this.getX()] = null;
                 this.setValues(nextX, nextY);
@@ -104,5 +111,12 @@ public class Player extends Block {
      */
     public PressurePlate getPlate(){
         return plate;
+    }
+
+    public Teleport getCurrTp(){
+        return currTP;
+    }
+    public void setCurrTP(Teleport tp){
+        this.currTP = tp;
     }
 }
