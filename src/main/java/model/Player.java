@@ -36,7 +36,7 @@ public class Player extends Block {
         Block nextObj = blockList[nextY][nextX];
         if (nextObj == null) {
             if (this.amIOnGoal()){
-                this.changeGoalValue();
+                this.invertIsOnGoal();
                 blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png",".");
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
@@ -74,15 +74,12 @@ public class Player extends Block {
         return isOnGoal;
     }
 
+
     /**
-     * Change the value of isOnGoal
+     * Invert the value of isOnGoal.
      */
-    public void changeGoalValue(){
-        if (isOnGoal == true){
-            isOnGoal = false;
-        }else{
-            isOnGoal = true;
-        }
+    public void invertIsOnGoal(){
+        isOnGoal = !isOnGoal;
     }
 
     /**
