@@ -181,6 +181,7 @@ public class Main extends Application {
 
 
             // ACHIEVEMENTS -------- TODO : Set the AchivementMenu
+            /*
             GridPane achievementsPane = new GridPane();
             achievementsPane.setVgap(50);
             achievementsPane.setHgap(50);
@@ -236,10 +237,12 @@ public class Main extends Application {
                     achievement3.image, achievement3.overlay, achievement3.text, achievement3.overlayDone,
                     addLevel);
 
+
+             */
             Pane finalAchievementPane = new Pane();
             finalAchievementPane.setPrefWidth(windowWidth);
             finalAchievementPane.setPrefHeight(windowHeight);
-            finalAchievementPane.getChildren().addAll(achievementsBackgroundPane, achievementsPane);
+            finalAchievementPane.getChildren().addAll();//achievementsBackgroundPane, achievementsPane);
 
 
             achievementsMenu = new Scene(finalAchievementPane, windowWidth, windowHeight);
