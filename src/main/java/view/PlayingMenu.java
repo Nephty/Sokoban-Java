@@ -15,6 +15,7 @@ import model.*;
 import java.io.*;
 import java.util.ArrayList;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import presenter.Main;
 
@@ -642,15 +643,27 @@ public class PlayingMenu extends Menu {
                 key += "c";
                 key += currentCampaignLevel;
 
-                int newRating = Integer.parseInt(CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating..."));
-                JSONReader jsonReader = new JSONReader("avg.json");
-                int prevRating = jsonReader.getInt(key + "r");
-                int qttRating = jsonReader.getInt(key + "q");
-                int newAverage = (int) ((prevRating * qttRating + newRating)/(qttRating+1));
+                String enteredString = CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating...");
+                boolean parsed = true;
+                if (!enteredString.equals("")) {
+                    while (!parsed) {
+                        try {
+                            parsed = true;
+                            int newRating = Integer.parseInt(enteredString);
+                            JSONReader jsonReader = new JSONReader("avg.json");
+                            int prevRating = jsonReader.getInt(key + "r");
+                            int qttRating = jsonReader.getInt(key + "q");
+                            int newAverage = (int) ((prevRating * qttRating + newRating) / (qttRating + 1));
 
-                JSONWriter jsonWriter = new JSONWriter("avg.json");
-                jsonWriter.set(key + "r", String.valueOf(newAverage));
-                jsonWriter.set(key + "q", String.valueOf(qttRating+1));
+                            JSONWriter jsonWriter = new JSONWriter("avg.json");
+                            jsonWriter.set(key + "r", String.valueOf(newAverage));
+                            jsonWriter.set(key + "q", String.valueOf(qttRating + 1));
+                        } catch (NumberFormatException exc) {
+                            AlertBox.display("Error", "Could not read your number");
+                            parsed = false;
+                        }
+                    }
+                }
             }
 
         } else if (youWonText.isVisible()){
@@ -746,6 +759,28 @@ public class PlayingMenu extends Menu {
                 } else {
                     this.currentLevelText.setX(currentLevelPosX * WR);
                 }
+
+                jsonReader = new JSONReader("difficulty.json");
+                String readDifficulty = jsonReader.getString(String.valueOf(currentCampaignLevel));
+                switch (readDifficulty) {
+                    case "easy":
+                        this.currentLevelDifficulty = Difficulty.EASY;
+                        this.currentLevelDifficultyText.setX(123*WR);
+                        break;
+                    case "hard":
+                        this.currentLevelDifficulty = Difficulty.HARD;
+                        this.currentLevelDifficultyText.setX(123*WR);
+                        break;
+                    case "extreme":
+                        this.currentLevelDifficulty = Difficulty.EXTREME;
+                        this.currentLevelDifficultyText.setX(90*WR);
+                        break;
+                    default:  // "normal" string with end up here so no need to make another case
+                        this.currentLevelDifficultyText.setX(76*WR);
+                        this.currentLevelDifficulty = Difficulty.NORMAL;
+                }
+                System.out.println(this.currentLevelDifficultyText.getX());
+                this.currentLevelDifficultyText.setText(readDifficulty.toUpperCase());
 
                 break;
             case "freePlay":

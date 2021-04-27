@@ -62,7 +62,7 @@ public class FreePlaySelector extends LevelSelector{
             String level = files[i+(page*36)];
             String[] tmp = level.split(".xsb");
             String levelName = tmp[0];
-            CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level_box.png");
+            CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level box.png");
             this.middleMenu.getChildren().addAll(tmpButton);
 
             selectLevel(tmpButton, level);
