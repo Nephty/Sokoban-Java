@@ -41,13 +41,12 @@
           "8":"CustomImage.java",
           "9":"FreePlaySelector.java",
           "10":"Game.java",
-          "11":"LevelBox.java",
-          "12":"LevelSelector.java",
-          "13":"MainMenu.java",
-          "14":"Menu.java",
-          "15":"OptionsMenu.java",
-          "16":"PlayingMenu.java",
-          "17":"Tutorial.java"
+          "11":"LevelSelector.java",
+          "12":"MainMenu.java",
+          "13":"Menu.java",
+          "14":"OptionsMenu.java",
+          "15":"PlayingMenu.java",
+          "16":"Tutorial.java"
         }
       },
       "resources": {
