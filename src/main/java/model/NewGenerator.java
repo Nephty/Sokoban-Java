@@ -231,7 +231,7 @@ public class NewGenerator {
                 }
             }
         } while (!correctPosition);
-        player = new Player(pos.getX(), pos.getY(), "player down.png", "@", isOnObj);
+        player = new Player(pos.getX(), pos.getY(), "player down.png", "@", isOnObj, null);
     }
 
     public static void setContentBasedOnCurrentGeneration() {
