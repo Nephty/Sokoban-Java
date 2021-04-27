@@ -27,6 +27,10 @@ public class JSONReader {
         } //It is useless to throw a new ParseException because we can't set a custom text with that Exception.
     }
 
+    public JSONObject getObject(String key) {
+        return (JSONObject) this.obj.get(key);
+    }
+
     /**
      * @param key The name of the key we want to read the value
      * @return The string value associated to the key
