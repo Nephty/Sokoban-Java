@@ -27,11 +27,7 @@ public class Box extends Block {
         if (nextObj instanceof  Box){
             return false;
         }
-        else if (nextObj == null || nextObj.canPass(nextObj)){
-            return true;
-        }
-        else
-            return false;
+        else return nextObj == null || nextObj.canPass(nextObj);
     }
 
     /**
