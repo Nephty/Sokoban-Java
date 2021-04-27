@@ -68,12 +68,12 @@ public abstract class LevelSelector
         this.backButton = new CustomButton(50, (int)((height_-96-5)), WR, HR, "back button.png");
 
         //Visible when a level is selected and it starts the game
-        this.playButton = new CustomButton((int)(width_-900), (int)(height_-96-5), WR, HR, "start_button.png");
+        this.playButton = new CustomButton((int)(width_-900), (int)(height_-96-5), WR, HR, "start button.png");
         this.playButton.setVisible(false);
 
         //Visible when the player comeback from the playingMenu.
         //It starts the game where the player was.
-        this.resumeButton = new CustomButton((int) (width_-900), (int) height_-96-5, WR, HR, "resume_button.png");
+        this.resumeButton = new CustomButton((int) (width_-900), (int) height_-96-5, WR, HR, "resume button.png");
         this.resumeButton.setVisible(false);
 
         this.middleMenu = new Pane();
@@ -212,13 +212,8 @@ public abstract class LevelSelector
      * Return the currently selected level.
      * @return The currently selected level.
      */
-    public byte getSelectedLevel(){
-        return 0;
-    }
+    public abstract Object getSelectedLevel();
 
-    public String getStringLevel(){
-        return "";
-    }
 
     /**
      * rightMenu accessor
