@@ -150,7 +150,7 @@ public class CampaignSelector extends LevelSelector{
      * @return The currently selected level
      */
     @Override
-    public byte getSelectedLevel(){
+    public Object getSelectedLevel(){
         return this.selectedLevel;
     }
 }

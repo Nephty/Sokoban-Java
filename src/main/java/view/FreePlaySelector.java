@@ -127,7 +127,7 @@ public class FreePlaySelector extends LevelSelector{
      * @return the String level selected
      */
     @Override
-    public String getStringLevel(){
+    public Object getSelectedLevel(){
         return selectedLevel;
     }
 

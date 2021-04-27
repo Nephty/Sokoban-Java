@@ -212,13 +212,8 @@ public abstract class LevelSelector
      * Return the currently selected level.
      * @return The currently selected level.
      */
-    public byte getSelectedLevel(){
-        return 0;
-    }
+    public abstract Object getSelectedLevel();
 
-    public String getStringLevel(){
-        return "";
-    }
 
     /**
      * rightMenu accessor
