@@ -47,7 +47,7 @@ public class Goal extends Block {
             player1.setValues(this.getX(), this.getY());
             this.setValues(pRow, pLine);
         } else {
-            player1.changeGoalValue();
+            player1.invertIsOnGoal();
             blockList[this.getY()][this.getX()] = player1;
             blockList[player1.getY()][player1.getX()] = null;
             player1.setValues(this.getX(), this.getY());
