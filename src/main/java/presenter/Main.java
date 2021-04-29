@@ -312,10 +312,14 @@ public class Main extends Application {
 
             mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    window.setScene(randomMenu);
-                    window.setFullScreen(fullscreen);
-                    randomMenu.getPlayButton().setVisible(true);
-
+                    try {
+                        randomMenu.setSelectors();
+                        window.setScene(randomMenu);
+                        window.setFullScreen(fullscreen);
+                    } catch (IOException | ParseException e1) {
+                        AlertBox.display("Error", "An error occured while trying to set the levels" +
+                                e1.getMessage());
+                    }
                 }
             });
 
