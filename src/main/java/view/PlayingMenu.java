@@ -98,7 +98,7 @@ public class PlayingMenu extends Menu {
 
         this.middleMenu = new Pane();
         this.middleMenuBackground = new CustomImage(0, 0, WR, HR, "background empty.png");
-        this.middleMenu.getChildren().add(this.middleMenuBackground);
+        this.leftMenu.getChildren().add(this.middleMenuBackground);
 
         this.rickRollImage = new CustomImage(0,0,WR,HR,"secret.png");
         this.rickRollImage.setVisible(false);
@@ -643,10 +643,10 @@ public class PlayingMenu extends Menu {
                 key += "c";
                 key += currentCampaignLevel;
 
-                boolean parsed = false;
-                while (!parsed) {
-                    String enteredString = CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating...");
-                    if (!enteredString.equals("")) {
+                String enteredString = CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating...");
+                boolean parsed = true;
+                if (!enteredString.equals("")) {
+                    while (!parsed) {
                         try {
                             parsed = true;
                             int newRating = Integer.parseInt(enteredString);
@@ -654,6 +654,7 @@ public class PlayingMenu extends Menu {
                             int prevRating = jsonReader.getInt(key + "r");
                             int qttRating = jsonReader.getInt(key + "q");
                             int newAverage = (int) ((prevRating * qttRating + newRating) / (qttRating + 1));
+
                             JSONWriter jsonWriter = new JSONWriter("avg.json");
                             jsonWriter.set(key + "r", String.valueOf(newAverage));
                             jsonWriter.set(key + "q", String.valueOf(qttRating + 1));
@@ -661,7 +662,6 @@ public class PlayingMenu extends Menu {
                             AlertBox.display("Error", "Could not read your number");
                             parsed = false;
                         }
-
                     }
                 }
             }
@@ -691,6 +691,8 @@ public class PlayingMenu extends Menu {
     // TODO : can we run this method with only one button and generify it ?
     private void prepareMoveButtons(EventHandler keyEventHandler) {
         this.moveButton = new Button();
+        this.moveButton.setLayoutX(25*WR);
+        this.moveButton.setLayoutY(25*WR);
         this.moveButton.setOnKeyPressed(keyEventHandler);
     }
 
