@@ -55,7 +55,8 @@ public abstract class LevelSelector
 
         //Used to show the map when the mouse is over a button.
         this.levelViewer = new Pane();
-        this.levelViewer.setLayoutY(350*HR);
+        this.levelViewer.setLayoutX(30*WR);
+        this.levelViewer.setLayoutY(400*HR);
         this.levelViewer.setMaxWidth(350*WR);
 
         //Used to show the level we have selected.
@@ -124,7 +125,7 @@ public abstract class LevelSelector
     public void setSelectors() throws IOException, ParseException {
         middleMenu.getChildren().removeAll(middleMenu.getChildren());
         this.middleMenuBackground = new CustomButton(0, 0, WR, HR, "background empty.png");
-        this.middleMenu.getChildren().add(this.middleMenuBackground);
+        this.middleMenu.getChildren().add(middleMenuBackground);
         middleMenu.getChildren().addAll(resumeButton, resumeButton.overlay,
                 playButton, playButton.overlay,
                 backButton, backButton.overlay);
