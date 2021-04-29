@@ -88,11 +88,11 @@ public class Board {
                         break;
                     case '%':
                         if (tmpTeleport == null){
-                            tmpTeleport = new Teleport(x,y,"box.png","%",null);
+                            tmpTeleport = new Teleport(x,y,"Teleport2.png","%",null);
                         } else if (tmpTeleport.getNextTP() != null){
                             throw new IllegalArgumentException("There can only be 2 Teleports in the map !");
                         } else {
-                            Teleport tp = new Teleport(x,y, "box.png", "%",tmpTeleport);
+                            Teleport tp = new Teleport(x,y, "Teleport2.png", "%",tmpTeleport);
                             world.add(tp);
                             tmpTeleport.setNextTP(tp);
                             world.add(tmpTeleport);

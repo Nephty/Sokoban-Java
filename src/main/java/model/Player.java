@@ -113,9 +113,18 @@ public class Player extends Block {
         return plate;
     }
 
+    /**
+     * CurrTP accessor
+     * @return The tp the player is currently on
+     */
     public Teleport getCurrTp(){
         return currTP;
     }
+
+    /**
+     * Change the value of the currTP under the player
+     * @param tp The tp the player is on at the moment (null if he isn't on any tp)
+     */
     public void setCurrTP(Teleport tp){
         this.currTP = tp;
     }

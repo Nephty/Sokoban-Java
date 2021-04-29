@@ -24,7 +24,7 @@ public class Box extends Block {
     @Override
     public boolean canPass(Block nextObj){
         super.canPass(nextObj);
-        if (nextObj instanceof  Box){
+        if (nextObj instanceof  Box || nextObj instanceof Teleport){
             return false;
         }
         else return nextObj == null || nextObj.canPass(nextObj);
