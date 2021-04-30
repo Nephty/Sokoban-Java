@@ -112,6 +112,10 @@
           "59":"tutorial6.png",
           "60":"undo.png",
           "61":"wall.png",
+          "62":"easy.png",
+          "63":"normal.png",
+          "64":"hard.png",
+          "65":"create button.png",
           "maps": {
             "0":"level1.png",
             "1":"level10.png",
