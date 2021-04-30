@@ -46,6 +46,8 @@ public class MainMenu
      * @param HR_ The height ratio that will be used to resize the components
      * @param window_ The window containing everything
      * @param background_ The background that will be displayed for the menu
+     * @throws IOException Exception thrown when any provided file could not be found
+     * @throws ParseException Exception thrown when a file could not be parsed
      */
     public MainMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_, CustomImage background_)
             throws IOException, ParseException {
@@ -253,8 +255,8 @@ public class MainMenu
     }
 
     /**
-     * Return the "Random" button used to switch to the <code></code>
-     * @return
+     * Return the "Random" button used to switch to the <code>RandomSelector</code>
+     * @return The generation button
      */
     public CustomButton getRandomButton(){
         return randomButton;

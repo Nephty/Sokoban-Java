@@ -309,7 +309,4 @@ public class IntegrityChecker {
         return Arrays.asList(lst).contains(has);
     }
 
-    public static void main(String[] args) throws IOException, ParseException {
-        checkFileIntegrity();
-    }
 }

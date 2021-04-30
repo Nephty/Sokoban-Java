@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  * The <code>Generator</code> class is a class using static methods that will define a random position on a squared map
- * for a given amount of boxes & objectives. Boxes can start on objectives. For further details : after testing
+ * for a given amount of boxes and objectives. Boxes can start on objectives. For further details : after testing
  * 1.000.000.000 random generations on a 10x10 map with 3 boxes and 3 objectives, there wasn't a single generation
  * that happened to have all three boxes on an objective, so we can consider that an already finished map will never
  * be generated.
@@ -56,66 +56,6 @@ public class NewGenerator {
         return (int) (Math.random() * (max - min + 1) + min);
     }
 
-    /*
-    public static void generate() {
-        // generate boxes
-        for (int i = 0; i < boxesCount; i++) {
-            boolean correctPosition = false;
-            do {
-                randomX = randomIntGenerator(0, mapLength - 1);
-                randomY = randomIntGenerator(0, mapHeight - 1);
-                for (int j = 0; j < boxes.size(); j++) {
-                    if ((randomX != boxes.get(j).getX() || randomY != boxes.get(j).getY()) && mappedCanBeBox[randomY][randomX]) {
-                        correctPosition = true;
-                    }
-                }
-            } while (!correctPosition);
-            boxes.add(new Position(randomX, randomY));
-        }
-
-        // generator objectives
-        for (int i = 0; i < boxesCount; i++) {
-            boolean isOnObj = false;
-            boolean correctPosition = false;
-            do {
-                randomX = randomIntGenerator(0, mapLength-1);
-                randomY = randomIntGenerator(0, mapHeight-1);
-                for (int j = 0; j < boxesCount; j++) {
-                    if (randomX == boxes.get(j).getX() && randomY == boxes.get(j).getY()) {
-                        isOnObj = true;
-                    }
-                    if (j < boxes.size()) {
-                        if ((randomX != goals.get(j).getX() || randomY != goals.get(j).getY()) && mappedCanBeGoal[randomY][randomX]) {
-                            correctPosition = true;
-                        }
-                    }
-                }
-            } while (!correctPosition);
-            boxesCount -= boxesOnObj.size();
-            if (isOnObj) {
-                boxesOnObj.add(new Position(randomX, randomY));
-            } else {
-                goals.add(new Position(randomX, randomY));
-            }
-        }
-
-        // generate player
-        boolean correctLocation = false;
-        boolean isOnGoal = false;
-        do {
-            randomX = randomIntGenerator(0, mapLength-1);
-            randomY = randomIntGenerator(0, mapHeight-1);
-            for (int j = 0; j < boxesCount; j++) {
-                if (boxes.get(j).getX() != randomX || boxes.get(j).getY() != randomY) {
-                    correctLocation = true;
-                } else if (goals.get(j).getX() == randomX && goals.get(j).getY() == randomY) {
-                    isOnGoal = true;
-                }
-            }
-        } while (!correctLocation);
-        player = new Player(randomIntGenerator(1, 8), randomIntGenerator(1, 8), "player down.png", "@", isOnGoal);
-    }
-     */
 
     public static void generate() {
         // generate objectives

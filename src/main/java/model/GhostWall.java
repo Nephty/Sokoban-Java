@@ -39,7 +39,6 @@ public class GhostWall extends Wall{
      */
     @Override
     public int push(int nextX, int nextY, Block[][] blockList, Player player1, BooleanCouple returnValue, int currBoxOnObj){
-        super.push(nextX, nextY, blockList, player1,returnValue, currBoxOnObj);
         blockList[player1.getY()][player1.getX()] = null;
         blockList[nextY][nextX] = player1;
         player1.setValues(nextX, nextY);

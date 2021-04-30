@@ -1,13 +1,19 @@
 package model;
 
+/**
+ * <code>Teleport</code> is a <code>Block</code> used to teleport the player to the second Teleporter.
+ * There can only be 2 Teleporters on the map. If the player walks into one, he goes to the second one.
+ * Each Teleport has an attribute with the instance of the other Teleport.
+ */
 public class Teleport extends Block{
     private Teleport nextTP;
     /**
-     * <code>Wall</code> Constructor
-     * @param x_ The row of the <code>Wall</code> in the blockList
-     * @param y_ The line of the <code>Wall</code> in the blockList
-     * @param image The name of the image of the <code>Wall</code>
-     * @param texture The texture of the wall (Texture : #)
+     * <code>Teleport</code> Constructor
+     * @param x_ The row of the <code>Teleport</code> in the blockList
+     * @param y_ The line of the <code>Teleport</code> in the blockList
+     * @param image The name of the image of the <code>Teleport</code>
+     * @param texture The texture of the Teleport (Texture : %)
+     * @param nextTP The instance of the other Teleport
      */
     public Teleport(int x_, int y_,String image,String texture,Teleport nextTP) {
         super(x_, y_,image, texture);
@@ -48,10 +54,18 @@ public class Teleport extends Block{
     }
 
 
+    /**
+     * nextTP accessor
+     * @return The instance of the Teleport linked to this Teleport
+     */
     public Teleport getNextTP(){
         return nextTP;
     }
 
+    /**
+     * Change the value of the Teleport attribute
+     * @param nextTP The instance of the other Teleport
+     */
     public void setNextTP(Teleport nextTP){
         this.nextTP = nextTP;
     }
