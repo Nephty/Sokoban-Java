@@ -113,6 +113,7 @@ public class CampaignSelector extends LevelSelector{
                 selectedLevelViewer.setVisible(false);
                 levelViewer.getChildren().removeAll(levelViewer.getChildren());
                 CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
+                levelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
                 levelViewer.getChildren().add(lvlImage);
             } catch (IOException exc) {
                 AlertBox.display("Error", "Error : "+exc.getMessage());
@@ -139,6 +140,7 @@ public class CampaignSelector extends LevelSelector{
                 selectedLevelViewer.getChildren().removeAll(selectedLevelViewer.getChildren());
                 CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
                 selectedLevelViewer.getChildren().add(lvlImage);
+                selectedLevelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
             } catch (IOException exc) {
                 AlertBox.display("Error", "Error : "+exc.getMessage());
             }

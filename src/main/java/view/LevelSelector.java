@@ -56,12 +56,11 @@ public abstract class LevelSelector
         //Used to show the map when the mouse is over a button.
         this.levelViewer = new Pane();
         this.levelViewer.setLayoutX(30*WR);
-        this.levelViewer.setLayoutY(400*HR);
-        this.levelViewer.setMaxWidth(350*WR);
+        this.levelViewer.setMaxWidth(290*WR);
 
         //Used to show the level we have selected.
         this.selectedLevelViewer = new Pane();
-        this.selectedLevelViewer.setLayoutY(350*HR);
+        this.selectedLevelViewer.setLayoutX(30*WR);
         this.selectedLevelViewer.setMaxWidth(350*WR);
         rightMenu.getChildren().addAll(rightMenuImage, selectedLevelViewer,levelViewer, nextPageButton, previousPageButton);
 

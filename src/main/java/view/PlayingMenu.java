@@ -778,7 +778,7 @@ public class PlayingMenu extends Menu {
                         this.currentLevelDifficultyText.setX(90*WR);
                         break;
                     default:  // "normal" string with end up here so no need to make another case
-                        this.currentLevelDifficultyText.setX(76*WR);
+                        this.currentLevelDifficultyText.setX(80*WR);
                         this.currentLevelDifficulty = Difficulty.NORMAL;
                 }
                 System.out.println(this.currentLevelDifficultyText.getX());
@@ -788,16 +788,22 @@ public class PlayingMenu extends Menu {
             case "freePlay":
                 this.currentLevelText.setX(currentLevelImgContainer.getX() + (currentLevelImgContainer.getWidth()/name.length()));
                 this.currentLevelText.setText(name);
+                this.currentLevelDifficultyText.setText("");
+                this.currentLevelAverageRatingText.setText("");
                 break;
 
             case "random":
                 this.currentLevelText.setX(currentLevelImgContainer.getX()+20*WR);
                 this.currentLevelText.setText("random");
+                this.currentLevelDifficultyText.setText("");
+                this.currentLevelAverageRatingText.setText("");
                 break;
 
             case "secret":
-                this.currentLevelText.setX(currentLevelImgContainer.getX()+60*WR);
+                this.currentLevelText.setX(currentLevelImgContainer.getX()+40*WR);
                 this.currentLevelText.setText(name);
+                this.currentLevelDifficultyText.setText("");
+                this.currentLevelAverageRatingText.setText("");
                 break;
             default:
                 throw new IOException(dest + " isn't a valid value");
