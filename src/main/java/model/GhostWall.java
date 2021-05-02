@@ -6,16 +6,16 @@ package model;
  * It's used for the EasterEggs.
  */
 public class GhostWall extends Wall{
+    private static final String Texture = "=";
+    private static final String Image = "wall.png";
 
     /**
      * <code>GhostWall</code> constructor
      * @param x_ The row of the block in the blockList
      * @param y_ The line of the block in the blockList
-     * @param image The name of the image of the <code>GhostWall</code>
-     * @param texture The texture of the <Code>GhostWall</Code> (Texture : =)
      */
-    public GhostWall(int x_, int y_,String image,String texture) {
-        super(x_, y_,image, texture);
+    public GhostWall(int x_, int y_) {
+        super(x_, y_);
     }
 
     /**

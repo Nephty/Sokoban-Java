@@ -60,39 +60,39 @@ public class Board {
                         break;
 
                     case '#':
-                        Wall wall = new Wall(x,y,"wall.png","#");
+                        Wall wall = new Wall(x,y);
                         world.add(wall);
                         x++;
                         break;
 
                     case '$':
-                        Box newBox = new Box(x,y,"box.png","$",false);
+                        Box newBox = new Box(x,y,false);
                         boxes.add(newBox);
                         x++;
                         break;
 
                     case '.':
-                        Goal newGoal = new Goal(x,y,"objective.png", ".");
+                        Goal newGoal = new Goal(x,y);
                         goals.add(newGoal);
                         x++;
                         break;
 
                     case '@':
-                        player1 = new Player(x,y,"player down.png","@",false, null);
+                        player1 = new Player(x,y,false, null);
                         x++;
                         break;
 
                     case '+':
-                        player1 = new Player(x,y,"player down.png","+",true, null);
+                        player1 = new Player(x,y,true, null);
                         x++;
                         break;
                     case '%':
                         if (tmpTeleport == null){
-                            tmpTeleport = new Teleport(x,y,"Teleport2.png","%",null);
+                            tmpTeleport = new Teleport(x,y,null);
                         } else if (tmpTeleport.getNextTP() != null){
                             throw new IllegalArgumentException("There can only be 2 Teleports in the map !");
                         } else {
-                            Teleport tp = new Teleport(x,y, "Teleport2.png", "%",tmpTeleport);
+                            Teleport tp = new Teleport(x,y,tmpTeleport);
                             world.add(tp);
                             tmpTeleport.setNextTP(tp);
                             world.add(tmpTeleport);
@@ -101,22 +101,22 @@ public class Board {
                         break;
 
                     case '*':
-                        Box newBoxOnObj = new Box(x, y, "box.png", "*",true);
+                        Box newBoxOnObj = new Box(x, y,true);
                         boxes.add(newBoxOnObj);
                         currBoxOnObj++;
                         x++;
                         break;
                     case '=':
-                        Wall newWall = new GhostWall(x,y, "wall.png","=");
+                        Wall newWall = new GhostWall(x,y);
                         world.add(newWall);
                         x++;
                         break;
                     case '1':
-                        plate = new PressurePlate(x,y,"air.png","1","RickRoll");
+                        plate = new PressurePlate(x,y,"1","RickRoll");
                         x++;
                         break;
                     case '2':
-                        plate = new PressurePlate(x,y, "air.png", "2", "SecretMap");
+                        plate = new PressurePlate(x,y, "2", "SecretMap");
                         x++;
                         break;
                     default:

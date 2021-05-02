@@ -3,16 +3,17 @@ package model;
 public class Box extends Block {
     private boolean isOnGoal;
 
+    private static final String Texture = "$";
+    private static final String Image = "box.png";
+
     /**
      * Box constructor
      * @param x_ The row of the block in the blockList
      * @param y_ The line of the block in the blockList
-     * @param image The name of the image of the block
-     * @param texture The texture of the block (Texture : $)
      * @param isOnGoal Is the Box is on a goal.
      */
-    public Box(int x_, int y_, String image, String texture, boolean isOnGoal) {
-        super(x_, y_,image,texture);
+    public Box(int x_, int y_, boolean isOnGoal) {
+        super(x_, y_);
         this.isOnGoal = isOnGoal;
     }
 
@@ -63,7 +64,7 @@ public class Box extends Block {
         if (nextObj == null){
             //if the box is on a Goal
             if (amIOnGoal()){
-                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png",".");
+                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY());
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
                 this.invertIsOnGoal();
@@ -97,9 +98,21 @@ public class Box extends Block {
      */
     @Override
     public String getImage(){
-        String res = super.getImage();
+        String res = Image;
         if (amIOnGoal()){
             res = "boxonobjective.png";
+        }
+        return res;
+    }
+
+    /**
+     * @return The texture of the block used in the .xsb file.
+     */
+    @Override
+    public String getTexture(){
+        String res = Texture;
+        if (amIOnGoal()){
+            res = "*";
         }
         return res;
     }
