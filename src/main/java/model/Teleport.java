@@ -1,22 +1,24 @@
 package model;
 
+import org.w3c.dom.Text;
+
 /**
  * <code>Teleport</code> is a <code>Block</code> used to teleport the player to the second Teleporter.
  * There can only be 2 Teleporters on the map. If the player walks into one, he goes to the second one.
  * Each Teleport has an attribute with the instance of the other Teleport.
  */
 public class Teleport extends Block{
+    private static final String Texture = "%";
+    private static final String Image = "Teleport.png";
     private Teleport nextTP;
     /**
      * <code>Teleport</code> Constructor
      * @param x_ The row of the <code>Teleport</code> in the blockList
      * @param y_ The line of the <code>Teleport</code> in the blockList
-     * @param image The name of the image of the <code>Teleport</code>
-     * @param texture The texture of the Teleport (Texture : %)
      * @param nextTP The instance of the other Teleport
      */
-    public Teleport(int x_, int y_,String image,String texture,Teleport nextTP) {
-        super(x_, y_,image, texture);
+    public Teleport(int x_, int y_,Teleport nextTP) {
+        super(x_, y_);
         this.nextTP = nextTP;
     }
 
@@ -42,7 +44,7 @@ public class Teleport extends Block{
     @Override
     public int push(int nextX, int nextY, Block[][] blockList, Player player1, BooleanCouple returnValue, int currBoxOnObj){
         if (player1.amIOnGoal()){
-            blockList[player1.getY()][player1.getX()] = new Goal(player1.getX(), player1.getY(), "objective.png",".");
+            blockList[player1.getY()][player1.getX()] = new Goal(player1.getX(), player1.getY());
             player1.invertIsOnGoal();
         } else {
             blockList[player1.getY()][player1.getX()] = null;
@@ -68,5 +70,23 @@ public class Teleport extends Block{
      */
     public void setNextTP(Teleport nextTP){
         this.nextTP = nextTP;
+    }
+
+    /**
+     * Texture accessor
+     * @return The Texture of the Teleport
+     */
+    @Override
+    public String getTexture(){
+        return Texture;
+    }
+
+    /**
+     * Image accessor
+     * @return The name of the image of the Teleport
+     */
+    @Override
+    public String getImage(){
+        return Image;
     }
 }

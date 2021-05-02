@@ -5,16 +5,17 @@ public class Player extends Block {
     private boolean isOnGoal;
     private PressurePlate plate;
     private Teleport currTP;
+
+    private static final String Texture = "@";
+    private static final String Image = "player down .png";
     /**
      * <code>Player</code> constructor
      * @param x_ The row of the Player in the blockList
      * @param y_ The line of the Player in the blockList
-     * @param image The name of the image of the Player
-     * @param texture The texture of the Player (Texture : @ | +)
      * @param isOnGoal Is the Player is on a goal.
      */
-    public Player(int x_, int y_,String image,String texture, boolean isOnGoal, Teleport currTP) {
-        super(x_, y_,image,texture);
+    public Player(int x_, int y_, boolean isOnGoal, Teleport currTP) {
+        super(x_, y_);
         this.isOnGoal = isOnGoal;
         this.currTP = currTP;
     }
@@ -39,7 +40,7 @@ public class Player extends Block {
         if (nextObj == null) {
             if (this.amIOnGoal()){
                 this.invertIsOnGoal();
-                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY(), "objective.png",".");
+                blockList[this.getY()][this.getX()] = new Goal(this.getX(), this.getY());
                 blockList[nextY][nextX] = this;
                 this.setValues(nextX, nextY);
             } else if (isOnPressurePlate()){
@@ -81,6 +82,27 @@ public class Player extends Block {
         return isOnGoal;
     }
 
+    /**
+     * Used for the saves in .xsb files.
+     * @return The texture of the Player.
+     */
+    @Override
+    public String getTexture(){
+        String res = Texture;
+        if (amIOnGoal()){
+            res = "+";
+        }
+        return res;
+    }
+
+    /**
+     * Image accessor
+     * @return the name of the image of the player
+     */
+    @Override
+    public String getImage(){
+        return Image;
+    }
 
     /**
      * Invert the value of isOnGoal.

@@ -4,21 +4,15 @@ package model;
 public abstract class Block {
     private int x;
     private int y;
-    private String texture;
-    private String image;
 
     /**
      * Block default constructor
      * @param x_ The row of the block in the blockList
      * @param y_ The line of the block in the blockList
-     * @param image The name of the image of the block
-     * @param texture The texture of the block (wall : #)
      */
-    public Block(int x_, int y_, String image, String texture) {
+    public Block(int x_, int y_) {
         x = x_;
         y = y_;
-        this.texture = texture;
-        this.image = image;
 
     }
 
@@ -68,17 +62,13 @@ public abstract class Block {
      * Texture accessor
      * @return name of the image of the block
      */
-    public String getTexture(){
-        return texture;
-    }
+    public abstract String getTexture();
 
     /**
      * Image accessor
      * @return name of the image of the block
      */
-    public String getImage(){
-        return image;
-    }
+    public abstract String getImage();
 
     /**
      * Used to know if we can move towards the block
