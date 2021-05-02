@@ -2,10 +2,8 @@ package presenter;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.*;
@@ -15,10 +13,8 @@ import view.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("ALL")
 /**
@@ -113,63 +109,55 @@ public class Main extends Application {
                     mainMenu.getOptionsButton(), mainMenu.getOptionsButton().overlay,
                     mainMenu.getQuitButton(), mainMenu.getQuitButton().overlay,
                     mainMenu.getTutorialButton(), mainMenu.getTutorialButton().overlay,
+                    mainMenu.getCreatorButton(), mainMenu.getCreatorButton().overlay,
                     mainMenu.getCampaignButton(), mainMenu.getCampaignButton().overlay,
                     mainMenu.getFreePlayButton(), mainMenu.getFreePlayButton().overlay,
                     mainMenu.getRandomButton(), mainMenu.getRandomButton().overlay,
                     mainMenu.getAchievementsButton(), mainMenu.getAchievementsButton().overlay);
 
 
-            // OPTIONS ------------
+
+
+
+            // EDITOR ----------
+            Pane creatorPane = new Pane();
+
+            CreatorMenu creatorMenu = new CreatorMenu(creatorPane, windowWidth, windowHeight, WR, HR);
+
+            creatorPane.getChildren().addAll(
+                    creatorMenu.getFinalPane()
+            );
+
+            creatorMenu.getMainMenuButton().setOnClick(e -> {
+                window.setScene(mainMenu);
+                window.setFullScreen(fullscreen);
+            });
+
+            mainMenu.getCreatorButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    window.setScene(creatorMenu);
+                    window.setFullScreen(fullscreen);
+                }
+            });
+
+
+            /// OPTIONS ------------
             CustomImage optionsBackground = new CustomImage(windowX, windowY, WR, HR, "background empty.png");
 
             Pane optionsPane = new Pane();
 
-            OptionsMenu optionsMenu = new OptionsMenu(optionsPane, windowWidth, windowHeight, WR, HR, optionsBackground);
+            OptionsMenu optionsMenu = new OptionsMenu(optionsPane, windowWidth, windowHeight, WR, HR, optionsBackground, audioPlayer, effectPlayer);
 
             optionsMenu.getBackButtonOptions().setOnClick(e -> {
-                String music = optionsMenu.getMusicField().getText();
-                String effect = optionsMenu.getEffectField().getText();
-
-                //If the user return to the main menu and leaves the field blank, we set the volume with
-                //the volume he had when he openned the game.
-                /*
-                if (music.isEmpty() || (Double.valueOf(music) > 1 || Double.valueOf(music) < 0)) {
-                    music = optionsMenu.getStarterMusicVolume();
-                    optionsMenu.getMusicField().setText(music);
-                }
-                if (effect.isEmpty() || (Double.valueOf(effect) > 1 || Double.valueOf(effect) < 0)) {
-                    effect = optionsMenu.getStarterEffectVolume();
-                    optionsMenu.getEffectField().setText(effect);
-                }
-                 */
-                try {
-                    if (music.isEmpty()) {
-                        music = optionsMenu.getStarterMusicVolume();
-                        optionsMenu.getMusicField().setText(music);
-                    }
-                    if (effect.isEmpty()) {
-                        effect = optionsMenu.getStarterEffectVolume();
-                        optionsMenu.getEffectField().setText(effect);
-                    }
-                    JSONWriter writer = new JSONWriter("data.json");
-                    writer.set("music", music);
-                    writer.set("effect", effect);
-                    audioPlayer.setVolume(Double.valueOf(music));
-                    effectPlayer.setVolume(Double.valueOf(effect));
-                    window.setScene(mainMenu);
-                    window.setFullScreen(fullscreen);
-                } catch (NumberFormatException e1){
-                    //Volume isn't between 0 and 1
-                    AlertBox.display("Error", e1.getMessage());
-                }catch (IOException | ParseException exc) {
-                    AlertBox.display("Error", "An error occured while writing in the JSON file\n" +
-                            exc.getMessage());
-                }
-
+                window.setScene(mainMenu);
+                window.setFullScreen(fullscreen);
             });
             optionsPane.getChildren().addAll(optionsBackground, optionsMenu.getBackButtonOptions(),
                     optionsMenu.getBackButtonOptions().overlay,
-                    optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume());
+                    optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume(),
+                    optionsMenu.getUpControl(), optionsMenu.getDownControl(), optionsMenu.getRightControl(),
+                    optionsMenu.getLeftControl(), optionsMenu.getRestartControl(), optionsMenu.getTrucControl(),
+                    optionsMenu.getSaveControl(), optionsMenu.getOpenConsControl(), optionsMenu.getCloseConsControl());
 
             mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
@@ -480,6 +468,7 @@ public class Main extends Application {
             System.exit(-1);
         } catch (Exception e2) {
             AlertBox.display("Fatal Error", "An error occurred while loading the game\n");
+            e2.printStackTrace();
             if (e2.getMessage() != null) {
                 System.out.println(e2.getMessage());
             }
