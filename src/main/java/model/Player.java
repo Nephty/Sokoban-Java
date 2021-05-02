@@ -7,7 +7,7 @@ public class Player extends Block {
     private Teleport currTP;
 
     private static final String Texture = "@";
-    private static final String Image = "player down .png";
+    private static final String Image = "player down.png";
     /**
      * <code>Player</code> constructor
      * @param x_ The row of the Player in the blockList
