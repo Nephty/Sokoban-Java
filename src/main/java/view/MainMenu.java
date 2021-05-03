@@ -24,8 +24,8 @@ public class MainMenu
     //---------//
     // Objects //
     //---------//
-
-    private CustomButton playButton, optionsButton, quitButton, achievementsButton, campaignButton, tutorialButton,
+        
+    private CustomButton playButton, createButton, optionsButton, quitButton, achievementsButton, campaignButton, tutorialButton,
                         freePlayButton, randomButton;
     private CustomImage background;
     private static Stage window;
@@ -74,12 +74,22 @@ public class MainMenu
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
                 (int) (((ORIGINAL_HEIGHT/2)+25-96-25)),
                 WR, HR, "play button.png");
-        this.optionsButton = new CustomButton(
+        this.createButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
                 (int) (((ORIGINAL_HEIGHT/2)+25)),
+                WR, HR, "create button.png");
+        this.optionsButton = new CustomButton(
+                (int) (((ORIGINAL_WIDTH/2)-(480/2))),
+                (int) (((ORIGINAL_HEIGHT/2)+25+96+25)),
+                (int) (((ORIGINAL_HEIGHT/2)+25)),
                 WR, HR, "options button.png");
+        this.achievementsButton = new CustomButton(
+                (int) (((ORIGINAL_WIDTH/2)-(480/2))),
+                (int) (((ORIGINAL_HEIGHT/2)+25+96+25+96+25)),
+                WR, HR, "achievements button.png");
         this.quitButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
+                (int) (((ORIGINAL_HEIGHT/2)+25+96+25+96+25+96+25)),
                 (int) (((ORIGINAL_HEIGHT/2)+25+96+25+96+25)),
                 WR, HR, "quit button.png");
         this.achievementsButton = new CustomButton(
@@ -209,6 +219,15 @@ public class MainMenu
     public CustomButton getOptionsButton() {
         return optionsButton;
     }
+        
+    /**
+     * Return the "Create" button used to switch to the <code>CreatorMenu</code>
+     * @return The "Create" button currently used.
+     */
+    public CustomButton getCreatorButton(){
+        return createButton;
+    }
+
 
     /**
      * Return the "Quit" button used to quit the game
@@ -252,7 +271,7 @@ public class MainMenu
 
     /**
      * Return the "Random" button used to switch to the <code></code>
-     * @return
+     * @return The generation button
      */
     public CustomButton getRandomButton(){
         return randomButton;
