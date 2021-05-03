@@ -13,7 +13,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.Fichier;
 import model.JSONReader;
-import org.json.simple.parser.ParseException;
 
 
 /**
@@ -38,11 +37,8 @@ public class CampaignSelector extends LevelSelector{
      * @param height_ The height of the menu (preferably the size of the window)
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public CampaignSelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException, ParseException{
+    public CampaignSelector(Parent parent_, double width_, double height_, float WR, float HR) throws FileNotFoundException {
         super(parent_, width_, height_, WR, HR);
     }
 
@@ -50,10 +46,10 @@ public class CampaignSelector extends LevelSelector{
     /**
      * Create the button for the level selection.
      * Read the completed levels in the data.json file and create the correct amount of buttons.
+     * @throws FileNotFoundException when a filename doesnt match any img TODO fix img throws
      */
     @Override
-    public void setSelectors()
-            throws IOException, ParseException {
+    public void setSelectors() throws FileNotFoundException {
         super.setSelectors();
         JSONReader reader = new JSONReader("data.json");
         this.completedLevels = reader.getInt("completed levels");
@@ -113,7 +109,6 @@ public class CampaignSelector extends LevelSelector{
                 selectedLevelViewer.setVisible(false);
                 levelViewer.getChildren().removeAll(levelViewer.getChildren());
                 CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
-                levelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
                 levelViewer.getChildren().add(lvlImage);
             } catch (IOException exc) {
                 AlertBox.display("Error", "Error : "+exc.getMessage());
@@ -140,7 +135,6 @@ public class CampaignSelector extends LevelSelector{
                 selectedLevelViewer.getChildren().removeAll(selectedLevelViewer.getChildren());
                 CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
                 selectedLevelViewer.getChildren().add(lvlImage);
-                selectedLevelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
             } catch (IOException exc) {
                 AlertBox.display("Error", "Error : "+exc.getMessage());
             }
@@ -152,7 +146,7 @@ public class CampaignSelector extends LevelSelector{
      * @return The currently selected level
      */
     @Override
-    public Object getSelectedLevel(){
+    public byte getSelectedLevel(){
         return this.selectedLevel;
     }
 }

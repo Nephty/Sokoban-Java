@@ -15,6 +15,7 @@ import model.*;
 import java.io.*;
 import java.util.ArrayList;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import presenter.Main;
 
@@ -77,8 +78,7 @@ public class PlayingMenu extends Menu {
      * @throws IOException Exception thrown when any provided file could not be found
      * @throws ParseException Exception thrown when a file could not be parsed
      */
-    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, AudioPlayer beatPlayer, AudioPlayer effectPlayer)
-            throws IOException, ParseException {
+    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, AudioPlayer beatPlayer, AudioPlayer effectPlayer) throws IOException {
         super(parent_, width_, height_, WR_, HR_);
         this.leftMenu = new Pane();
         this.rightMenu = new Pane();
@@ -118,56 +118,66 @@ public class PlayingMenu extends Menu {
 
         EventHandler keyEventHandler = (EventHandler<KeyEvent>) keyEvent -> {
             Direction direction;
-            String str = keyEvent.getText().toUpperCase();
-            if(str.equals(getControl("upTouch"))) {
-                direction = Direction.UP;
-                game.setPlayerFacing(direction);
-            }else if(str.equals(getControl("downTouch"))) {
-                direction = Direction.DOWN;
-                game.setPlayerFacing(direction);
-            }else if(str.equals(getControl("rightTouch"))) {
-                direction = Direction.RIGHT;
-                game.setPlayerFacing(direction);
-            }else if(str.equals(getControl("leftTouch"))) {
-                direction = Direction.LEFT;
-                game.setPlayerFacing(direction);
-            }
-            else if(str.equals(getControl("restartTouch"))) {
-                this.resetCounters();
-                game.setPlayerFacing(Direction.DOWN);
-                direction = Direction.RESTART;
-            }else if(str.equals(getControl("trucTouch"))) {
-                try {
-                    levelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
-                            "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
-                            "File name..."));
-                } catch (IOException e) {
-                    AlertBox.display("Error", "An error occurred while trying to save the level");
-                }
-                direction = Direction.NULL;
-            }else if(str.equals(getControl("saveTouch"))) {
-                // TODO : what's taking so long to apply a lot of moves (200+ for example) ?
-                String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
-                if (fileName != null && !fileName.equals("")) {
+            switch (keyEvent.getCode()) {
+                case Z:
+                case UP:
+                    direction = Direction.UP;
+                    game.setPlayerFacing(direction);
+                    break;
+                case S:
+                case DOWN:
+                    direction = Direction.DOWN;
+                    game.setPlayerFacing(direction);
+                    break;
+                case Q:
+                case LEFT:
+                    direction = Direction.LEFT;
+                    game.setPlayerFacing(direction);
+                    break;
+                case D:
+                case RIGHT:
+                    direction = Direction.RIGHT;
+                    game.setPlayerFacing(direction);
+                    break;
+                case R:
+                    this.resetCounters();
+                    game.setPlayerFacing(Direction.DOWN);
+                    direction = Direction.RESTART;
+                    break;
+                case F:
                     try {
+                        levelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
+                                "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
+                                "File name..."));
+                    } catch (IOException e) {
+                        AlertBox.display("Error", "An error occurred while trying to save the level");
+                    }
+                    direction = Direction.NULL;
+                    break;
+                case G:
+                    // TODO : what's taking so long to apply a lot of moves (200+ for example) ?
+                    String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
+                    if (fileName != null && !fileName.equals("")) {
                         ArrayList<Direction> res = levelSaver.getHistory(fileName, "");
                         for (Direction dir : res) {
                             applyMove(dir);
                             System.out.println("applied : " + dir);
                         }
-                    } catch (IOException | ClassNotFoundException exception){
-                        AlertBox.display("Error", "Error : "+exception.getMessage());
                     }
-                }
-                direction = Direction.NULL;
-            }else if(str.equals(getControl("consOpenTouch"))) {
-                Console.open();
-                direction = Direction.NULL;
-            }else if(str.equals(getControl("consCloseleftTouch"))) {
-                Console.close();
-                direction = Direction.NULL;
-            }else {
-                direction = Direction.NULL;
+                    direction = Direction.NULL;
+                    break;
+                case K:
+                    Console.open();
+                    System.out.println("opened");
+                    direction = Direction.NULL;
+                    break;
+                case L:
+                    Console.close();
+                    System.out.println("closed");
+                    direction = Direction.NULL;
+                    break;
+                default:
+                    direction = Direction.NULL;
             }
             applyMove(direction);
         };
@@ -207,16 +217,6 @@ public class PlayingMenu extends Menu {
         this.finalPane.getChildren().addAll(this.leftMenu, this.middleMenu, this.rightMenu,this.rickRollImage);
     }
 
-    private String getControl(String text) {
-        try {
-            JSONReader reader = new JSONReader("control.json");
-            return reader.getString(text);
-        } catch (IOException | ParseException exc) {
-            exc.printStackTrace();
-        }
-        return "/";
-    }
-
     /**
      * Try to move the player in the given <code>Direction</code>, increase the total moves count if the player was
      * able to move, increase the total pushes count if the player pushed a <code>Box</code> and update the
@@ -249,7 +249,7 @@ public class PlayingMenu extends Menu {
 
                 try {
                     updateMapTiles();
-                } catch (IOException | ParseException exception) {
+                } catch (IOException exception) {
                     AlertBox.display("Fatal Error", exception.getMessage());
                     System.exit(-1);
                 }
@@ -443,7 +443,7 @@ public class PlayingMenu extends Menu {
                 this.resetCounters();
                 try {
                     this.updateMapTiles();
-                } catch (IOException | ParseException exception) {
+                } catch (IOException exception) {
                     AlertBox.display("Fatal Error", exception.getMessage());
                     System.exit(-1);
                 }
@@ -587,11 +587,8 @@ public class PlayingMenu extends Menu {
      * Update the currently displayed map layout based on the new generated <code>Board</code> and its blockList.
      * This method is used every time the user makes a move. Handles the task of showing the congratulations message
      * if the user won the game.
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when a file could not be parsed
      */
-    private void updateMapTiles()  // was previously called setMap()
-            throws IOException, ParseException {
+    private void updateMapTiles() throws IOException { // was previously called setMap()
         Block[][] blockList = this.game.getBoard().getBlockList();
         final int spaceConstant = (int) ((this.imageLength)/HR);
         this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
@@ -639,7 +636,7 @@ public class PlayingMenu extends Menu {
                 key += currentCampaignLevel;
 
                 String enteredString = CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating...");
-                boolean parsed = true;
+                boolean parsed = false;
                 if (!enteredString.equals("")) {
                     while (!parsed) {
                         try {
@@ -683,7 +680,6 @@ public class PlayingMenu extends Menu {
      * Create a button for each move and assign the <code>EventHandler</code> used for the keyboard inputs.
      * @param keyEventHandler The <code>EventHandler</code> to assign to the button
      */
-    // TODO : can we run this method with only one button and generify it ?
     private void prepareMoveButtons(EventHandler keyEventHandler) {
         this.moveButton = new Button();
         this.moveButton.setLayoutX(25*WR);
@@ -721,15 +717,11 @@ public class PlayingMenu extends Menu {
      */
     private void addLevel() {
         if (currentMode.equals("campaign")) {
-            try {
-                JSONReader reader = new JSONReader("data.json");
-                int currentCompletedLevels = reader.getByte("completed levels");
-                if (currentCompletedLevels == (currentCampaignLevel - 1)) {
-                    JSONWriter writer = new JSONWriter("data.json");
-                    writer.set("completed levels", String.valueOf((currentCompletedLevels + 1)));
-                }
-            } catch (IOException | ParseException exc) {
-                AlertBox.display("Error", "Error while trying to edit completed levels\n"+exc.getMessage());
+            JSONReader reader = new JSONReader("data.json");
+            int currentCompletedLevels = reader.getByte("completed levels");
+            if (currentCompletedLevels == (currentCampaignLevel - 1)) {
+                JSONWriter writer = new JSONWriter("data.json");
+                writer.set("completed levels", String.valueOf((currentCompletedLevels + 1)));
             }
         }
     }
@@ -739,11 +731,8 @@ public class PlayingMenu extends Menu {
      * @param level
      * @param name
      * @param dest
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when a file could not be parsed
      */
-    public void setLevel(ArrayList<String> level, String name, String dest)
-            throws IOException, ParseException {
+    public void setLevel(ArrayList<String> level, String name, String dest) throws IOException {
         switch (dest){
             case "campaign":
                 this.currentCampaignLevel = Byte.valueOf(name);
@@ -773,7 +762,7 @@ public class PlayingMenu extends Menu {
                         this.currentLevelDifficultyText.setX(90*WR);
                         break;
                     default:  // "normal" string with end up here so no need to make another case
-                        this.currentLevelDifficultyText.setX(80*WR);
+                        this.currentLevelDifficultyText.setX(76*WR);
                         this.currentLevelDifficulty = Difficulty.NORMAL;
                 }
                 System.out.println(this.currentLevelDifficultyText.getX());
@@ -783,22 +772,16 @@ public class PlayingMenu extends Menu {
             case "freePlay":
                 this.currentLevelText.setX(currentLevelImgContainer.getX() + (currentLevelImgContainer.getWidth()/name.length()));
                 this.currentLevelText.setText(name);
-                this.currentLevelDifficultyText.setText("");
-                this.currentLevelAverageRatingText.setText("");
                 break;
 
             case "random":
                 this.currentLevelText.setX(currentLevelImgContainer.getX()+20*WR);
                 this.currentLevelText.setText("random");
-                this.currentLevelDifficultyText.setText("");
-                this.currentLevelAverageRatingText.setText("");
                 break;
 
             case "secret":
-                this.currentLevelText.setX(currentLevelImgContainer.getX()+40*WR);
+                this.currentLevelText.setX(currentLevelImgContainer.getX()+60*WR);
                 this.currentLevelText.setText(name);
-                this.currentLevelDifficultyText.setText("");
-                this.currentLevelAverageRatingText.setText("");
                 break;
             default:
                 throw new IOException(dest + " isn't a valid value");
@@ -837,7 +820,7 @@ public class PlayingMenu extends Menu {
         }
         try {
             updateMapTiles();
-        } catch (IOException | ParseException exception) {
+        } catch (IOException exception) {
             AlertBox.display("Fatal Error", exception.getMessage());
             System.exit(-1);
         }
