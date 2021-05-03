@@ -16,7 +16,6 @@ import org.json.simple.parser.ParseException;
 import javafx.scene.control.Slider;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
-
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -50,11 +49,9 @@ public class OptionsMenu
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
      * @param background_ The background displayed on the options menu
-     * @throws IOException Exception thrown when a provided file name doesn't match any file (during the <code>setComboBox()</code> method)
-     * @throws ParseException Exception thrown if the .json file could not be parsed (during the <code>setComboBox()</code> method)
      */
     public OptionsMenu(Parent parent_, double width_, double height_, float WR, float HR, CustomImage background_, AudioPlayer audioPlayer_, AudioPlayer effectPlayer_)
-            throws IOException, ParseException{
+            throws FileNotFoundException {
         super(parent_, width_, height_, WR, HR, background_);
         this.backButtonOptions = new CustomButton((int)((width_-480-5)), (int)((height_-96-5)), WR, HR, "back button.png");
         if (!Main.fullscreen) {
@@ -76,22 +73,17 @@ public class OptionsMenu
      * Used to know what's the value of the volume when the game just opened
      */
     private void prepareVolume(){
-        try {
-            JSONReader reader = new JSONReader("data.json");
-            starterMusicVolume = reader.getString("music");
-            starterEffectVolume = reader.getString("effect");
-        } catch (IOException | ParseException exc) {
-            exc.printStackTrace();
-        }
+        JSONReader reader = new JSONReader("data.json");
+        starterMusicVolume = reader.getString("music");
+        starterEffectVolume = reader.getString("effect");
+
     }
 
     /**
      * Create and prepare the <code>ComboBox</code> object that will display the available resolutions and
      * allow the user to change the resolution.
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown if the .json file could not be parsed
      */
-    public void setComboBox() throws IOException, ParseException{
+    public void setComboBox() {
         Label resolutionLabel = new Label("Resolution :");
         resolutionLabel.setLayoutX(10*WR);
         resolutionLabel.setTextFill(Color.rgb(88, 38, 24));
@@ -103,14 +95,9 @@ public class OptionsMenu
         comboBox.getSelectionModel().select(RESOLUTION_ID.get());
 
         comboBox.setOnAction(e -> {
-            try {
-                JSONWriter resolutionModifier = new JSONWriter("data.json");
-                RESOLUTION_ID.set((byte) (comboBox.getSelectionModel().getSelectedIndex()));
-                resolutionModifier.set("resolution", String.valueOf(RESOLUTION_ID.get()));
-            } catch (IOException | ParseException ioException) {
-                AlertBox.display("Error", "Error occurred while trying to save the Resolution" +
-                        ioException.getMessage());
-            }
+            JSONWriter resolutionModifier = new JSONWriter("data.json");
+            RESOLUTION_ID.set((byte) (comboBox.getSelectionModel().getSelectedIndex()));
+            resolutionModifier.set("resolution", String.valueOf(RESOLUTION_ID.get()));
         });
 
         resolution = new HBox();
@@ -127,7 +114,7 @@ public class OptionsMenu
         Label musicLabel = new Label("Music :");
         musicLabel.setTextFill(Color.rgb(88, 38, 24));
         musicLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
-
+            
         Slider sliderP = new Slider(0, 100, Double.parseDouble(starterMusicVolume)*100);
         sliderP.valueProperty().addListener(new ChangeListener<Number>() {  
             @Override
@@ -139,9 +126,6 @@ public class OptionsMenu
                 } catch (NumberFormatException e1){
                     //Volume isn't between 0 and 1
                     AlertBox.display("Error", e1.getMessage());
-                }catch (IOException | ParseException exc) {
-                    AlertBox.display("Error", "An error occured while writing in the JSON file\n" +
-                            exc.getMessage());
                 }
             }
         });
@@ -176,9 +160,6 @@ public class OptionsMenu
                 } catch (NumberFormatException e1){
                     //Volume isn't between 0 and 1
                     AlertBox.display("Error", e1.getMessage());
-                }catch (IOException | ParseException exc) {
-                    AlertBox.display("Error", "An error occured while writing in the JSON file\n" +
-                            exc.getMessage());
                 }
             }
         });
@@ -193,7 +174,7 @@ public class OptionsMenu
         effectVolume.setSpacing(10);
         effectVolume.getChildren().addAll(effectLabel, sliderS);
     }
-
+        
     private void setControl() {
         Label upLabel = new Label("Touch Up :");
         upLabel.setTextFill(Color.rgb(88, 38, 24));
@@ -379,48 +360,14 @@ public class OptionsMenu
                 }
             }
         }
-    }
-
-    /**
-     * Return the resolution of the <code>HBox</code>
-     * @return The Resolution <code>HBox</code> containing the <code>Label</code> and the <code>ComboBox</code>
-     */
-    public HBox getResolution(){
-        return resolution;
-    }
-
-    /**
-     * MusicVolume HBox accessor
-     * @return The MusicVolume HBox with the label and the TextField
-     */
-    public HBox getMusicVolume(){
-        return musicVolume;
-    }
-
+            
     /**
      * EffectVolume <code>HBox</code> accessor
      * @return The EffectVolume <code>HBox</code> with the <code>Label</code> and the <code>TextField</code>
      */
-    public HBox getEffectVolume(){
-        return effectVolume;
-    }
-
-    /**
-     * Return the resolution of the <code>HBox</code>
-     * @return The Resolution <code>HBox</code> containing the <code>Label</code> and the <code>ComboBox</code>
-     */
-    public HBox getUpControl(){
-        return upHBox;
-    }
-
-    /**
-     * MusicVolume HBox accessor
-     * @return The MusicVolume HBox with the label and the TextField
-     */
-    public HBox getDownControl(){
-        return downHBox;
-    }
-
+    public HBox getCloseConsControl(){
+        return closeConsHBox;
+            
     /**
      * EffectVolume <code>HBox</code> accessor
      * @return The EffectVolume <code>HBox</code> with the <code>Label</code> and the <code>TextField</code>
@@ -472,9 +419,52 @@ public class OptionsMenu
     /**
      * EffectVolume <code>HBox</code> accessor
      * @return The EffectVolume <code>HBox</code> with the <code>Label</code> and the <code>TextField</code>
+            
+    /**
+     * MusicVolume HBox accessor
+     * @return The MusicVolume HBox with the label and the TextField
      */
-    public HBox getCloseConsControl(){
-        return closeConsHBox;
+    public HBox getDownControl(){
+        return downHBox;
+
+    /**
+     * Return the resolution of the <code>HBox</code>
+     * @return The Resolution <code>HBox</code> containing the <code>Label</code> and the <code>ComboBox</code>
+     */
+    public HBox getResolution(){
+        return resolution;
+    }
+
+    /**
+     * MusicVolume HBox accessor
+     * @return The MusicVolume HBox with the label and the TextField
+     */
+    public HBox getMusicVolume(){
+        return musicVolume;
+    }
+
+    /**
+     * EffectVolume <code>HBox</code> accessor
+     * @return The EffectVolume <code>HBox</code> with the <code>Label</code> and the <code>TextField</code>
+     */
+    public HBox getEffectVolume(){
+        return effectVolume;
+    }
+
+    /**
+     * MusicField accessor
+     * @return The MusicField <code>TextField</code> to get the input of the user
+     */
+    public TextField getMusicField(){
+        return musicField;
+    }
+
+    /**
+     * EffectField accessor
+     * @return The MusicField <code>TextField</code> to get the input of the user
+     */
+    public TextField getEffectField(){
+        return effectField;
     }
 
     /**

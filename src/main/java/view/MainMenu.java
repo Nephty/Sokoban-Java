@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import org.json.simple.parser.ParseException;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,7 +24,7 @@ public class MainMenu
     //---------//
     // Objects //
     //---------//
-
+        
     private CustomButton playButton, createButton, optionsButton, quitButton, achievementsButton, campaignButton, tutorialButton,
                         freePlayButton, randomButton;
     private CustomImage background;
@@ -46,8 +47,6 @@ public class MainMenu
      * @param HR_ The height ratio that will be used to resize the components
      * @param window_ The window containing everything
      * @param background_ The background that will be displayed for the menu
-     * @throws IOException Exception thrown when any provided file could not be found
-     * @throws ParseException Exception thrown when a file could not be parsed
      */
     public MainMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_, CustomImage background_)
             throws IOException, ParseException {
@@ -61,11 +60,8 @@ public class MainMenu
     /**
      * Prepare the "Play", "Options", "Quests", "Quit", "Campaign", "Tutorial" and "Freeplay" buttons.
      * The <code>EventHandlers</code> are not set here.
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    private void setButtons()
-            throws IOException, ParseException {
+    private void setButtons() throws FileNotFoundException {
         Dimension dimension = resolutionIDToDimension();
         float WR = getWidthRatio(dimension.width);
         float HR = getHeightRatio(dimension.height);
@@ -85,6 +81,7 @@ public class MainMenu
         this.optionsButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
                 (int) (((ORIGINAL_HEIGHT/2)+25+96+25)),
+                (int) (((ORIGINAL_HEIGHT/2)+25)),
                 WR, HR, "options button.png");
         this.achievementsButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
@@ -93,8 +90,12 @@ public class MainMenu
         this.quitButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
                 (int) (((ORIGINAL_HEIGHT/2)+25+96+25+96+25+96+25)),
+                (int) (((ORIGINAL_HEIGHT/2)+25+96+25+96+25)),
                 WR, HR, "quit button.png");
-
+        this.achievementsButton = new CustomButton(
+                (int) (((ORIGINAL_WIDTH/2)-(480/2))),
+                (int) (((ORIGINAL_HEIGHT/2)+25+96+25)),
+                WR, HR, "achievements button.png");
         this.campaignButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
                 (int) (((ORIGINAL_HEIGHT/2)-96-(96/2)-5)),
@@ -117,7 +118,6 @@ public class MainMenu
         this.freePlayButton.setVisible(false);
         this.randomButton.setVisible(false);
     }
-
 
     /**
      * Prepare the <code>EventHandlers</code> for the buttons and their overlays according to their respective function.
@@ -219,7 +219,7 @@ public class MainMenu
     public CustomButton getOptionsButton() {
         return optionsButton;
     }
-
+        
     /**
      * Return the "Create" button used to switch to the <code>CreatorMenu</code>
      * @return The "Create" button currently used.
@@ -227,6 +227,7 @@ public class MainMenu
     public CustomButton getCreatorButton(){
         return createButton;
     }
+
 
     /**
      * Return the "Quit" button used to quit the game
@@ -269,7 +270,7 @@ public class MainMenu
     }
 
     /**
-     * Return the "Random" button used to switch to the <code>RandomSelector</code>
+     * Return the "Random" button used to switch to the <code></code>
      * @return The generation button
      */
     public CustomButton getRandomButton(){

@@ -32,11 +32,8 @@ public abstract class LevelSelector
      * @param height_ The height of the menu (preferably the size of the window)
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public LevelSelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException, ParseException {
+    public LevelSelector(Parent parent_, double width_, double height_, float WR, float HR) throws FileNotFoundException {
         super(parent_, width_, height_, WR, HR);
 
         this.rightMenu = new Pane();
@@ -121,10 +118,10 @@ public abstract class LevelSelector
      * Create the button for the level selection.
      * Read the completed levels in the data.json file and create the good number of buttons.
      */
-    public void setSelectors() throws IOException, ParseException {
+    public void setSelectors() throws FileNotFoundException {
         middleMenu.getChildren().removeAll(middleMenu.getChildren());
         this.middleMenuBackground = new CustomButton(0, 0, WR, HR, "background empty.png");
-        this.middleMenu.getChildren().add(middleMenuBackground);
+        this.middleMenu.getChildren().add(this.middleMenuBackground);
         middleMenu.getChildren().addAll(resumeButton, resumeButton.overlay,
                 playButton, playButton.overlay,
                 backButton, backButton.overlay);
@@ -140,7 +137,7 @@ public abstract class LevelSelector
                 nextPageButton.setVisible(false);
                 previousPageButton.setVisible(true);
                 this.setSelectors();
-            } catch (IOException | ParseException exc){
+            } catch (IOException exc){
                 AlertBox.display("Error", exc.getMessage());
             }
         });
@@ -156,7 +153,7 @@ public abstract class LevelSelector
                 nextPageButton.setVisible(true);
                 previousPageButton.setVisible(false);
                 this.setSelectors();
-            } catch (IOException | ParseException exc){
+            } catch (IOException exc){
                 AlertBox.display("Error", exc.getMessage());
             }
         });
@@ -212,8 +209,13 @@ public abstract class LevelSelector
      * Return the currently selected level.
      * @return The currently selected level.
      */
-    public abstract Object getSelectedLevel();
+    public byte getSelectedLevel(){
+        return 0;
+    }
 
+    public String getStringLevel(){
+        return "";
+    }
 
     /**
      * rightMenu accessor
