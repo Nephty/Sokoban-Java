@@ -5,8 +5,10 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import model.JSONReader;
+import org.json.simple.parser.ParseException;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -24,6 +26,8 @@ public abstract class Menu
     //---------//
 
     protected CustomImage background;
+    protected ArrayList<CustomImage> images = new ArrayList<>();
+    protected ArrayList<CustomButton> buttons = new ArrayList<>();
 
     //------//
     // Data //
@@ -84,8 +88,10 @@ public abstract class Menu
     /**
      * Read the data.json file and get the resolution ID written in the file.
      * @return The resolution ID of the selected resolution
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public static byte getResolutionID() {
+    public static byte getResolutionID() throws IOException, ParseException {
         JSONReader JSONDataReader = new JSONReader("data.json");
         return JSONDataReader.getByte("resolution");
     }
@@ -119,8 +125,10 @@ public abstract class Menu
     /**
      * Switch returning a <code>Dimension</code> object according to the byte of the selected resolution.
      * @return The <code>Dimension</code> object corresponding to the byte
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public static Dimension resolutionIDToDimension() {
+    public static Dimension resolutionIDToDimension() throws IOException, ParseException {
         byte resolutionID = getResolutionID();
         switch (resolutionID) {
             case 0:
