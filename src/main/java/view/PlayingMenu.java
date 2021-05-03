@@ -118,66 +118,54 @@ public class PlayingMenu extends Menu {
 
         EventHandler keyEventHandler = (EventHandler<KeyEvent>) keyEvent -> {
             Direction direction;
-            switch (keyEvent.getCode()) {
-                case Z:
-                case UP:
-                    direction = Direction.UP;
-                    game.setPlayerFacing(direction);
-                    break;
-                case S:
-                case DOWN:
-                    direction = Direction.DOWN;
-                    game.setPlayerFacing(direction);
-                    break;
-                case Q:
-                case LEFT:
-                    direction = Direction.LEFT;
-                    game.setPlayerFacing(direction);
-                    break;
-                case D:
-                case RIGHT:
-                    direction = Direction.RIGHT;
-                    game.setPlayerFacing(direction);
-                    break;
-                case R:
-                    this.resetCounters();
-                    game.setPlayerFacing(Direction.DOWN);
-                    direction = Direction.RESTART;
-                    break;
-                case F:
+            String str = keyEvent.getText().toUpperCase();
+            if(str.equals(getControl("upTouch"))) {
+                direction = Direction.UP;
+                game.setPlayerFacing(direction);
+            }else if(str.equals(getControl("downTouch"))) {
+                direction = Direction.DOWN;
+                game.setPlayerFacing(direction);
+            }else if(str.equals(getControl("rightTouch"))) {
+                direction = Direction.RIGHT;
+                game.setPlayerFacing(direction);
+            }else if(str.equals(getControl("leftTouch"))) {
+                direction = Direction.LEFT;
+                game.setPlayerFacing(direction);
+            }
+            else if(str.equals(getControl("restartTouch"))) {
+                this.resetCounters();
+                game.setPlayerFacing(Direction.DOWN);
+                direction = Direction.RESTART;
+            }else if(str.equals(getControl("trucTouch"))) {
+                try {
+                    levelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
+                            "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
+                            "File name..."));
+                } catch (IOException e) {
+                    AlertBox.display("Error", "An error occurred while trying to save the level");
+                }
+                direction = Direction.NULL;
+            }else if(str.equals(getControl("saveTouch"))) {
+                // TODO : what's taking so long to apply a lot of moves (200+ for example) ?
+                String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
+                if (fileName != null && !fileName.equals("")) {
                     try {
-                        levelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
-                                "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
-                                "File name..."));
-                    } catch (IOException e) {
-                        AlertBox.display("Error", "An error occurred while trying to save the level");
-                    }
-                    direction = Direction.NULL;
-                    break;
-                case G:
-                    // TODO : what's taking so long to apply a lot of moves (200+ for example) ?
-                    String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
-                    if (fileName != null && !fileName.equals("")) {
                         ArrayList<Direction> res = levelSaver.getHistory(fileName, "");
                         for (Direction dir : res) {
                             applyMove(dir);
                             System.out.println("applied : " + dir);
                         }
                     }
-                    direction = Direction.NULL;
-                    break;
-                case K:
-                    Console.open();
-                    System.out.println("opened");
-                    direction = Direction.NULL;
-                    break;
-                case L:
-                    Console.close();
-                    System.out.println("closed");
-                    direction = Direction.NULL;
-                    break;
-                default:
-                    direction = Direction.NULL;
+                }
+                direction = Direction.NULL;
+            }else if(str.equals(getControl("consOpenTouch"))) {
+                Console.open();
+                direction = Direction.NULL;
+            }else if(str.equals(getControl("consCloseleftTouch"))) {
+                Console.close();
+                direction = Direction.NULL;
+            }else {
+                direction = Direction.NULL;
             }
             applyMove(direction);
         };
@@ -216,6 +204,17 @@ public class PlayingMenu extends Menu {
         this.middleMenu.getChildren().addAll(this.gamePane, this.youWonText);
         this.finalPane.getChildren().addAll(this.leftMenu, this.middleMenu, this.rightMenu,this.rickRollImage);
     }
+    
+    private String getControl(String text) {
+        try {
+            JSONReader reader = new JSONReader("control.json");
+            return reader.getString(text);
+        } catch (IOException | ParseException exc) {
+            exc.printStackTrace();
+        }
+        return "/";
+    }
+
 
     /**
      * Try to move the player in the given <code>Direction</code>, increase the total moves count if the player was
@@ -762,7 +761,7 @@ public class PlayingMenu extends Menu {
                         this.currentLevelDifficultyText.setX(90*WR);
                         break;
                     default:  // "normal" string with end up here so no need to make another case
-                        this.currentLevelDifficultyText.setX(76*WR);
+                        this.currentLevelDifficultyText.setX(80*WR);
                         this.currentLevelDifficulty = Difficulty.NORMAL;
                 }
                 System.out.println(this.currentLevelDifficultyText.getX());
@@ -772,16 +771,22 @@ public class PlayingMenu extends Menu {
             case "freePlay":
                 this.currentLevelText.setX(currentLevelImgContainer.getX() + (currentLevelImgContainer.getWidth()/name.length()));
                 this.currentLevelText.setText(name);
+                this.currentLevelDifficultyText.setText("");
+                this.currentLevelAverageRatingText.setText("");
                 break;
 
             case "random":
                 this.currentLevelText.setX(currentLevelImgContainer.getX()+20*WR);
                 this.currentLevelText.setText("random");
+                this.currentLevelDifficultyText.setText("");
+                this.currentLevelAverageRatingText.setText("");
                 break;
 
             case "secret":
-                this.currentLevelText.setX(currentLevelImgContainer.getX()+60*WR);
+                this.currentLevelText.setX(currentLevelImgContainer.getX()+40*WR);
                 this.currentLevelText.setText(name);
+                this.currentLevelDifficultyText.setText("");
+                this.currentLevelAverageRatingText.setText("");
                 break;
             default:
                 throw new IOException(dest + " isn't a valid value");
