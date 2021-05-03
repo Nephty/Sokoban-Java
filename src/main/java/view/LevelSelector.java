@@ -32,8 +32,11 @@ public abstract class LevelSelector
      * @param height_ The height of the menu (preferably the size of the window)
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
+     * @throws IOException Exception thrown when a provided file name doesn't match any file
+     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public LevelSelector(Parent parent_, double width_, double height_, float WR, float HR) throws FileNotFoundException {
+    public LevelSelector(Parent parent_, double width_, double height_, float WR, float HR)
+            throws IOException, ParseException {
         super(parent_, width_, height_, WR, HR);
 
         this.rightMenu = new Pane();
@@ -52,12 +55,12 @@ public abstract class LevelSelector
 
         //Used to show the map when the mouse is over a button.
         this.levelViewer = new Pane();
-        this.levelViewer.setLayoutY(350*HR);
-        this.levelViewer.setMaxWidth(350*WR);
+        this.levelViewer.setLayoutX(30*WR);
+        this.levelViewer.setMaxWidth(290*WR);
 
         //Used to show the level we have selected.
         this.selectedLevelViewer = new Pane();
-        this.selectedLevelViewer.setLayoutY(350*HR);
+        this.selectedLevelViewer.setLayoutX(30*WR);
         this.selectedLevelViewer.setMaxWidth(350*WR);
         rightMenu.getChildren().addAll(rightMenuImage, selectedLevelViewer,levelViewer, nextPageButton, previousPageButton);
 
@@ -118,10 +121,10 @@ public abstract class LevelSelector
      * Create the button for the level selection.
      * Read the completed levels in the data.json file and create the good number of buttons.
      */
-    public void setSelectors() throws FileNotFoundException {
+    public void setSelectors() throws IOException, ParseException {
         middleMenu.getChildren().removeAll(middleMenu.getChildren());
         this.middleMenuBackground = new CustomButton(0, 0, WR, HR, "background empty.png");
-        this.middleMenu.getChildren().add(this.middleMenuBackground);
+        this.middleMenu.getChildren().add(middleMenuBackground);
         middleMenu.getChildren().addAll(resumeButton, resumeButton.overlay,
                 playButton, playButton.overlay,
                 backButton, backButton.overlay);
@@ -137,7 +140,7 @@ public abstract class LevelSelector
                 nextPageButton.setVisible(false);
                 previousPageButton.setVisible(true);
                 this.setSelectors();
-            } catch (IOException exc){
+            } catch (IOException | ParseException exc){
                 AlertBox.display("Error", exc.getMessage());
             }
         });
@@ -153,7 +156,7 @@ public abstract class LevelSelector
                 nextPageButton.setVisible(true);
                 previousPageButton.setVisible(false);
                 this.setSelectors();
-            } catch (IOException exc){
+            } catch (IOException | ParseException exc){
                 AlertBox.display("Error", exc.getMessage());
             }
         });
@@ -209,13 +212,8 @@ public abstract class LevelSelector
      * Return the currently selected level.
      * @return The currently selected level.
      */
-    public byte getSelectedLevel(){
-        return 0;
-    }
+    public abstract Object getSelectedLevel();
 
-    public String getStringLevel(){
-        return "";
-    }
 
     /**
      * rightMenu accessor

@@ -1,13 +1,20 @@
 package view;
 
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import model.JSONWriter;
+import org.json.simple.parser.ParseException;
 import presenter.Main;
+
+import java.io.IOException;
 
 /**
  * A <code>Console</code> is a user interface display apart from the main window. It contains a <code>TextField</code>
@@ -62,8 +69,12 @@ public class Console {
      * @param value The new value to assign
      */
     private static void setData(String key, String value) {
-        JSONWriter jsonWriter = new JSONWriter("data.json");
-        jsonWriter.set(key, value);
+        try {
+            JSONWriter jsonWriter = new JSONWriter("data.json");
+            jsonWriter.set(key, value);
+        } catch (IOException | ParseException ioException) {
+            ioException.printStackTrace();
+        }
     }
 
     /**
