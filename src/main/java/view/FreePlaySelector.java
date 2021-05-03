@@ -7,10 +7,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.Fichier;
-import org.json.simple.parser.ParseException;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * The <code>FreePlaySelector</code> is a user interface used to display all the different levels, their
@@ -34,11 +32,8 @@ public class FreePlaySelector extends LevelSelector{
      * @param height_ The height of the menu (preferably the size of the window)
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public FreePlaySelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException, ParseException {
+    public FreePlaySelector(Parent parent_, double width_, double height_, float WR, float HR) throws FileNotFoundException {
         super(parent_, width_, height_, WR, HR);
     }
 
@@ -48,7 +43,7 @@ public class FreePlaySelector extends LevelSelector{
      * Read the .xsb files in the freePlay folder and displays it
      */
     @Override
-    public void setSelectors() throws IOException, ParseException {
+    public void setSelectors() throws FileNotFoundException {
         super.setSelectors();
         String[] files = Fichier.levelList("main\\resources\\level\\freePlay\\");
         int xScale = 0;
@@ -127,7 +122,7 @@ public class FreePlaySelector extends LevelSelector{
      * @return the String level selected
      */
     @Override
-    public Object getSelectedLevel(){
+    public String getStringLevel(){
         return selectedLevel;
     }
 
