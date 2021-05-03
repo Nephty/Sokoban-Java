@@ -2,8 +2,10 @@ package presenter;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.*;
@@ -13,8 +15,9 @@ import view.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("ALL")
 /**
@@ -44,8 +47,6 @@ public class Main extends Application {
     /**
      * The main method that will be ran when starting the game.
      * @param primaryStage The window that will contain almost all the content
-     * TODO : try to change "throws Exception" to try/catches and make it so no exception can be thrown, or at least
-     *  the programming errors such as "not finding an image file because the name was not written correctly".
      */
     @Override
     public void start(Stage primaryStage){
@@ -115,10 +116,6 @@ public class Main extends Application {
                     mainMenu.getRandomButton(), mainMenu.getRandomButton().overlay,
                     mainMenu.getAchievementsButton(), mainMenu.getAchievementsButton().overlay);
 
-
-
-
-
             // EDITOR ----------
             Pane creatorPane = new Pane();
 
@@ -139,19 +136,20 @@ public class Main extends Application {
                     window.setFullScreen(fullscreen);
                 }
             });
+            // ---------------------
 
 
             /// OPTIONS ------------
             CustomImage optionsBackground = new CustomImage(windowX, windowY, WR, HR, "background empty.png");
 
             Pane optionsPane = new Pane();
-
             OptionsMenu optionsMenu = new OptionsMenu(optionsPane, windowWidth, windowHeight, WR, HR, optionsBackground, audioPlayer, effectPlayer);
 
             optionsMenu.getBackButtonOptions().setOnClick(e -> {
                 window.setScene(mainMenu);
                 window.setFullScreen(fullscreen);
             });
+            
             optionsPane.getChildren().addAll(optionsBackground, optionsMenu.getBackButtonOptions(),
                     optionsMenu.getBackButtonOptions().overlay,
                     optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume(),
@@ -288,7 +286,8 @@ public class Main extends Application {
                     }
                 }
             });
-//Random ---------------
+            
+            // RANDOM ---------------
             Pane randomPanel = new Pane();
             RandomSelector randomMenu = new RandomSelector(randomPanel, windowWidth, windowHeight, WR, HR);
             randomPanel.getChildren().addAll(randomMenu.getFinalPane());
@@ -479,10 +478,8 @@ public class Main extends Application {
     /**
      * Read the data.json file and get the resolution ID written in the file.
      * @return The resolution ID of the selected resolution
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public static byte getResolutionID() throws IOException, ParseException {
+    public static byte getResolutionID() {
         JSONReader JSONDataReader = new JSONReader("data.json");
         return JSONDataReader.getByte("resolution");
     }
@@ -518,10 +515,8 @@ public class Main extends Application {
      * variable according to the selected resolution, the width, the height and the position of the window,
      * as well as its title and fullscreen mode.
      * @param window The window that will be prepared
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public static void prepareResolution(Stage window) throws IOException, ParseException {
+    public static void prepareResolution(Stage window) {
         // Available resolutions :
         // 0 : native resolution
         // 1 : 1280x720     HD
@@ -587,7 +582,7 @@ public class Main extends Application {
         }
     }
 
-    private void setAudioPlayers() throws IOException, ParseException{
+    private void setAudioPlayers() {
         audioPlayer = new AudioPlayer();
         effectPlayer = new AudioPlayer();
         JSONReader reader= new JSONReader("data.json");
@@ -617,12 +612,6 @@ public class Main extends Application {
                         System.out.println("An error occured while checking the files");
                         System.out.println(exc.getMessage());
                     }
-                } else {
-                    throw new IllegalArgumentException(" Only these configurations are allowed :\n"+
-                            "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n"+
-                            "- 1 argument  : \"integrityCheck\"\n"+
-                            "- 0 argument");
-                }
             }else if (args.length == 3) {
                 try{
                     ArrayList<String> stringMap = Fichier.loadFile(args[0], "freePlay");
