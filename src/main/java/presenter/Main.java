@@ -2,8 +2,10 @@ package presenter;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.*;
@@ -13,8 +15,9 @@ import view.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("ALL")
 /**
@@ -44,8 +47,6 @@ public class Main extends Application {
     /**
      * The main method that will be ran when starting the game.
      * @param primaryStage The window that will contain almost all the content
-     * TODO : try to change "throws Exception" to try/catches and make it so no exception can be thrown, or at least
-     *  the programming errors such as "not finding an image file because the name was not written correctly".
      */
     @Override
     public void start(Stage primaryStage){
@@ -109,55 +110,60 @@ public class Main extends Application {
                     mainMenu.getOptionsButton(), mainMenu.getOptionsButton().overlay,
                     mainMenu.getQuitButton(), mainMenu.getQuitButton().overlay,
                     mainMenu.getTutorialButton(), mainMenu.getTutorialButton().overlay,
-                    mainMenu.getCreatorButton(), mainMenu.getCreatorButton().overlay,
                     mainMenu.getCampaignButton(), mainMenu.getCampaignButton().overlay,
                     mainMenu.getFreePlayButton(), mainMenu.getFreePlayButton().overlay,
                     mainMenu.getRandomButton(), mainMenu.getRandomButton().overlay,
                     mainMenu.getAchievementsButton(), mainMenu.getAchievementsButton().overlay);
 
 
-
-
-
-            // EDITOR ----------
-            Pane creatorPane = new Pane();
-
-            CreatorMenu creatorMenu = new CreatorMenu(creatorPane, windowWidth, windowHeight, WR, HR);
-
-            creatorPane.getChildren().addAll(
-                    creatorMenu.getFinalPane()
-            );
-
-            creatorMenu.getMainMenuButton().setOnClick(e -> {
-                window.setScene(mainMenu);
-                window.setFullScreen(fullscreen);
-            });
-
-            mainMenu.getCreatorButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    window.setScene(creatorMenu);
-                    window.setFullScreen(fullscreen);
-                }
-            });
-
-
-            /// OPTIONS ------------
+            // OPTIONS ------------
             CustomImage optionsBackground = new CustomImage(windowX, windowY, WR, HR, "background empty.png");
 
             Pane optionsPane = new Pane();
 
-            OptionsMenu optionsMenu = new OptionsMenu(optionsPane, windowWidth, windowHeight, WR, HR, optionsBackground, audioPlayer, effectPlayer);
+            OptionsMenu optionsMenu = new OptionsMenu(optionsPane, windowWidth, windowHeight, WR, HR, optionsBackground);
 
             optionsMenu.getBackButtonOptions().setOnClick(e -> {
-                window.setScene(mainMenu);
-                window.setFullScreen(fullscreen);
+                String music = optionsMenu.getMusicField().getText();
+                String effect = optionsMenu.getEffectField().getText();
+
+                //If the user return to the main menu and leaves the field blank, we set the volume with
+                //the volume he had when he openned the game.
+                /*
+                if (music.isEmpty() || (Double.valueOf(music) > 1 || Double.valueOf(music) < 0)) {
+                    music = optionsMenu.getStarterMusicVolume();
+                    optionsMenu.getMusicField().setText(music);
+                }
+                if (effect.isEmpty() || (Double.valueOf(effect) > 1 || Double.valueOf(effect) < 0)) {
+                    effect = optionsMenu.getStarterEffectVolume();
+                    optionsMenu.getEffectField().setText(effect);
+                }
+                 */
+                try {
+                    if (music.isEmpty()) {
+                        music = optionsMenu.getStarterMusicVolume();
+                        optionsMenu.getMusicField().setText(music);
+                    }
+                    if (effect.isEmpty()) {
+                        effect = optionsMenu.getStarterEffectVolume();
+                        optionsMenu.getEffectField().setText(effect);
+                    }
+                    JSONWriter writer = new JSONWriter("data.json");
+                    writer.set("music", music);
+                    writer.set("effect", effect);
+                    audioPlayer.setVolume(Double.valueOf(music));
+                    effectPlayer.setVolume(Double.valueOf(effect));
+                    window.setScene(mainMenu);
+                    window.setFullScreen(fullscreen);
+                } catch (NumberFormatException e1){
+                    //Volume isn't between 0 and 1
+                    AlertBox.display("Minor error", "The volume must be between 0 and 1.");
+                }
+
             });
             optionsPane.getChildren().addAll(optionsBackground, optionsMenu.getBackButtonOptions(),
                     optionsMenu.getBackButtonOptions().overlay,
-                    optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume(),
-                    optionsMenu.getUpControl(), optionsMenu.getDownControl(), optionsMenu.getRightControl(),
-                    optionsMenu.getLeftControl(), optionsMenu.getRestartControl(), optionsMenu.getTrucControl(),
-                    optionsMenu.getSaveControl(), optionsMenu.getOpenConsControl(), optionsMenu.getCloseConsControl());
+                    optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume());
 
             mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
@@ -288,28 +294,6 @@ public class Main extends Application {
                     }
                 }
             });
-//Random ---------------
-            Pane randomPanel = new Pane();
-            RandomSelector randomMenu = new RandomSelector(randomPanel, windowWidth, windowHeight, WR, HR);
-            randomPanel.getChildren().addAll(randomMenu.getFinalPane());
-
-            randomMenu.getBackButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                window.setScene(mainMenu);
-                window.setFullScreen(fullscreen);
-            });
-
-            mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    try {
-                        randomMenu.setSelectors();
-                        window.setScene(randomMenu);
-                        window.setFullScreen(fullscreen);
-                    } catch (IOException | ParseException e1) {
-                        AlertBox.display("Error", "An error occured while trying to set the levels" +
-                                e1.getMessage());
-                    }
-                }
-            });
 
             // PLAY ---------------
             Pane playingMenuPanel = new Pane();
@@ -328,7 +312,7 @@ public class Main extends Application {
             campaignSelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
-                        byte currentLevel = (byte) campaignSelector.getSelectedLevel();
+                        byte currentLevel = campaignSelector.getSelectedLevel();
                         String levelFileName = "level";
                         if (currentLevel < 10) {
                             levelFileName += "0";
@@ -361,7 +345,7 @@ public class Main extends Application {
             freePlaySelector.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
-                        String levelName = (String) freePlaySelector.getSelectedLevel();
+                        String levelName = freePlaySelector.getStringLevel();
                         ArrayList<String> level = Fichier.loadFile(levelName,"freePlay");
                         String[] tmp = levelName.split(".xsb");
                         levelName = tmp[0];
@@ -394,10 +378,12 @@ public class Main extends Application {
                 }
             });
 
-            randomMenu.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
+            mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
-                        playingMenu.setLevel((ArrayList<String>) randomMenu.getSelectedLevel(), "Random", "random");
+                        NewGenerator.generate();
+                        NewGenerator.setContentBasedOnCurrentGeneration();
+                        playingMenu.setLevel(NewGenerator.getContent(), "Random", "random");
                         System.out.println(NewGenerator.getConfig());
                         window.setScene(playingMenu);
                         window.setFullScreen(fullscreen);
@@ -468,7 +454,6 @@ public class Main extends Application {
             System.exit(-1);
         } catch (Exception e2) {
             AlertBox.display("Fatal Error", "An error occurred while loading the game\n");
-            e2.printStackTrace();
             if (e2.getMessage() != null) {
                 System.out.println(e2.getMessage());
             }
@@ -479,10 +464,8 @@ public class Main extends Application {
     /**
      * Read the data.json file and get the resolution ID written in the file.
      * @return The resolution ID of the selected resolution
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public static byte getResolutionID() throws IOException, ParseException {
+    public static byte getResolutionID() {
         JSONReader JSONDataReader = new JSONReader("data.json");
         return JSONDataReader.getByte("resolution");
     }
@@ -518,10 +501,8 @@ public class Main extends Application {
      * variable according to the selected resolution, the width, the height and the position of the window,
      * as well as its title and fullscreen mode.
      * @param window The window that will be prepared
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public static void prepareResolution(Stage window) throws IOException, ParseException {
+    public static void prepareResolution(Stage window) {
         // Available resolutions :
         // 0 : native resolution
         // 1 : 1280x720     HD
@@ -587,7 +568,7 @@ public class Main extends Application {
         }
     }
 
-    private void setAudioPlayers() throws IOException, ParseException{
+    private void setAudioPlayers() {
         audioPlayer = new AudioPlayer();
         effectPlayer = new AudioPlayer();
         JSONReader reader= new JSONReader("data.json");
@@ -603,20 +584,11 @@ public class Main extends Application {
      * The very first method on the execution pile.
      * @param args args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         if (args != null && args.length != 0) {
             if (args.length == 1){
                 if (args[0].equals("integrityCheck")){
-                    try {
-                        IntegrityChecker.checkFileIntegrity();
-                        System.out.println("Enter something to leave ");
-                        Scanner input = new Scanner(System.in);
-                        input.next();
-                        System.exit(0);
-                    } catch (IOException | ParseException exc) {
-                        System.out.println("An error occured while checking the files");
-                        System.out.println(exc.getMessage());
-                    }
+                    IntegrityChecker.checkFileIntegrity();
                 } else {
                     throw new IllegalArgumentException(" Only these configurations are allowed :\n"+
                             "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n"+
