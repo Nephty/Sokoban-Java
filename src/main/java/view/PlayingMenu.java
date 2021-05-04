@@ -570,8 +570,6 @@ public class PlayingMenu extends Menu {
         }
         // no need to do limit < maxWidth <= 40 because maxWidth will always be > limit if we reach this point
         else if (maxWidth <= (int) ((1000 * WR) / 25)) {
-            System.out.println(availableSpace);
-            System.out.println(maxWidth);
             this.imageLength = (int) (this.availableSpace / this.maxWidth);
         }
 
@@ -633,10 +631,10 @@ public class PlayingMenu extends Menu {
                 key += "c";
                 key += currentCampaignLevel;
 
-                String enteredString = CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating...");
                 boolean parsed = false;
-                if (!enteredString.equals("")) {
-                    while (!parsed) {
+                while (!parsed) {
+                    String enteredString = CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating...");
+                    if (!enteredString.equals("")) {
                         try {
                             parsed = true;
                             int newRating = Integer.parseInt(enteredString);
@@ -766,7 +764,6 @@ public class PlayingMenu extends Menu {
                         this.currentLevelDifficultyText.setX(80*WR);
                         this.currentLevelDifficulty = Difficulty.NORMAL;
                 }
-                System.out.println(this.currentLevelDifficultyText.getX());
                 this.currentLevelDifficultyText.setText(readDifficulty.toUpperCase());
 
                 break;
