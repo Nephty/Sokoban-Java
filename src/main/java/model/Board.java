@@ -36,7 +36,7 @@ public class Board {
      * Read the String level and create the Arraylists of the walls/boxes and goals
      * @param level The level contained in the Board
      */
-    private void  loadMap(ArrayList<String> level) {
+    private void loadMap(ArrayList<String> level) {
         world = new ArrayList<>();
         boxes = new ArrayList<>();
         goals = new ArrayList<>();
@@ -45,7 +45,6 @@ public class Board {
 
         int x = 0;
         int y = -1;
-
         for (String line : level) {
             if (this.levelWidth < x){
                 this.levelWidth = x;
@@ -92,9 +91,7 @@ public class Board {
                         if (tmpTeleport == null){
                             tmpTeleport = new Teleport(x,y,null);
                         } else if (tmpTeleport.getNextTP() != null){
-                            // TODO : system.exit here ?
-                            AlertBox.display("Minor error", "There can only be 2 Teleports in the map !");
-                            System.exit(-1);
+                            throw new IllegalArgumentException("Minor error : There can only be 2 Teleports in the map!");
                         } else {
                             Teleport tp = new Teleport(x,y,tmpTeleport);
                             world.add(tp);
@@ -131,14 +128,10 @@ public class Board {
         }
         this.levelHeight = y+1;
         if (player1 == null){
-            // TODO : system.exit here ?
-            AlertBox.display("Minor error", "There must be a player in your map (Texture = @)");
-            System.exit(-1);
+            throw new IllegalArgumentException("There must be a player in your map (Texture = @)");
         }
         if (tmpTeleport != null && tmpTeleport.getNextTP() == null){
-            // TODO : system.exit here ?
-            AlertBox.display("Minor error", "There must be 0 or 2 Teleport in the game");
-            System.exit(-1);
+            throw new IllegalArgumentException("There must be 0 or 2 Teleport in the game");
         }
     }
     /**
