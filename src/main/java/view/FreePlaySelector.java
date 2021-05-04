@@ -57,8 +57,19 @@ public class FreePlaySelector extends LevelSelector{
                 break;
             }
             String level = files[i+(page*36)];
-            String[] tmp = level.split(".xsb");
-            String levelName = tmp[0];
+            if (!level.endsWith(".xsb")){
+                //If the file isn't an .xsb file, we skip this file.
+                continue;
+            }
+
+
+            String levelName;
+            if (level.equals(".xsb")){
+                levelName = level;
+            } else{
+                String[] tmp = level.split(".xsb");
+                levelName = tmp[0];
+            }
             CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level box.png");
             this.middleMenu.getChildren().addAll(tmpButton);
 

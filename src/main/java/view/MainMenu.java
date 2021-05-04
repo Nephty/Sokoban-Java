@@ -74,11 +74,11 @@ public class MainMenu
                 WR, HR, "play button.png");
         this.createButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
-                (int) (((ORIGINAL_HEIGHT/2)+25)),
+                (int) (((ORIGINAL_HEIGHT/2)+25+96+25)),
                 WR, HR, "create button.png");
         this.optionsButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
-                (int) (((ORIGINAL_HEIGHT/2)+25+96+25)),
+                (int) (((ORIGINAL_HEIGHT/2)+25)),
                 WR, HR, "options button.png");
         this.achievementsButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
@@ -95,7 +95,7 @@ public class MainMenu
                 WR, HR, "campaign button.png");
         this.tutorialButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
-                (int) (((ORIGINAL_HEIGHT/2)+15+(96/2))),
+                (int) (((ORIGINAL_HEIGHT/2)+96+25+(96/2))),
                 WR, HR, "tutorial button.png");
         this.freePlayButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
@@ -103,7 +103,7 @@ public class MainMenu
                 WR, HR, "freeplay button.png");
         this.randomButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
-                (int) (((ORIGINAL_HEIGHT/2)+96+25+(96/2))),
+                (int) (((ORIGINAL_HEIGHT/2)+15+(96/2))),
                 WR, HR, "random button.png");
 
         this.campaignButton.setVisible(false);

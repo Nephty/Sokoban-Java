@@ -21,9 +21,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
- * An <code>CreatorMenu</code> is a user interface used to display all the settings and modifying them.
- * It contains a list of available resolutions and allows the user to change the resolution. The game must be
- * restarted in order to apply this change.
+ * A <code>CreatorMenu</code> is a user interface used to let the user create is own level.
+ * It has 3 menus : The left menu is used to change the settings of the map, save it,...
+ *                  The right menu is a VBox with all the block of the game where the user can select the block he
+ *   wants to add.
+ *                  The middle menu is a square of MapEditor. If we click on one MapEditor, it changes with the block
+ *   the user choose on the right menu.
  */
 public class CreatorMenu
         extends Menu {
@@ -49,7 +52,7 @@ public class CreatorMenu
 	private double height;
 
     /**
-     * Create a new <code>CreatorMenu</code> and pepare the attributes and the resolution list and choice.
+     * Create a new <code>CreatorMenu</code> and prepare the attributes and the resolution list and choice.
      * @param parent_ The main <code>Pane</code> that we will be using to store the content. This pane should (but it's not
      *                mandatory) be the size of the window in order to be able to display content anywhere on
      *                the said window.
@@ -175,7 +178,7 @@ public class CreatorMenu
     }
 
     /**
-     * Prepare the "Save" button to save a move.
+     * Prepare the "Save" button to save the new level.
      */
     private void prepareSaveButton() {
         this.saveButton = new CustomButton(65, 850, WR, HR, "save.png", (byte) 0);
@@ -187,51 +190,27 @@ public class CreatorMenu
     private void prepareSaveButtonAction() {
         this.saveButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if(gameBoard != null) {
-                int nPlayer = 0;
-                int nBox = 0;
-                int nGoal = 0;
                 ArrayList<String> content = new ArrayList<>();
                 for(Block[] line : gameBoard) {
                     String line_ = "";
                     for(Block elem : line) {
-                        if(elem instanceof Wall) {
-                            line_ += "#";
-                        }else if(elem instanceof Player && !(elem.amIOnGoal())) {
-                            line_ += "@";
-                            nPlayer++;
-                        }else if(elem instanceof Player && elem.amIOnGoal()) {
-                            line_ += "+";
-                            nPlayer++;
-                            nGoal++;
-                        }else if(elem instanceof Box && !(elem.amIOnGoal())) {
-                            line_ += "$";
-                            nBox++;
-                        }else if(elem instanceof Box && elem.amIOnGoal()) {
-                            line_ += "*";
-                            nBox++;
-                            nGoal++;
-                        }else if(elem instanceof Goal) {
-                            line_ += ".";
-                            nGoal++;
-                        }else if(elem == null) {
+                        if (elem == null){
                             line_ += " ";
+                        } else {
+                            line_ += elem.getTexture();
                         }
                     }
                     content.add(line_);
                 }
-                if(this.valideMapSave(nPlayer, nBox, nGoal)) {
+                if (getLevelName().equals(".xsb")){
+                    Fichier.saveFile("EmptyName.xsb", "freePlay", content);
+                } else {
                     Fichier.saveFile(getLevelName(), "freePlay", content);
-                }else{
-                    AlertBox.display("Error", "La carte n'est pas valide");
                 }
             }else {
-                AlertBox.display("Error", "Il n'y a pas de carte");
+                AlertBox.display("Error", "There's no map loaded");
             }
         });
-    }
-
-    private boolean valideMapSave(int nPlayer, int nBox, int nGoal) {
-        return nPlayer != 0 && nPlayer <= 1 && nGoal != 0 && nBox == nGoal;
     }
 
     private String getLevelName() {
@@ -246,7 +225,7 @@ public class CreatorMenu
     }
 
     /**
-     * Prepare the <code>EventHandler</code> used with the "Restart" button.
+     * Prepare the <code>EventHandler</code> used with the "NewMap" button.
      */
     private void prepareNewMapButtonAction() {
         this.newMapButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
@@ -264,8 +243,8 @@ public class CreatorMenu
     }
 
     /**
-     *
-     *
+     * Prepare all the <Code>TextFields</Code> in the leftMenu
+     * (levelName - width - height)
      */
     private void prepareTextField() {
         this.levelNameField = new TextField();
@@ -282,9 +261,9 @@ public class CreatorMenu
         this.sizeXField.setLayoutX(125*WR);
         this.sizeXField.setLayoutY(600*HR);
         this.sizeXField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideEnter(sizeXField.getText())) {
-                this.numberX = Integer.parseInt(sizeXField.getText());
-            }else {
+            try{
+                this.numberX = Integer.parseInt(sizeYField.getText());
+            } catch (NumberFormatException exc) {
                 this.numberX = 10;
             }
         });
@@ -296,23 +275,17 @@ public class CreatorMenu
         this.sizeYField.setLayoutX(125*WR);
         this.sizeYField.setLayoutY(650*HR);
         this.sizeYField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideEnter(sizeYField.getText())) {
-                this.numberY = Integer.parseInt(sizeYField.getText());
-            }else {
-                this.numberY = 10;
+            try{
+                this.numberX = Integer.parseInt(sizeYField.getText());
+            } catch (NumberFormatException exc) {
+                this.numberX = 10;
             }
         });
     }
 
-    private boolean valideEnter(String str) {
-        try{
-            Integer.parseInt(str);
-            return true;
-        }catch(Exception e) {
-            return false;
-        }
-    }
-
+    /**
+     * add all the blocks in the right menu
+     */
     private void addBlockRightMenu() {
     	this.rightVBox = new VBox();
         this.rightVBox.setLayoutX(125*WR);
@@ -323,6 +296,11 @@ public class CreatorMenu
         }
     }
 
+    /**
+     * draw all the items in the rightMenu
+     * @param vBox The instance of the rightMenu
+     * @param i The number of item we have already drawn
+     */
     private void drawItemLevel(VBox vBox, int i) {
 		Rectangle rect = new Rectangle(110*WR, 110*HR);
         Text nameElemText = new Text();
@@ -359,6 +337,9 @@ public class CreatorMenu
         vBox.getChildren().addAll(nameElemText, rect);
 	}
 
+    /**
+     * Set the middleMenu with the square of MapEditor
+     */
     private void emptyMap() {
         for(int y=0; y < numberY; y++) {
             HBox hBox = new HBox();
@@ -382,6 +363,11 @@ public class CreatorMenu
         }
 	}
 
+    /**
+     * Set the action to select the block on the rightMenu
+     * @param rect The rectangle in the rightMenu
+     * @param objet The object in the rightMenu
+     */
     private void setActionItem(Rectangle rect, Block objet) {
         try {
             ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (objet == null ? "air.png" : objet.getImage()))));

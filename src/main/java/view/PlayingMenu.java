@@ -15,20 +15,18 @@ import model.*;
 import java.io.*;
 import java.util.ArrayList;
 
-import org.json.simple.parser.ParseException;
 import presenter.Main;
 
 /**
  * A <code>PlayingMenu</code> is a user interface used when the user is playing. It displays the total amount of moves
  * and pushes made during the game, the amount of <code>Boxes</code> that are placed on an <code>Objective</code>,
  * the time elapsed since the beginning of the game, the current level, the difficulty and average rating of the level,
- * an "Undo", a "Restart" and a "Main Menu" button. It also displays the current <code>Board</code> and its
+ * a "Restart" and a "Main Menu" button. It also displays the current <code>Board</code> and its
  * current state.
  */
 public class PlayingMenu extends Menu {
 
 
-    private final ArrayList<String> baseLevel = Fichier.loadFile("level06.xsb", "campaign");
     private final Pane leftMenu, middleMenu, rightMenu;
     private CustomImage leftMenuImage, middleMenuImage, rightMenuImage, rickRollImage;
     private Pane gamePane;
@@ -40,7 +38,7 @@ public class PlayingMenu extends Menu {
             difficultyImg, difficultyImgContainer,
             averageRatingImg, averageRatingImgContainer,
             middleMenuBackground;
-    private CustomButton undoButton, restartButton, mainMenuButton;
+    private CustomButton restartButton, mainMenuButton;
     private Text totalMovesText, totalPushesText, objectivesText, timeText,
             currentLevelText, currentLevelAverageRatingText,
             currentLevelDifficultyText, youWonText;
@@ -63,6 +61,7 @@ public class PlayingMenu extends Menu {
     private boolean currentLevelIsWon = false;
     private AudioPlayer beatPlayer;
     private AudioPlayer effectPlayer;
+    private String[] keyBinds = new String[9];
 
     /**
      * Create a new <code>PlayingMenu</code> and all its attributes. Create the two side <code>Panes</code>,
@@ -104,7 +103,8 @@ public class PlayingMenu extends Menu {
         this.movesHistory = new ArrayList<>();
 
         this.setPaneSizes();
-        this.game.setBoard(new Board(this.baseLevel));
+        ArrayList<String> baseLevel = Fichier.loadFile("level06.xsb", "campaign");
+        this.game.setBoard(new Board(baseLevel));
         this.prepareMapSize();
         this.prepareInterfaces();
         this.prepareTextBoxes();
@@ -116,29 +116,29 @@ public class PlayingMenu extends Menu {
         EventHandler keyEventHandler = (EventHandler<KeyEvent>) keyEvent -> {
             Direction direction;
             String str = keyEvent.getText().toUpperCase();
-            if(str.equals(getControl("up"))) {
+            if(str.equals(keyBinds[0])) {
                 direction = Direction.UP;
                 game.setPlayerFacing(direction);
-            }else if(str.equals(getControl("down"))) {
+            }else if(str.equals(keyBinds[1])) {
                 direction = Direction.DOWN;
                 game.setPlayerFacing(direction);
-            }else if(str.equals(getControl("right"))) {
+            }else if(str.equals(keyBinds[2])) {
                 direction = Direction.RIGHT;
                 game.setPlayerFacing(direction);
-            }else if(str.equals(getControl("left"))) {
+            }else if(str.equals(keyBinds[3])) {
                 direction = Direction.LEFT;
                 game.setPlayerFacing(direction);
             }
-            else if(str.equals(getControl("restart"))) {
+            else if(str.equals(keyBinds[4])) {
                 this.resetCounters();
                 game.setPlayerFacing(Direction.DOWN);
                 direction = Direction.RESTART;
-            }else if(str.equals(getControl("loadsave"))) {
+            }else if(str.equals(keyBinds[5])) {
                 LevelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
                         "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
                         "File name..."));
                 direction = Direction.NULL;
-            }else if(str.equals(getControl("savegame"))) {
+            }else if(str.equals(keyBinds[6])) {
                 // TODO : what's taking so long to apply a lot of moves (200+ for example) ?
                 String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
                 if (fileName != null && !fileName.equals("")) {
@@ -151,10 +151,10 @@ public class PlayingMenu extends Menu {
                     }
                 }
                 direction = Direction.NULL;
-            }else if(str.equals(getControl("openconsole"))) {
+            }else if(str.equals(keyBinds[7])) {
                 Console.open();
                 direction = Direction.NULL;
-            }else if(str.equals(getControl("closeconsole"))) {
+            }else if(str.equals(keyBinds[8])) {
                 Console.close();
                 direction = Direction.NULL;
             }else {
@@ -187,7 +187,6 @@ public class PlayingMenu extends Menu {
                 this.pushes, this.pushesContainer, this.totalPushesText,
                 this.objectives, this.objectivesContainer, this.objectivesText,
                 this.time, this.timeContainer, this.timeText,
-                this.undoButton, this.undoButton.overlay,
                 this.restartButton, this.restartButton.overlay
         );
 
@@ -203,9 +202,45 @@ public class PlayingMenu extends Menu {
         this.finalPane.getChildren().addAll(this.leftMenu, this.middleMenu, this.rightMenu,this.rickRollImage);
     }
 
-    private String getControl(String text) {
+    /**
+     * Set all the controls in the keyBinds table.
+     * All the controls are set when a new level is loaded.
+     */
+    private void setControls() {
         JSONReader reader = new JSONReader("control.json");
-        return reader.getString(text);
+        for (int j=0; j<9; j++){
+            String tmpKey="";
+            switch (j){
+                case 0:
+                    tmpKey = reader.getString("up");
+                    break;
+                case 1:
+                    tmpKey = reader.getString("down");
+                    break;
+                case 2:
+                    tmpKey = reader.getString("right");
+                    break;
+                case 3:
+                    tmpKey = reader.getString("left");
+                    break;
+                case 4:
+                    tmpKey = reader.getString("restart");
+                    break;
+                case 5:
+                    tmpKey = reader.getString("savegame");
+                    break;
+                case 6:
+                    tmpKey = reader.getString("loadsave");
+                    break;
+                case 7:
+                    tmpKey = reader.getString("openconsole");
+                    break;
+                case 8:
+                    tmpKey = reader.getString("closeconsole");
+                    break;
+            }
+            keyBinds[j] = tmpKey;
+        }
     }
 
     /**
@@ -311,7 +346,6 @@ public class PlayingMenu extends Menu {
         this.prepareObjectivesInterface();
         this.preparePushesInterface();
         this.prepareTimeInterface();
-        this.prepareUndoButton();
         this.prepareRestartButton();
         this.prepareRestartButtonAction();
         this.prepareMainMenuButton();
@@ -367,13 +401,6 @@ public class PlayingMenu extends Menu {
     }
 
     /**
-     * Prepare the "Undo" button to undo a move.
-     */
-    private void prepareUndoButton() {
-        this.undoButton = new CustomButton(65, 800, WR, HR, "undo.png", (byte) 0);
-    }
-
-    /**
      *  Prepare the current level information display.
      */
     private void prepareCurrentLevelInterface() {
@@ -398,7 +425,7 @@ public class PlayingMenu extends Menu {
     }
 
     /**
-     * Prepare the "Restart" button to undo a move.
+     * Prepare the "Restart" button to restart the game.
      */
     private void prepareRestartButton() {
         this.restartButton = new CustomButton(65, 900, WR, HR, "restart.png", (byte) 0);
@@ -773,6 +800,7 @@ public class PlayingMenu extends Menu {
         this.resetCounters();
         this.updateMapTiles();
         stopWatch.restart();
+        this.setControls();
     }
 
     /**
