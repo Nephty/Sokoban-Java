@@ -49,35 +49,33 @@ public class JSONWriter {
      * @param newValue The value we want to put in the file
      */
     public void set(String key, String newValue) {
-            temporaryReader.obj.remove(key);
-            //noinspection unchecked
-            temporaryReader.obj.put(key, newValue);
+        temporaryReader.obj.remove(key);
+        //noinspection unchecked
+        temporaryReader.obj.put(key, newValue);
 
-            String tempStr = temporaryReader.obj.toString();
-            StringBuilder finalStr = new StringBuilder();
-            for (int i = 0; i < tempStr.length(); i++) {
-                finalStr.append(tempStr.charAt(i));
-                switch (tempStr.charAt(i)) {
-                    case ',':
-                    case '{':
-                        finalStr.append("\n");
-                    default:
-                }
-                if (i == tempStr.length() - 2) {
+        String tempStr = temporaryReader.obj.toString();
+        StringBuilder finalStr = new StringBuilder();
+        for (int i = 0; i < tempStr.length(); i++) {
+            finalStr.append(tempStr.charAt(i));
+            switch (tempStr.charAt(i)) {
+                case ',':
+                case '{':
                     finalStr.append("\n");
-                }
+                default:
             }
-
-            try {
-                FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\resources\\json\\" + this.fileName);
-                file.write(finalStr.toString());
-                file.flush();
-            } catch (IOException exception) {
-                AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing." +
-                        "Check if the names have not been changed or if any file has not been deleted. " +
-                        "You can run the FileIntegrity checker for further information. Missing file : " + fileName + ".");
-                System.exit(-1);
+            if (i == tempStr.length() - 2) {
+                finalStr.append("\n");
             }
-
+        }
+        try {
+            FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\resources\\json\\" + this.fileName);
+            file.write(finalStr.toString());
+            file.flush();
+        } catch (IOException exception) {
+            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing." +
+                    "Check if the names have not been changed or if any file has not been deleted. " +
+                    "You can run the FileIntegrity checker for further information. Missing file : " + fileName + ".");
+            System.exit(-1);
+        }
     }
 }
