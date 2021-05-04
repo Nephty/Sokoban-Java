@@ -1,6 +1,4 @@
 package model;
-import view.AlertBox;
-
 import java.util.ArrayList;
 
 public class Board {
