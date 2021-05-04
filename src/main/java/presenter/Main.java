@@ -451,9 +451,6 @@ public class Main extends Application {
         } catch (Exception e2) {
             AlertBox.display("Fatal Error", "An error occurred while loading the game\n");
             e2.printStackTrace();
-            if (e2.getMessage() != null) {
-                System.out.println(e2.getMessage());
-            }
             System.exit(-1);
         }
     }
