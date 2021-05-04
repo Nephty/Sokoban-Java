@@ -116,29 +116,29 @@ public class PlayingMenu extends Menu {
         EventHandler keyEventHandler = (EventHandler<KeyEvent>) keyEvent -> {
             Direction direction;
             String str = keyEvent.getText().toUpperCase();
-            if(str.equals(keyBinds[0])) {
+            if(str.equals(keyBinds[0]) || keyEvent.getCode().toString().equals(getControl("up"))) {
                 direction = Direction.UP;
                 game.setPlayerFacing(direction);
-            }else if(str.equals(keyBinds[1])) {
+            }else if(str.equals(keyBinds[1]) || keyEvent.getCode().toString().equals(getControl("down"))) {
                 direction = Direction.DOWN;
                 game.setPlayerFacing(direction);
-            }else if(str.equals(keyBinds[2])) {
+            }else if(str.equals(keyBinds[2]) || keyEvent.getCode().toString().equals(getControl("right"))) {
                 direction = Direction.RIGHT;
                 game.setPlayerFacing(direction);
-            }else if(str.equals(keyBinds[3])) {
+            }else if(str.equals(keyBinds[3]) || keyEvent.getCode().toString().equals(getControl("left"))) {
                 direction = Direction.LEFT;
                 game.setPlayerFacing(direction);
             }
-            else if(str.equals(keyBinds[4])) {
+            else if(str.equals(keyBinds[4]) || keyEvent.getCode().toString().equals(getControl("restart"))) {
                 this.resetCounters();
                 game.setPlayerFacing(Direction.DOWN);
                 direction = Direction.RESTART;
-            }else if(str.equals(keyBinds[5])) {
+            }else if(str.equals(keyBinds[5]) || keyEvent.getCode().toString().equals(getControl("savegame"))) {
                 LevelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
                         "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
                         "File name..."));
                 direction = Direction.NULL;
-            }else if(str.equals(keyBinds[6])) {
+            }else if(str.equals(keyBinds[6]) || keyEvent.getCode().toString().equals(getControl("loadsave"))) {
                 // TODO : what's taking so long to apply a lot of moves (200+ for example) ?
                 String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
                 if (fileName != null && !fileName.equals("")) {
@@ -151,10 +151,10 @@ public class PlayingMenu extends Menu {
                     }
                 }
                 direction = Direction.NULL;
-            }else if(str.equals(keyBinds[7])) {
+            }else if(str.equals(keyBinds[7]) || keyEvent.getCode().toString().equals(getControl("openconsole"))) {
                 Console.open();
                 direction = Direction.NULL;
-            }else if(str.equals(keyBinds[8])) {
+            }else if(str.equals(keyBinds[8]) || keyEvent.getCode().toString().equals(getControl("closeconsole"))) {
                 Console.close();
                 direction = Direction.NULL;
             }else {
@@ -200,6 +200,11 @@ public class PlayingMenu extends Menu {
 
         this.middleMenu.getChildren().addAll(this.gamePane, this.youWonText);
         this.finalPane.getChildren().addAll(this.leftMenu, this.middleMenu, this.rightMenu,this.rickRollImage);
+    }
+
+    private String getControl(String text) {
+        JSONReader reader = new JSONReader("control.json");
+        return reader.getString(text);
     }
 
     /**
