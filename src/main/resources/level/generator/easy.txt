@@ -1,0 +1,233 @@
+
+    public static void makeBoxes() throws IOException {
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(false);
+        canBeBox.add(false);
+
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(false);
+        canBeBox.add(false);
+
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(false);
+        canBeBox.add(false);
+
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(false);
+        canBeBox.add(false);
+
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(false);
+        canBeBox.add(false);
+
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(true);
+        canBeBox.add(false);
+        canBeBox.add(false);
+
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+        canBeBox.add(false);
+    }
+
+    public static void makeGoals() throws IOException {
+        String fileName = "easy generator.gen";
+
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+
+        canBeGoal.add(false);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(false);
+
+
+        canBeGoal.add(false);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(false);
+
+        canBeGoal.add(false);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(false);
+
+
+        canBeGoal.add(false);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(false);
+
+
+        canBeGoal.add(false);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(false);
+
+
+        canBeGoal.add(false);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(false);
+
+
+        canBeGoal.add(false);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(false);
+
+
+        canBeGoal.add(false);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(true);
+        canBeGoal.add(false);
+
+
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+        canBeGoal.add(false);
+    }
