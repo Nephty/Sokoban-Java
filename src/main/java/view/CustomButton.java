@@ -25,9 +25,8 @@ public class CustomButton extends CustomImage {
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
      * @param fileName The name of the image file that will be used to display the button
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    public CustomButton(int x_, int y_, float WR, float HR, String fileName) throws FileNotFoundException {
+    public CustomButton(int x_, int y_, float WR, float HR, String fileName) {
         super(x_, y_, WR, HR, fileName);
 
         this.overlay = new CustomImage(x_, y_, WR, HR, "button overlay.png");
@@ -52,9 +51,8 @@ public class CustomButton extends CustomImage {
      * @param fileName The name of the image file that will be used to display the button
      * @param small A byte that can be 0 or 1. If it's 0, the constructor creates a small button.
      *              If it's 1, the constructor creates a slightly larger button, but not a regular one.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    public CustomButton(int x_, int y_, float WR, float HR, String fileName, byte small) throws FileNotFoundException {
+    public CustomButton(int x_, int y_, float WR, float HR, String fileName, byte small) {
         super(x_, y_, WR, HR, fileName);
 
         String localFileName = "button overlay.png";

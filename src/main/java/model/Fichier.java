@@ -1,5 +1,7 @@
 package model;
 
+import view.AlertBox;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -12,7 +14,7 @@ public class Fichier {
      * @param _def      The name of the folder where we wants to read the file
      * @return the arrayList of string made from the xsb file
      */
-    public static ArrayList<String> loadFile(String levelName, String _def) throws IOException{
+    public static ArrayList<String> loadFile(String levelName, String _def) {
         String directory = directory(levelName, _def);
         ArrayList<String> content = new ArrayList<>();
         try {
@@ -27,7 +29,9 @@ public class Fichier {
             fr.close();
             return content;
         } catch (Exception e) {
-            throw new IllegalArgumentException("The file " + levelName + " isn't in " + directory);
+            AlertBox.display("Minor error", "The file " + levelName + " isn't in " + directory);
+            System.exit(-1);
+            return null;
         }
     }
 
@@ -37,9 +41,8 @@ public class Fichier {
      * @param levelName The name of the file where we want to save
      * @param _def      The folder where we want to save it.
      * @param content   The arrayList of String we want to save
-     * @throws IOException Exception thrown when the given file could not be found
      */
-    public static void saveFile(String levelName, String _def, ArrayList<String> content) throws IOException {
+    public static void saveFile(String levelName, String _def, ArrayList<String> content) {
         String directory = directory(levelName, _def);
         try {
             File file = new File(directory);
@@ -57,7 +60,7 @@ public class Fichier {
             bw.close();
             fw.close();
         } catch (IOException e){
-            throw new IllegalArgumentException("An error has occurred while saving the file");
+            AlertBox.display("Minor Error", "Could not save the file. Check the name and try again.");
         }
     }
 

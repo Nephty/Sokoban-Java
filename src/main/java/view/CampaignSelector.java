@@ -38,11 +38,8 @@ public class CampaignSelector extends LevelSelector{
      * @param height_ The height of the menu (preferably the size of the window)
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public CampaignSelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException, ParseException{
+    public CampaignSelector(Parent parent_, double width_, double height_, float WR, float HR) {
         super(parent_, width_, height_, WR, HR);
     }
 
@@ -52,8 +49,7 @@ public class CampaignSelector extends LevelSelector{
      * Read the completed levels in the data.json file and create the correct amount of buttons.
      */
     @Override
-    public void setSelectors()
-            throws IOException, ParseException {
+    public void setSelectors() {
         super.setSelectors();
         JSONReader reader = new JSONReader("data.json");
         this.completedLevels = reader.getInt("completed levels");
@@ -109,15 +105,11 @@ public class CampaignSelector extends LevelSelector{
      */
     private void showLevel(Node node, byte level){
         node.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
-            try {
-                selectedLevelViewer.setVisible(false);
-                levelViewer.getChildren().removeAll(levelViewer.getChildren());
-                CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
-                levelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
-                levelViewer.getChildren().add(lvlImage);
-            } catch (IOException exc) {
-                AlertBox.display("Error", "Error : "+exc.getMessage());
-            }
+            selectedLevelViewer.setVisible(false);
+            levelViewer.getChildren().removeAll(levelViewer.getChildren());
+            CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
+            levelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
+            levelViewer.getChildren().add(lvlImage);
         });
 
         node.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
@@ -136,14 +128,10 @@ public class CampaignSelector extends LevelSelector{
             this.selectedLevel = level;
             this.playButton.setVisible(true);
             this.resumeButton.setVisible(false);
-            try {
-                selectedLevelViewer.getChildren().removeAll(selectedLevelViewer.getChildren());
-                CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
-                selectedLevelViewer.getChildren().add(lvlImage);
-                selectedLevelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
-            } catch (IOException exc) {
-                AlertBox.display("Error", "Error : "+exc.getMessage());
-            }
+            selectedLevelViewer.getChildren().removeAll(selectedLevelViewer.getChildren());
+            CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
+            selectedLevelViewer.getChildren().add(lvlImage);
+            selectedLevelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
         });
     }
 

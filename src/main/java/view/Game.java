@@ -20,7 +20,6 @@ public class Game {
     private int totalPushes = 0;
     private byte totalPushesMagnitude = 1;
     Direction playerFacing = Direction.DOWN;
-    private boolean isCurrentLevelWon = false;
 
     /**
      * Create a new <code>Game</code> object without any defined Board.

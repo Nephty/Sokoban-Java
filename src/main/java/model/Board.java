@@ -1,4 +1,6 @@
 package model;
+import view.AlertBox;
+
 import java.util.ArrayList;
 
 public class Board {
@@ -25,7 +27,7 @@ public class Board {
      * Creates a new <code>Board</code> object with a starting level.
      * @param level The level contained in the Board
      */
-    public Board(ArrayList<String> level) throws IllegalArgumentException{
+    public Board(ArrayList<String> level) {
         this.level = level;
         loadMap(level);
         setBlockList();
@@ -34,7 +36,7 @@ public class Board {
      * Read the String level and create the Arraylists of the walls/boxes and goals
      * @param level The level contained in the Board
      */
-    private void  loadMap(ArrayList<String> level) throws IllegalArgumentException{
+    private void  loadMap(ArrayList<String> level) {
         world = new ArrayList<>();
         boxes = new ArrayList<>();
         goals = new ArrayList<>();
@@ -90,7 +92,9 @@ public class Board {
                         if (tmpTeleport == null){
                             tmpTeleport = new Teleport(x,y,null);
                         } else if (tmpTeleport.getNextTP() != null){
-                            throw new IllegalArgumentException("There can only be 2 Teleports in the map !");
+                            // TODO : system.exit here ?
+                            AlertBox.display("Minor error", "There can only be 2 Teleports in the map !");
+                            System.exit(-1);
                         } else {
                             Teleport tp = new Teleport(x,y,tmpTeleport);
                             world.add(tp);
@@ -127,10 +131,14 @@ public class Board {
         }
         this.levelHeight = y+1;
         if (player1 == null){
-            throw  new IllegalArgumentException("There must be a player in your map (Texture = @)");
+            // TODO : system.exit here ?
+            AlertBox.display("Minor error", "There must be a player in your map (Texture = @)");
+            System.exit(-1);
         }
         if (tmpTeleport != null && tmpTeleport.getNextTP() == null){
-            throw new IllegalArgumentException("There must be 0 or 2 Teleport in the game");
+            // TODO : system.exit here ?
+            AlertBox.display("Minor error", "There must be 0 or 2 Teleport in the game");
+            System.exit(-1);
         }
     }
     /**

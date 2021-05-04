@@ -1,10 +1,11 @@
 package model;
 
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import java.io.FileInputStream;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
+import view.AlertBox;
+
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class MapEditor {
@@ -17,22 +18,21 @@ public class MapEditor {
 
         gameBoard[x_][y_] = null;
         this.rect = new Rectangle(sizeElem, sizeElem);
-        try{
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + this.objet.getImage())));
+        try {
+            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (this.objet == null ? "air.png" : this.objet.getImage()))));
             this.rect.setFill(modelImage);
-        }catch(FileNotFoundException fileExcep) {
-            fileExcep.printStackTrace();
+        } catch (FileNotFoundException e) {
+            AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing." +
+                    "Check if the names have not been changed or if any file has not been deleted. " +
+                    "You can run the FileIntegrity checker for further information. Missing file : " + (this.objet == null ? "air.png" : this.objet.getImage()) + ".");
+            System.exit(-1);
         }
     }
 
     private double autoSizeElem(int numbElemX, int numbElemY, double spaceWidth ,double spaceHeight, float WR, float HR) {
         double sizeX = (spaceWidth / numbElemX) * WR;
         double sizeY = (spaceHeight / numbElemY) * HR;
-        if(sizeX < sizeY) {
-            return sizeX;
-        }else {
-            return sizeY;
-        }
+        return Math.min(sizeX, sizeY);
     }
 
     public Rectangle getElem() {
@@ -46,41 +46,35 @@ public class MapEditor {
     public void setObjet(Block[][] gameBoard, Block item) {
         if(item instanceof Wall) {
             this.objet = new Wall(objet.getX(), objet.getY());
-            gameBoard[objet.getX()][objet.getY()] = objet;
-            blockSetFill(rect, objet);
         }else if(item instanceof Player && !(item.amIOnGoal())) {
             this.objet = new Player(objet.getX(), objet.getY(), false, null);
-            gameBoard[objet.getX()][objet.getY()] = objet;
-            blockSetFill(rect, objet);
         }else if(item instanceof Player && item.amIOnGoal()) {
             this.objet = new Player(objet.getX(), objet.getY(), true, null);
-            gameBoard[objet.getX()][objet.getY()] = objet;
-            blockSetFill(rect, objet);
         }else if(item instanceof Box && !(item.amIOnGoal())) {
             this.objet = new Box(objet.getX(), objet.getY(), false);
-            gameBoard[objet.getX()][objet.getY()] = objet;
-            blockSetFill(rect, objet);
         }else if(item instanceof Box && item.amIOnGoal()) {
             this.objet = new Box(objet.getX(), objet.getY(), true);
-            gameBoard[objet.getX()][objet.getY()] = objet;
-            blockSetFill(rect, objet);
         }else if(item instanceof Goal) {
             this.objet = new Goal(objet.getX(), objet.getY());
-            gameBoard[objet.getX()][objet.getY()] = objet;
-            blockSetFill(rect, objet);
-        }else {
+        } else {
+            // TODO : cannot do null.getX/Y() for air blocks
             gameBoard[objet.getX()][objet.getY()] = null;
-            this.objet = null;
-            blockSetFill(rect, objet);
+            objet = null;
         }
+        // TODO : cannot do null.getX/Y() for air blocks
+        gameBoard[objet.getX()][objet.getY()] = objet;
+        blockSetFill(rect, objet);
     }
 
     private void blockSetFill(Rectangle rect, Block objet) {
-        try{
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + objet.getImage())));
+        try {
+            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main \\resources\\img\\" + (this.objet == null ? "air.png" : objet.getImage()))));
             rect.setFill(modelImage);
-        }catch(FileNotFoundException fileExcep) {
-            fileExcep.printStackTrace();
+        } catch (FileNotFoundException e) {
+            AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing." +
+                    "Check if the names have not been changed or if any file has not been deleted. " +
+                    "You can run the FileIntegrity checker for further information. Missing file : " + this.objet.getImage() + ".");
+            System.exit(-1);
         }
     }
 }

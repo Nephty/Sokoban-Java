@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("ALL")
@@ -46,10 +47,11 @@ public class Main extends Application {
 
     /**
      * The main method that will be ran when starting the game.
+     *
      * @param primaryStage The window that will contain almost all the content
      */
     @Override
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage) {
         try {
             window = primaryStage;
 
@@ -149,12 +151,12 @@ public class Main extends Application {
                 window.setScene(mainMenu);
                 window.setFullScreen(fullscreen);
             });
-            
+
             optionsPane.getChildren().addAll(optionsBackground, optionsMenu.getBackButtonOptions(),
                     optionsMenu.getBackButtonOptions().overlay,
                     optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume(),
                     optionsMenu.getUpControl(), optionsMenu.getDownControl(), optionsMenu.getRightControl(),
-                    optionsMenu.getLeftControl(), optionsMenu.getRestartControl(), optionsMenu.getTrucControl(),
+                    optionsMenu.getLeftControl(), optionsMenu.getRestartControl(), optionsMenu.getLoadControl(),
                     optionsMenu.getSaveControl(), optionsMenu.getOpenConsControl(), optionsMenu.getCloseConsControl());
 
             mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
@@ -250,14 +252,9 @@ public class Main extends Application {
 
             mainMenu.getCampaignButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    try {
-                        campaignSelector.setSelectors();
-                        window.setScene(campaignSelector);
-                        window.setFullScreen(fullscreen);
-                    } catch (IOException | ParseException e1) {
-                        AlertBox.display("Error", "An error occured while trying to set the levels\n" +
-                                e1.getMessage());
-                    }
+                    campaignSelector.setSelectors();
+                    window.setScene(campaignSelector);
+                    window.setFullScreen(fullscreen);
                 }
             });
             // --------------------
@@ -276,17 +273,12 @@ public class Main extends Application {
 
             mainMenu.getFreePlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    try {
-                        freePlaySelector.setSelectors();
-                        window.setScene(freePlaySelector);
-                        window.setFullScreen(fullscreen);
-                    } catch (IOException | ParseException e1) {
-                        AlertBox.display("Error", "An error occured while trying to set the levels" +
-                                e1.getMessage());
-                    }
+                    freePlaySelector.setSelectors();
+                    window.setScene(freePlaySelector);
+                    window.setFullScreen(fullscreen);
                 }
             });
-            
+
             // RANDOM ---------------
             Pane randomPanel = new Pane();
             RandomSelector randomMenu = new RandomSelector(randomPanel, windowWidth, windowHeight, WR, HR);
@@ -299,14 +291,9 @@ public class Main extends Application {
 
             mainMenu.getRandomButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    try {
-                        randomMenu.setSelectors();
-                        window.setScene(randomMenu);
-                        window.setFullScreen(fullscreen);
-                    } catch (IOException | ParseException e1) {
-                        AlertBox.display("Error", "An error occured while trying to set the levels" +
-                                e1.getMessage());
-                    }
+                    randomMenu.setSelectors();
+                    window.setScene(randomMenu);
+                    window.setFullScreen(fullscreen);
                 }
             });
 
@@ -342,7 +329,7 @@ public class Main extends Application {
                         window.setFullScreen(fullscreen);
                         campaignSelector.getResumeButton().setVisible(true);
                         freePlaySelector.setHasSelected(true);
-                    } catch (IOException | ParseException exc) {
+                    } catch (IOException exc) {
                         AlertBox.display("Error", "An error occured while trying to load the level\n" +
                                 exc.getMessage());
                     }
@@ -361,12 +348,12 @@ public class Main extends Application {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
                         String levelName = (String) freePlaySelector.getSelectedLevel();
-                        ArrayList<String> level = Fichier.loadFile(levelName,"freePlay");
+                        ArrayList<String> level = Fichier.loadFile(levelName, "freePlay");
                         String[] tmp = levelName.split(".xsb");
                         levelName = tmp[0];
-                        if (levelName.length() > 7){
-                            String tmpName ="";
-                            for (int j=0;j<=5;j++){
+                        if (levelName.length() > 7) {
+                            String tmpName = "";
+                            for (int j = 0; j <= 5; j++) {
                                 tmpName += levelName.charAt(j);
                             }
                             tmpName += "...";
@@ -379,7 +366,7 @@ public class Main extends Application {
                         window.setFullScreen(fullscreen);
                         freePlaySelector.getResumeButton().setVisible(true);
                         freePlaySelector.setHasSelected(true);
-                    } catch (IOException | IllegalArgumentException | ParseException exc) {
+                    } catch (IOException | IllegalArgumentException exc) {
                         AlertBox.display("Error", "An error occured while trying to load the level\n" +
                                 exc.getMessage());
                     }
@@ -393,14 +380,14 @@ public class Main extends Application {
                 }
             });
 
-            randomMenu.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
+            randomMenu.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
                         playingMenu.setLevel((ArrayList<String>) randomMenu.getSelectedLevel(), "Random", "random");
                         System.out.println(NewGenerator.getConfig());
                         window.setScene(playingMenu);
                         window.setFullScreen(fullscreen);
-                    } catch(Exception exc){
+                    } catch (Exception exc) {
                         exc.printStackTrace();
                     }
                 }
@@ -461,10 +448,6 @@ public class Main extends Application {
 
             window.setScene(mainMenu);
             window.show();
-        } catch (FileNotFoundException e1) {
-            AlertBox.display("Fatal Error", e1.getMessage());
-            System.out.println(e1.getMessage());
-            System.exit(-1);
         } catch (Exception e2) {
             AlertBox.display("Fatal Error", "An error occurred while loading the game\n");
             e2.printStackTrace();
@@ -477,6 +460,7 @@ public class Main extends Application {
 
     /**
      * Read the data.json file and get the resolution ID written in the file.
+     *
      * @return The resolution ID of the selected resolution
      */
     public static byte getResolutionID() {
@@ -486,6 +470,7 @@ public class Main extends Application {
 
     /**
      * Use the Toolkit abstract class to get the resolution of the screen as a <code>Dimension</code> object.
+     *
      * @return The resolution of the screen. The first attribute is the width and the second attribute is the height
      */
     public static Dimension getScreenDimension() {
@@ -494,26 +479,29 @@ public class Main extends Application {
 
     /**
      * Compute the width ratio according to the width of the selected resolution and the reference width.
+     *
      * @param targetWidth The desired width
      * @return The ratio between the desired width and the reference width
      */
     public static float getWidthRatio(int targetWidth) {
-        return (float) targetWidth/ORIGINAL_WIDTH;
+        return (float) targetWidth / ORIGINAL_WIDTH;
     }
 
     /**
      * Compute the height ratio according to the height of the selected resolution and the reference height.
+     *
      * @param targetHeight The desired height
      * @return The ratio between the desired height and the reference height
      */
     public static float getHeightRatio(int targetHeight) {
-        return (float) targetHeight/ORIGINAL_HEIGHT;
+        return (float) targetHeight / ORIGINAL_HEIGHT;
     }
 
     /**
      * Create a Dimension object with the selected resolution, sets the width and height ratio, the fullscreen
      * variable according to the selected resolution, the width, the height and the position of the window,
      * as well as its title and fullscreen mode.
+     *
      * @param window The window that will be prepared
      */
     public static void prepareResolution(Stage window) {
@@ -561,8 +549,8 @@ public class Main extends Application {
         WR = getWidthRatio(dimension.width);
         HR = getHeightRatio(dimension.height);
 
-        window.setWidth(windowWidth*WR);
-        window.setHeight(windowHeight*HR);
+        window.setWidth(windowWidth * WR);
+        window.setHeight(windowHeight * HR);
         window.setX(windowX);
         window.setY(windowY);
         window.setResizable(false);
@@ -585,35 +573,30 @@ public class Main extends Application {
     private void setAudioPlayers() {
         audioPlayer = new AudioPlayer();
         effectPlayer = new AudioPlayer();
-        JSONReader reader= new JSONReader("data.json");
+        JSONReader reader = new JSONReader("data.json");
         audioPlayer.setVolume(Double.valueOf(reader.getString("music")));
         effectPlayer.setVolume(Double.valueOf(reader.getString("effect")));
     }
 
-    public static boolean isFullscreen(){
+    public static boolean isFullscreen() {
         return fullscreen;
     }
 
     /**
      * The very first method on the execution pile.
+     *
      * @param args args
      */
     public static void main(String[] args) {
         if (args != null && args.length != 0) {
-            if (args.length == 1){
-                if (args[0].equals("integrityCheck")){
-                    try {
-                        IntegrityChecker.checkFileIntegrity();
-                        System.out.println("Enter something to leave ");
-                        Scanner input = new Scanner(System.in);
-                        input.next();
-                        System.exit(0);
-                    } catch (IOException | ParseException exc) {
-                        System.out.println("An error occured while checking the files");
-                        System.out.println(exc.getMessage());
-                    }
-            }else if (args.length == 3) {
-                try{
+            if (args.length == 1) {
+                if (args[0].equals("integrityCheck")) {
+                    IntegrityChecker.checkFileIntegrity();
+                    System.out.println("Enter something to leave... ");
+                    Scanner input = new Scanner(System.in);
+                    input.next();
+                    System.exit(0);
+                } else if (args.length == 3) {
                     ArrayList<String> stringMap = Fichier.loadFile(args[0], "freePlay");
                     ArrayList<Direction> moves = LevelSaver.getHistory(args[1], "");
                     Board map = new Board(stringMap);
@@ -621,16 +604,15 @@ public class Main extends Application {
                     stringMap = map.toArrayList();
                     Fichier.saveFile(args[2], "freePlay", stringMap);
                     System.exit(0);
-                } catch (Exception e){
-                    System.out.println("Error : " + e.getMessage());
+                } else {
+                    throw new IllegalArgumentException(" Only these configurations are allowed :\n" +
+                            "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n" +
+                            "- 1 argument  : \"integrityCheck\"\n" +
+                            "- 0 argument");
                 }
-            } else {
-                throw new IllegalArgumentException(" Only these configurations are allowed :\n"+
-                        "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n"+
-                        "- 1 argument  : \"integrityCheck\"\n"+
-                        "- 0 argument");
             }
-        } else {
+        }
+        else {
             launch(args);
         }
     }

@@ -10,7 +10,7 @@ import java.util.Arrays;
 // TODO : move it out of the src and make imports working OR make it assume java file are there
 
 public class IntegrityChecker {
-    public static boolean checkFileIntegrity() throws IOException, ParseException {
+    public static boolean checkFileIntegrity() {
         JSONReader jsonReader = new JSONReader("integrity.json");
         System.out.println("Initializing file integrity check up... 0%");
         System.out.println("Initializing file integrity check up... 100%");

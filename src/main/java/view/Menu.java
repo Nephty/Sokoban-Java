@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import model.JSONReader;
+import model.JSONWriter;
 import org.json.simple.parser.ParseException;
 
 import java.awt.*;
@@ -88,10 +89,8 @@ public abstract class Menu
     /**
      * Read the data.json file and get the resolution ID written in the file.
      * @return The resolution ID of the selected resolution
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public static byte getResolutionID() throws IOException, ParseException {
+    public static byte getResolutionID() {
         JSONReader JSONDataReader = new JSONReader("data.json");
         return JSONDataReader.getByte("resolution");
     }
@@ -125,10 +124,8 @@ public abstract class Menu
     /**
      * Switch returning a <code>Dimension</code> object according to the byte of the selected resolution.
      * @return The <code>Dimension</code> object corresponding to the byte
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public static Dimension resolutionIDToDimension() throws IOException, ParseException {
+    public static Dimension resolutionIDToDimension() {
         byte resolutionID = getResolutionID();
         switch (resolutionID) {
             case 0:
@@ -146,7 +143,9 @@ public abstract class Menu
             case 6:
                 return new Dimension(640, 360);
             default:
-                throw new IllegalStateException("Unexpected value: " + resolutionID);
+                JSONWriter jsonWriter = new JSONWriter("data.json");
+                jsonWriter.set("resolution", "0");
+                return getScreenDimension();
         }
     }
 }

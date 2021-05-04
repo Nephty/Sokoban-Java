@@ -78,16 +78,17 @@ public class AudioPlayer {
     /**
      * Set the volume of the <code>MediaPlayer</code> in use.
      * @param volume The new volume
-     * @throws NumberFormatException Exception thrown when the volume isn't a number between 0 and 1
      */
-    public void setVolume(double volume) throws NumberFormatException {
-        if (volume > MAXIMUM_VOLUME || volume < MINIMUM_VOLUME){
-            throw new NumberFormatException("Volume must be between 0 and 1 not " + volume);
-        }else {
+    public void setVolume(double volume)  {
+        if (volume > MAXIMUM_VOLUME) {
+            this.volume = 1;
+        } else if (volume < MINIMUM_VOLUME){
+            this.volume = 0;
+        } else {
             this.volume = volume;
-            if (mediaPlayer != null){
-                mediaPlayer.setVolume(volume);
-            }
+        }
+        if (mediaPlayer != null){
+            mediaPlayer.setVolume(volume);
         }
     }
 

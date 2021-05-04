@@ -5,34 +5,20 @@ import model.*;
 
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.geometry.Pos;
 import java.util.ArrayList;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import org.json.simple.parser.ParseException;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-
-import java.io.*;
-
-import org.json.simple.JSONObject;
 
 /**
  * An <code>CreatorMenu</code> is a user interface used to display all the settings and modifying them.
@@ -43,7 +29,7 @@ public class CreatorMenu
         extends Menu {
 
     private final Pane leftMenu, middleMenu, rightMenu;
-    private CustomImage leftMenuImage, middleMenuImage, rightMenuImage;
+    private CustomImage leftMenuImage, rightMenuImage;
     private VBox gamePane, rightVBox;
     private CustomImage middleMenuBackground;
     private CustomButton saveButton, newMapButton, mainMenuButton;
@@ -71,10 +57,8 @@ public class CreatorMenu
      * @param height_ The height of the menu (preferably the size of the window)
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
-     * @throws IOException Exception thrown when a provided file name doesn't match any file (during the <code>setComboBox()</code> method)
      */
-    public CreatorMenu(Parent parent_, double width_, double height_, float WR, float HR)
-    		throws IOException, ParseException {
+    public CreatorMenu(Parent parent_, double width_, double height_, float WR, float HR) {
         super(parent_, width_, height_, WR, HR);
         this.width = width_;
         this.height = height_;
@@ -181,10 +165,8 @@ public class CreatorMenu
 
     /**
      * Prepare every image and button displaying information in the left and right <code>Panes</code>.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareInterfaces()
-            throws FileNotFoundException {
+    private void prepareInterfaces() {
         this.prepareSaveButton();
         this.prepareSaveButtonAction();
         this.prepareNewMapButton();
@@ -194,10 +176,8 @@ public class CreatorMenu
 
     /**
      * Prepare the "Save" button to save a move.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareSaveButton()
-            throws FileNotFoundException {
+    private void prepareSaveButton() {
         this.saveButton = new CustomButton(65, 850, WR, HR, "save.png", (byte) 0);
     }
 
@@ -240,11 +220,7 @@ public class CreatorMenu
                     content.add(line_);
                 }
                 if(this.valideMapSave(nPlayer, nBox, nGoal)) {
-                    try{
-                        Fichier.saveFile(getLevelName(), "freePlay", content);
-                    }catch(IOException fileExcep) {
-                        fileExcep.printStackTrace();
-                    }
+                    Fichier.saveFile(getLevelName(), "freePlay", content);
                 }else{
                     AlertBox.display("Error", "La carte n'est pas valide");
                 }
@@ -255,11 +231,7 @@ public class CreatorMenu
     }
 
     private boolean valideMapSave(int nPlayer, int nBox, int nGoal) {
-        if(nPlayer == 0 || nPlayer > 1 || nBox == 0 || nGoal == 0 || nBox != nGoal) {
-            return false;
-        }else {
-            return true;
-        }
+        return nPlayer != 0 && nPlayer <= 1 && nGoal != 0 && nBox == nGoal;
     }
 
     private String getLevelName() {
@@ -268,10 +240,8 @@ public class CreatorMenu
 
     /**
      * Prepare the "NewMap" button to undo a move.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareNewMapButton()
-            throws FileNotFoundException {
+    private void prepareNewMapButton() {
         this.newMapButton = new CustomButton(65, 800, WR, HR, "newMap.png", (byte) 0);
     }
 
@@ -282,17 +252,15 @@ public class CreatorMenu
         this.newMapButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             this.gameBoard = new Block[numberX][numberY];
             this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
-            amptyMap();
+            emptyMap();
         });
     }
 
     /**
      * Prepare the "Main menu" button to go back to the main menu.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareMainMenuButton()
-            throws FileNotFoundException {
-        this.mainMenuButton = new CustomButton(55, 900, WR, HR, "main menu.png", (byte) 1);
+    private void prepareMainMenuButton() {
+        this.mainMenuButton = new CustomButton(65, 900, WR, HR, "main menu.png", (byte) 1);
     }
 
     /**
@@ -301,12 +269,14 @@ public class CreatorMenu
      */
     private void prepareTextField() {
         this.levelNameField = new TextField();
+        this.levelNameField.setPromptText("Level name...");
         this.levelNameField.setFont(new Font("Microsoft YaHei", 20 * WR));
         this.levelNameField.setPrefWidth(200*WR);
         this.levelNameField.setLayoutX(75*WR);
         this.levelNameField.setLayoutY(550*HR);
 
         this.sizeXField = new TextField();
+        this.sizeXField.setPromptText("Length...");
         this.sizeXField.setFont(new Font("Microsoft YaHei", 20 * WR));
         this.sizeXField.setPrefWidth(100*WR);
         this.sizeXField.setLayoutX(125*WR);
@@ -320,6 +290,7 @@ public class CreatorMenu
         });
 
         this.sizeYField = new TextField();
+        this.sizeYField.setPromptText("Height...");
         this.sizeYField.setFont(new Font("Microsoft YaHei", 20 * WR));
         this.sizeYField.setPrefWidth(100*WR);
         this.sizeYField.setLayoutX(125*WR);
@@ -388,7 +359,7 @@ public class CreatorMenu
         vBox.getChildren().addAll(nameElemText, rect);
 	}
 
-    private void amptyMap() {
+    private void emptyMap() {
         for(int y=0; y < numberY; y++) {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
@@ -412,27 +383,24 @@ public class CreatorMenu
 	}
 
     private void setActionItem(Rectangle rect, Block objet) {
-        try{
-            String image;
-            if (objet == null){
-                image = "air.png";
-            } else {
-                image = objet.getImage();
-            }
-			ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + image)));
-			rect.setFill(modelImage);
+        try {
+            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (objet == null ? "air.png" : objet.getImage()))));
+            rect.setFill(modelImage);
             rect.setOnMouseEntered(e -> {
                 rect.setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");
             });
             rect.setOnMouseExited(e -> {
                 rect.setStyle("");
             });
-		}catch(FileNotFoundException fileExcep) {
-			fileExcep.printStackTrace();
-		}
-        rect.setOnMouseClicked(e -> {
-            item = objet;
-        });
+            rect.setOnMouseClicked(e -> {
+                item = objet;
+            });
+        } catch (FileNotFoundException e) {
+            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing." +
+                    "Check if the names have not been changed or if any file has not been deleted. " +
+                    "You can run the FileIntegrity checker for further information. Missing file : " + (objet == null ? "air.png" : objet.getImage()) + ".");
+            System.exit(-1);
+        }
     }
 
     /**

@@ -1,23 +1,19 @@
 package view;
 
-import presenter.Main;
-import model.JSONReader;
-import model.JSONWriter;
-
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import org.json.simple.parser.ParseException;
+import model.JSONReader;
+import model.JSONWriter;
+import presenter.Main;
 
-import javafx.scene.control.Slider;
-import javafx.beans.value.ObservableValue;
-import javafx.beans.value.ChangeListener;
-
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -38,7 +34,9 @@ public class OptionsMenu
     private AudioPlayer effectPlayer;
     private HBox upHBox, downHBox, rightHBox, leftHBox, restartHBox, trucHBox, saveHBox, openConsHBox, closeConsHBox;
     private TextField upControl, downControl, rightControl, leftControl;
-    private TextField restartControl, trucControl, saveControl, openConsControl, closeConsControl;
+    private TextField restartControl, loadControl, saveControl, openConsControl, closeConsControl;
+    // If we want to move every keybind selector to the right of to the left, we can simply modify this value
+    private final int keybindOffset = 0;
 
     /**
      * Create a new <code>OptionsMenu</code> and pepare the attributes and the resolution list and choice.
@@ -50,11 +48,8 @@ public class OptionsMenu
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
      * @param background_ The background displayed on the options menu
-     * @throws IOException Exception thrown when a provided file name doesn't match any file (during the <code>setComboBox()</code> method)
-     * @throws ParseException Exception thrown if the .json file could not be parsed (during the <code>setComboBox()</code> method)
      */
-    public OptionsMenu(Parent parent_, double width_, double height_, float WR, float HR, CustomImage background_, AudioPlayer audioPlayer_, AudioPlayer effectPlayer_)
-            throws IOException, ParseException{
+    public OptionsMenu(Parent parent_, double width_, double height_, float WR, float HR, CustomImage background_, AudioPlayer audioPlayer_, AudioPlayer effectPlayer_) {
         super(parent_, width_, height_, WR, HR, background_);
         this.backButtonOptions = new CustomButton((int)((width_-480-5)), (int)((height_-96-5)), WR, HR, "back button.png");
         if (!Main.fullscreen) {
@@ -75,23 +70,17 @@ public class OptionsMenu
      * Set the starterMusicVolume and the starterEffectVolume of the game
      * Used to know what's the value of the volume when the game just opened
      */
-    private void prepareVolume(){
-        try {
-            JSONReader reader = new JSONReader("data.json");
-            starterMusicVolume = reader.getString("music");
-            starterEffectVolume = reader.getString("effect");
-        } catch (IOException | ParseException exc) {
-            exc.printStackTrace();
-        }
+    private void prepareVolume() {
+        JSONReader reader = new JSONReader("data.json");
+        starterMusicVolume = reader.getString("music");
+        starterEffectVolume = reader.getString("effect");
     }
 
     /**
      * Create and prepare the <code>ComboBox</code> object that will display the available resolutions and
      * allow the user to change the resolution.
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown if the .json file could not be parsed
      */
-    public void setComboBox() throws IOException, ParseException{
+    public void setComboBox() {
         Label resolutionLabel = new Label("Resolution :");
         resolutionLabel.setLayoutX(10*WR);
         resolutionLabel.setTextFill(Color.rgb(88, 38, 24));
@@ -103,20 +92,15 @@ public class OptionsMenu
         comboBox.getSelectionModel().select(RESOLUTION_ID.get());
 
         comboBox.setOnAction(e -> {
-            try {
-                JSONWriter resolutionModifier = new JSONWriter("data.json");
-                RESOLUTION_ID.set((byte) (comboBox.getSelectionModel().getSelectedIndex()));
-                resolutionModifier.set("resolution", String.valueOf(RESOLUTION_ID.get()));
-            } catch (IOException | ParseException ioException) {
-                AlertBox.display("Error", "Error occurred while trying to save the Resolution" +
-                        ioException.getMessage());
-            }
+            JSONWriter resolutionModifier = new JSONWriter("data.json");
+            RESOLUTION_ID.set((byte) (comboBox.getSelectionModel().getSelectedIndex()));
+            resolutionModifier.set("resolution", String.valueOf(RESOLUTION_ID.get()));
         });
 
         resolution = new HBox();
         resolution.setLayoutX(100*WR);
         resolution.setLayoutY(150*HR);
-        resolution.setSpacing(10);
+        resolution.setSpacing(54*WR);
         resolution.getChildren().addAll(resolutionLabel,comboBox);
     }
 
@@ -139,9 +123,6 @@ public class OptionsMenu
                 } catch (NumberFormatException e1){
                     //Volume isn't between 0 and 1
                     AlertBox.display("Error", e1.getMessage());
-                }catch (IOException | ParseException exc) {
-                    AlertBox.display("Error", "An error occured while writing in the JSON file\n" +
-                            exc.getMessage());
                 }
             }
         });
@@ -153,7 +134,7 @@ public class OptionsMenu
         musicVolume = new HBox();
         musicVolume.setLayoutX(100*WR);
         musicVolume.setLayoutY(250*HR);
-        musicVolume.setSpacing(10);
+        musicVolume.setSpacing(105*WR);
         musicVolume.getChildren().addAll(musicLabel, sliderP);
     }
 
@@ -176,9 +157,6 @@ public class OptionsMenu
                 } catch (NumberFormatException e1){
                     //Volume isn't between 0 and 1
                     AlertBox.display("Error", e1.getMessage());
-                }catch (IOException | ParseException exc) {
-                    AlertBox.display("Error", "An error occured while writing in the JSON file\n" +
-                            exc.getMessage());
                 }
             }
         });
@@ -190,170 +168,161 @@ public class OptionsMenu
         effectVolume = new HBox();
         effectVolume.setLayoutX(100*HR);
         effectVolume.setLayoutY(350*WR);
-        effectVolume.setSpacing(10);
+        effectVolume.setSpacing(30*WR);
         effectVolume.getChildren().addAll(effectLabel, sliderS);
     }
 
     private void setControl() {
-        Label upLabel = new Label("Touch Up :");
+        Label upLabel = new Label("Move upwards :");
         upLabel.setTextFill(Color.rgb(88, 38, 24));
         upLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
-        Label downLabel = new Label("Touch Down :");
+        Label downLabel = new Label("Move downwards :");
         downLabel.setTextFill(Color.rgb(88, 38, 24));
         downLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
-        Label rightLabel = new Label("Touch Right :");
+        Label rightLabel = new Label("Move rightwards :");
         rightLabel.setTextFill(Color.rgb(88, 38, 24));
         rightLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
-        Label leftLabel = new Label("Touch Left :");
+        Label leftLabel = new Label("Move leftwards :");
         leftLabel.setTextFill(Color.rgb(88, 38, 24));
         leftLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
 
-        Label restartLabel = new Label("Touch Restart :");
+        Label restartLabel = new Label("Restart game :");
         restartLabel.setTextFill(Color.rgb(88, 38, 24));
         restartLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
-        Label trucLabel = new Label("Touch Truc :");
+        Label trucLabel = new Label("Load save :");
         trucLabel.setTextFill(Color.rgb(88, 38, 24));
         trucLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
-        Label saveLabel = new Label("Touch Save :");
+        Label saveLabel = new Label("Save progress :");
         saveLabel.setTextFill(Color.rgb(88, 38, 24));
         saveLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
-        Label openConsLabel = new Label("Touch Open-Console :");
+        Label openConsLabel = new Label("Open Console :");
         openConsLabel.setTextFill(Color.rgb(88, 38, 24));
         openConsLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
-        Label closeConsLabel = new Label("Touch Close-Console :");
+        Label closeConsLabel = new Label("Close Console :");
         closeConsLabel.setTextFill(Color.rgb(88, 38, 24));
         closeConsLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
 
-        this.upControl = new TextField (this.getControl("upTouch"));
+        this.upControl = new TextField (this.getControl("up"));
         this.upControl.setPrefWidth(40*WR);
         this.upControl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideControl(upControl, "upTouch")) {
-                setControl("upTouch", upControl.getText());
+            if(valideControl(upControl, "up")) {
+                setControl("up", upControl.getText());
             }
         });
-        this.downControl = new TextField (this.getControl("downTouch"));
+        this.downControl = new TextField (this.getControl("down"));
         this.downControl.setPrefWidth(40*WR);
         this.downControl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideControl(downControl, "downTouch")) {
-                setControl("downTouch", downControl.getText());
+            if(valideControl(downControl, "down")) {
+                setControl("down", downControl.getText());
             }
         });
-        this.rightControl = new TextField (this.getControl("rightTouch"));
+        this.rightControl = new TextField (this.getControl("right"));
         this.rightControl.setPrefWidth(40*WR);
         this.rightControl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideControl(rightControl, "rightTouch")) {
-                setControl("rightTouch", rightControl.getText());
+            if(valideControl(rightControl, "right")) {
+                setControl("right", rightControl.getText());
             }
         });
-        this.leftControl = new TextField (this.getControl("leftTouch"));
+        this.leftControl = new TextField (this.getControl("left"));
         this.leftControl.setPrefWidth(40*WR);
         this.leftControl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideControl(leftControl, "leftTouch")) {
-                setControl("leftTouch", leftControl.getText());
+            if(valideControl(leftControl, "left")) {
+                setControl("left", leftControl.getText());
             }
         });
 
-        this.restartControl = new TextField (this.getControl("restartTouch"));
+        this.restartControl = new TextField (this.getControl("restart"));
         this.restartControl.setPrefWidth(40*WR);
         this.restartControl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideControl(restartControl, "restartTouch")) {
-                setControl("restartTouch", restartControl.getText());
+            if(valideControl(restartControl, "restart")) {
+                setControl("restart", restartControl.getText());
             }
         });
-        this.trucControl = new TextField (this.getControl("trucTouch"));
-        this.trucControl.setPrefWidth(40*WR);
-        this.trucControl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideControl(trucControl, "trucTouch")) {
-                setControl("trucTouch", trucControl.getText());
+        this.loadControl = new TextField (this.getControl("loadsave"));
+        this.loadControl.setPrefWidth(40*WR);
+        this.loadControl.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(valideControl(loadControl, "loadsave")) {
+                setControl("loadsave", loadControl.getText());
             }
         });
-        this.saveControl = new TextField (this.getControl("saveTouch"));
+        this.saveControl = new TextField (this.getControl("savegame"));
         this.saveControl.setPrefWidth(40*WR);
         this.saveControl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideControl(saveControl, "saveTouch")) {
-                setControl("saveTouch", saveControl.getText());
+            if(valideControl(saveControl, "savegame")) {
+                setControl("savegame", saveControl.getText());
             }
         });
-        this.openConsControl = new TextField (this.getControl("consOpenTouch"));
+        this.openConsControl = new TextField (this.getControl("openconsole"));
         this.openConsControl.setPrefWidth(40*WR);
         this.openConsControl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideControl(openConsControl, "consOpenTouch")) {
-                setControl("consOpenTouch", openConsControl.getText());
+            if(valideControl(openConsControl, "openconsole")) {
+                setControl("openconsole", openConsControl.getText());
             }
         });
-        this.closeConsControl = new TextField (this.getControl("consCloseleftTouch"));
+        this.closeConsControl = new TextField (this.getControl("openconsole"));
         this.closeConsControl.setPrefWidth(40*WR);
         this.closeConsControl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideControl(closeConsControl, "consCloseleftTouch")) {
-                setControl("consCloseleftTouch", closeConsControl.getText());
+            if(valideControl(closeConsControl, "openconsole")) {
+                setControl("openconsole", closeConsControl.getText());
             }
         });
 
         this.upHBox = new HBox ();
         upHBox.setLayoutX(700*WR);
         upHBox.setLayoutY(150*HR);
-        upHBox.setSpacing(10);
+        upHBox.setSpacing((45+keybindOffset)*WR);
         upHBox.getChildren().addAll(upLabel, upControl);
         this.downHBox = new HBox ();
         downHBox.setLayoutX(700*WR);
         downHBox.setLayoutY(200*HR);
-        downHBox.setSpacing(10);
+        downHBox.setSpacing((10+keybindOffset)*WR);
         downHBox.getChildren().addAll(downLabel, downControl);
         this.rightHBox = new HBox ();
         rightHBox.setLayoutX(700*WR);
         rightHBox.setLayoutY(250*HR);
-        rightHBox.setSpacing(10);
+        rightHBox.setSpacing((18+keybindOffset)*WR);
         rightHBox.getChildren().addAll(rightLabel, rightControl);
         this.leftHBox = new HBox ();
         leftHBox.setLayoutX(700*WR);
         leftHBox.setLayoutY(300*HR);
-        leftHBox.setSpacing(10);
+        leftHBox.setSpacing((36+keybindOffset)*WR);
         leftHBox.getChildren().addAll(leftLabel, leftControl);
 
         this.restartHBox = new HBox ();
         restartHBox.setLayoutX(700*WR);
         restartHBox.setLayoutY(375*HR);
-        restartHBox.setSpacing(10);
+        restartHBox.setSpacing((62+keybindOffset)*WR);
         restartHBox.getChildren().addAll(restartLabel, restartControl);
         this.trucHBox = new HBox ();
         trucHBox.setLayoutX(700*WR);
         trucHBox.setLayoutY(425*HR);
-        trucHBox.setSpacing(10);
-        trucHBox.getChildren().addAll(trucLabel, trucControl);
+        trucHBox.setSpacing((103+keybindOffset)*WR);
+        trucHBox.getChildren().addAll(trucLabel, loadControl);
         this.saveHBox = new HBox ();
         saveHBox.setLayoutX(700*WR);
         saveHBox.setLayoutY(475*HR);
-        saveHBox.setSpacing(10);
+        saveHBox.setSpacing((55+keybindOffset)*WR);
         saveHBox.getChildren().addAll(saveLabel, saveControl);
         this.openConsHBox = new HBox ();
         openConsHBox.setLayoutX(700*WR);
         openConsHBox.setLayoutY(525*HR);
-        openConsHBox.setSpacing(10);
+        openConsHBox.setSpacing((53+keybindOffset)*WR);
         openConsHBox.getChildren().addAll(openConsLabel, openConsControl);
         this.closeConsHBox = new HBox ();
         closeConsHBox.setLayoutX(700*WR);
         closeConsHBox.setLayoutY(575*HR);
-        closeConsHBox.setSpacing(10);
+        closeConsHBox.setSpacing((54+keybindOffset)*WR);
         closeConsHBox.getChildren().addAll(closeConsLabel, closeConsControl);
     }
 
-    private void setControl(String text, String touch) {
-        try {
-            JSONWriter writer = new JSONWriter("control.json");
-            writer.set(text, touch);
-        } catch (IOException | ParseException exc) {
-            exc.printStackTrace();
-        }
+    private void setControl(String text, String key) {
+        JSONWriter writer = new JSONWriter("control.json");
+        writer.set(text, key);
     }
 
     private String getControl(String text) {
-        try {
-            JSONReader reader = new JSONReader("control.json");
-            return reader.getString(text);
-        } catch (IOException | ParseException exc) {
-            exc.printStackTrace();
-        }
-        return "/";
+        JSONReader reader = new JSONReader("control.json");
+        return reader.getString(text);
     }
 
     private boolean valideControl(TextField textField, String text) {
@@ -371,7 +340,7 @@ public class OptionsMenu
     }
 
     private void checkOtherControl(String text, TextField textField) {
-        String[] key = new String[] {"upTouch", "downTouch", "rightTouch", "leftTouch", "restartTouch", "trucTouch", "saveTouch", "consOpenTouch", "consCloseleftTouch"};
+        String[] key = new String[] {"up", "down", "right", "left", "restart", "loadsave", "savegame", "openconsole", "closeconsole"};
         for(String keyName : key) {
             if(!(text.equals(keyName))) {
                 if(getControl(keyName).equals(textField.getText())) {
@@ -449,7 +418,7 @@ public class OptionsMenu
      * MusicVolume HBox accessor
      * @return The MusicVolume HBox with the label and the TextField
      */
-    public HBox getTrucControl(){
+    public HBox getLoadControl(){
         return trucHBox;
     }
 

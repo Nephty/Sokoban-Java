@@ -1,7 +1,5 @@
 package model;
 
-import org.w3c.dom.Text;
-
 /**
  * <code>Teleport</code> is a <code>Block</code> used to teleport the player to the second Teleporter.
  * There can only be 2 Teleporters on the map. If the player walks into one, he goes to the second one.

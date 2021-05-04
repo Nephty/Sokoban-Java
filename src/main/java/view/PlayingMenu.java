@@ -74,11 +74,8 @@ public class PlayingMenu extends Menu {
      * @param WR_ The width ratio that will be used to resize the components
      * @param HR_ The height ratio that will be used to resize the components
      * @param beatPlayer The <code>AudioPlayer</code> that will play the main theme music
-     * @throws IOException Exception thrown when any provided file could not be found
-     * @throws ParseException Exception thrown when a file could not be parsed
      */
-    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, AudioPlayer beatPlayer, AudioPlayer effectPlayer)
-            throws IOException, ParseException {
+    public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, AudioPlayer beatPlayer, AudioPlayer effectPlayer) {
         super(parent_, width_, height_, WR_, HR_);
         this.leftMenu = new Pane();
         this.rightMenu = new Pane();
@@ -119,51 +116,45 @@ public class PlayingMenu extends Menu {
         EventHandler keyEventHandler = (EventHandler<KeyEvent>) keyEvent -> {
             Direction direction;
             String str = keyEvent.getText().toUpperCase();
-            if(str.equals(getControl("upTouch"))) {
+            if(str.equals(getControl("up"))) {
                 direction = Direction.UP;
                 game.setPlayerFacing(direction);
-            }else if(str.equals(getControl("downTouch"))) {
+            }else if(str.equals(getControl("down"))) {
                 direction = Direction.DOWN;
                 game.setPlayerFacing(direction);
-            }else if(str.equals(getControl("rightTouch"))) {
+            }else if(str.equals(getControl("right"))) {
                 direction = Direction.RIGHT;
                 game.setPlayerFacing(direction);
-            }else if(str.equals(getControl("leftTouch"))) {
+            }else if(str.equals(getControl("left"))) {
                 direction = Direction.LEFT;
                 game.setPlayerFacing(direction);
             }
-            else if(str.equals(getControl("restartTouch"))) {
+            else if(str.equals(getControl("restart"))) {
                 this.resetCounters();
                 game.setPlayerFacing(Direction.DOWN);
                 direction = Direction.RESTART;
-            }else if(str.equals(getControl("trucTouch"))) {
-                try {
-                    levelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
-                            "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
-                            "File name..."));
-                } catch (IOException e) {
-                    AlertBox.display("Error", "An error occurred while trying to save the level");
-                }
+            }else if(str.equals(getControl("loadsave"))) {
+                LevelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
+                        "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
+                        "File name..."));
                 direction = Direction.NULL;
-            }else if(str.equals(getControl("saveTouch"))) {
+            }else if(str.equals(getControl("savegame"))) {
                 // TODO : what's taking so long to apply a lot of moves (200+ for example) ?
                 String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
                 if (fileName != null && !fileName.equals("")) {
-                    try {
-                        ArrayList<Direction> res = levelSaver.getHistory(fileName, "");
+                    ArrayList<Direction> res = LevelSaver.getHistory(fileName, "");
+                    if (res != null) {
                         for (Direction dir : res) {
                             applyMove(dir);
                             System.out.println("applied : " + dir);
                         }
-                    } catch (IOException | ClassNotFoundException exception){
-                        AlertBox.display("Error", "Error : "+exception.getMessage());
                     }
                 }
                 direction = Direction.NULL;
-            }else if(str.equals(getControl("consOpenTouch"))) {
+            }else if(str.equals(getControl("openconsole"))) {
                 Console.open();
                 direction = Direction.NULL;
-            }else if(str.equals(getControl("consCloseleftTouch"))) {
+            }else if(str.equals(getControl("closeconsole"))) {
                 Console.close();
                 direction = Direction.NULL;
             }else {
@@ -172,7 +163,12 @@ public class PlayingMenu extends Menu {
             applyMove(direction);
         };
         prepareMoveButtons(keyEventHandler);
-        updateMapTiles();
+        try {
+            updateMapTiles();
+        } catch (IOException exception) {
+            AlertBox.display("Fatal Error", exception.getMessage());
+            System.exit(-1);
+        }
 
         this.finalPane = new Pane();
         this.finalPane.setLayoutX(0);
@@ -208,13 +204,8 @@ public class PlayingMenu extends Menu {
     }
 
     private String getControl(String text) {
-        try {
-            JSONReader reader = new JSONReader("control.json");
-            return reader.getString(text);
-        } catch (IOException | ParseException exc) {
-            exc.printStackTrace();
-        }
-        return "/";
+        JSONReader reader = new JSONReader("control.json");
+        return reader.getString(text);
     }
 
     /**
@@ -249,7 +240,7 @@ public class PlayingMenu extends Menu {
 
                 try {
                     updateMapTiles();
-                } catch (IOException | ParseException exception) {
+                } catch (IOException exception) {
                     AlertBox.display("Fatal Error", exception.getMessage());
                     System.exit(-1);
                 }
@@ -314,10 +305,8 @@ public class PlayingMenu extends Menu {
 
     /**
      * Prepare every image and button displaying information in the left and right <code>Panes</code>.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareInterfaces()
-            throws FileNotFoundException {
+    private void prepareInterfaces() {
         this.prepareMovesInterface();
         this.prepareObjectivesInterface();
         this.preparePushesInterface();
@@ -347,89 +336,71 @@ public class PlayingMenu extends Menu {
 
     /**
      * Prepare the moves information display.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareMovesInterface()
-            throws FileNotFoundException {
+    private void prepareMovesInterface() {
         this.moves = new CustomImage(65, 100, this.WR, this.HR, "moves.png");
         this.movesContainer = new CustomImage(85, 150, this.WR, this.HR, "text container.png");
     }
 
     /**
      * Prepare the pushes information display.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void preparePushesInterface()
-            throws FileNotFoundException {
+    private void preparePushesInterface() {
         this.pushes = new CustomImage(65, 210, this.WR, this.HR, "pushes.png");
         this.pushesContainer = new CustomImage(85, 260, this.WR, this.HR, "text container.png");
     }
 
     /**
      * Prepare the amount of box on objectives information display.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareObjectivesInterface()
-            throws FileNotFoundException {
+    private void prepareObjectivesInterface() {
         this.objectives = new CustomImage(65, 320, this.WR, this.HR, "objectives.png");
         this.objectivesContainer = new CustomImage(85, 370, this.WR, this.HR, "text container.png");
     }
 
     /**
      * Prepare the elapsed time since the begging of the game information display.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareTimeInterface()
-            throws FileNotFoundException {
+    private void prepareTimeInterface() {
         this.time = new CustomImage(65, 430, this.WR, this.HR, "time.png");
         this.timeContainer = new CustomImage(85, 480, this.WR, this.HR, "text container.png");
     }
 
     /**
      * Prepare the "Undo" button to undo a move.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareUndoButton()
-            throws FileNotFoundException {
+    private void prepareUndoButton() {
         this.undoButton = new CustomButton(65, 800, WR, HR, "undo.png", (byte) 0);
     }
 
     /**
      *  Prepare the current level information display.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareCurrentLevelInterface()
-            throws FileNotFoundException {
+    private void prepareCurrentLevelInterface() {
         this.currentLevelImg = new CustomImage(58, 100, WR, HR, "level.png");
         this.currentLevelImgContainer = new CustomImage(78, 150, WR, HR, "text container.png");
     }
 
     /**
      * Prepare the current level difficulty information display.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareDifficultyInterface()
-            throws FileNotFoundException {
+    private void prepareDifficultyInterface() {
         this.difficultyImg = new CustomImage(58, 245, WR, HR, "difficulty.png");
         this.difficultyImgContainer = new CustomImage(78, 295, WR, HR, "text container.png");
     }
 
     /**
      * Prepare the current level average rating information display.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareAverageRatingInterface()
-            throws FileNotFoundException {
+    private void prepareAverageRatingInterface() {
         this.averageRatingImg = new CustomImage(50, 390, WR, HR, "average rating.png");
         this.averageRatingImgContainer = new CustomImage(80, 440, WR, HR, "text container.png");
     }
 
     /**
      * Prepare the "Restart" button to undo a move.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareRestartButton()
-            throws FileNotFoundException {
+    private void prepareRestartButton() {
         this.restartButton = new CustomButton(65, 900, WR, HR, "restart.png", (byte) 0);
     }
 
@@ -443,7 +414,7 @@ public class PlayingMenu extends Menu {
                 this.resetCounters();
                 try {
                     this.updateMapTiles();
-                } catch (IOException | ParseException exception) {
+                } catch (IOException exception) {
                     AlertBox.display("Fatal Error", exception.getMessage());
                     System.exit(-1);
                 }
@@ -454,10 +425,8 @@ public class PlayingMenu extends Menu {
 
     /**
      * Prepare the "Main menu" button to go back to the main menu.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareMainMenuButton()
-            throws FileNotFoundException {
+    private void prepareMainMenuButton() {
         this.mainMenuButton = new CustomButton(50, 850, WR, HR, "main menu.png", (byte) 1);
     }
 
@@ -587,11 +556,10 @@ public class PlayingMenu extends Menu {
      * Update the currently displayed map layout based on the new generated <code>Board</code> and its blockList.
      * This method is used every time the user makes a move. Handles the task of showing the congratulations message
      * if the user won the game.
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when a file could not be parsed
+     * @throws IOException Exception thrown when a destination is wrong. For example, "hello" is not a valid
+     * destination, but "campaign" is. It will always be a coding error, it is not throwable by the user
      */
-    private void updateMapTiles()  // was previously called setMap()
-            throws IOException, ParseException {
+    private void updateMapTiles() throws IOException { // was previously called setMap()
         Block[][] blockList = this.game.getBoard().getBlockList();
         final int spaceConstant = (int) ((this.imageLength)/HR);
         this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
@@ -639,7 +607,7 @@ public class PlayingMenu extends Menu {
                 key += currentCampaignLevel;
 
                 String enteredString = CompleteFieldBox.display("Rating", "How would you rate this level ?", "Rating...");
-                boolean parsed = true;
+                boolean parsed = false;
                 if (!enteredString.equals("")) {
                     while (!parsed) {
                         try {
@@ -721,29 +689,24 @@ public class PlayingMenu extends Menu {
      */
     private void addLevel() {
         if (currentMode.equals("campaign")) {
-            try {
-                JSONReader reader = new JSONReader("data.json");
-                int currentCompletedLevels = reader.getByte("completed levels");
-                if (currentCompletedLevels == (currentCampaignLevel - 1)) {
-                    JSONWriter writer = new JSONWriter("data.json");
-                    writer.set("completed levels", String.valueOf((currentCompletedLevels + 1)));
-                }
-            } catch (IOException | ParseException exc) {
-                AlertBox.display("Error", "Error while trying to edit completed levels\n"+exc.getMessage());
+            JSONReader reader = new JSONReader("data.json");
+            int currentCompletedLevels = reader.getByte("completed levels");
+            if (currentCompletedLevels == (currentCampaignLevel - 1)) {
+                JSONWriter writer = new JSONWriter("data.json");
+                writer.set("completed levels", String.valueOf((currentCompletedLevels + 1)));
             }
         }
     }
 
     /**
      *
-     * @param level
-     * @param name
-     * @param dest
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when a file could not be parsed
+     * @param level The <code>ArrayList</code> of Strings containing the characters making the level
+     * @param name The name of the level
+     * @param dest The file destination : campaign, freeplay or secret
+     * @throws IOException Exception thrown when a destination is wrong. For example, "hello" is not a valid
+     * destination, but "campaign" is. It will always be a coding error, it is not throwable by the user
      */
-    public void setLevel(ArrayList<String> level, String name, String dest)
-            throws IOException, ParseException {
+    public void setLevel(ArrayList<String> level, String name, String dest) throws IOException {
         switch (dest){
             case "campaign":
                 this.currentCampaignLevel = Byte.valueOf(name);
@@ -837,7 +800,7 @@ public class PlayingMenu extends Menu {
         }
         try {
             updateMapTiles();
-        } catch (IOException | ParseException exception) {
+        } catch (IOException exception) {
             AlertBox.display("Fatal Error", exception.getMessage());
             System.exit(-1);
         }

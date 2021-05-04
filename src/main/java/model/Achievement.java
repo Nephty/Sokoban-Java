@@ -25,10 +25,8 @@ public class Achievement {
      * @param WR The width ratio used to resize the icon according to the resolution
      * @param HR The height ratio used to resize the icon according to the resolution
      * @param grid The grid that will contain the components
-     * @throws FileNotFoundException Exception thrown when the icon can not be found
      */
-    public Achievement(CustomImage image_, CustomImage text_, int posX, int posY, float WR, float HR, GridPane grid)
-            throws FileNotFoundException {
+    public Achievement(CustomImage image_, CustomImage text_, int posX, int posY, float WR, float HR, GridPane grid) {
         this.image = image_;
         this.overlay = new CustomImage(0, 0, WR, HR, "achievement overlay.png");
         this.overlayDone = new CustomImage(0, 0, WR, HR, "achievement done overlay.png");
