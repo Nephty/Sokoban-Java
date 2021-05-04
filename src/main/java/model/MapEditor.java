@@ -60,9 +60,13 @@ public class MapEditor {
      * @return The new size for the MapEditor
      */
     private double autoSizeElem(int numbElemX, int numbElemY, double spaceWidth ,double spaceHeight, float WR, float HR) {
-        double sizeX = (spaceWidth / numbElemX) * WR;
-        double sizeY = (spaceHeight / numbElemY) * HR;
-        return Math.min(sizeX, sizeY);
+        double sizeX = ((spaceWidth-(350*WR)-(350*WR)-(50*WR)) / numbElemX) * WR;
+        double sizeY = ((spaceHeight-(50*HR)) / numbElemY) * HR;
+        if(sizeX <= sizeY) {
+            return sizeX;
+        }else {
+            return sizeY;
+        }
     }
 
     /**
