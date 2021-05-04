@@ -47,6 +47,7 @@ public class CreatorMenu
     private TextField sizeXField;
     private TextField sizeYField;
     private TextField levelNameField;
+    private Text numbX, numbY;
 
 	private double width;
 	private double height;
@@ -87,7 +88,7 @@ public class CreatorMenu
         this.prepareTextField();
 
         this.gamePane = new VBox();
-        this.gamePane.setLayoutX(100*WR);
+        this.gamePane.setLayoutX(25*WR);
         this.gamePane.setLayoutY(25*HR);
 
         this.finalPane = new Pane();
@@ -103,7 +104,8 @@ public class CreatorMenu
         this.leftMenu.getChildren().add(this.leftMenuImage);
         this.leftMenu.getChildren().addAll(
                 this.levelNameField,
-                this.sizeXField, this.sizeYField,
+                this.numbX, this.sizeXField,
+                this.numbY, this.sizeYField,
                 this.saveButton, this.saveButton.overlay,
                 this.newMapButton, this.newMapButton.overlay,
                 this.mainMenuButton, this.mainMenuButton.overlay
@@ -247,19 +249,30 @@ public class CreatorMenu
      * (levelName - width - height)
      */
     private void prepareTextField() {
-        this.levelNameField = new TextField();
-        this.levelNameField.setPromptText("Level name...");
+        this.numbX = new Text();
+        this.numbX.setText("Number of block AxeX :");
+        this.numbX.setLayoutX(55*WR);
+        this.numbX.setLayoutY(625*HR);
+        styleText(numbX);
+        this.numbY = new Text();
+        this.numbY.setLayoutX(55*WR);
+        this.numbY.setLayoutY(675*HR);
+        styleText(numbY);
+        this.numbY.setText("Number of block AxeY :");
+
+        this.levelNameField = new TextField("Name Level");
         this.levelNameField.setFont(new Font("Microsoft YaHei", 20 * WR));
         this.levelNameField.setPrefWidth(200*WR);
         this.levelNameField.setLayoutX(75*WR);
         this.levelNameField.setLayoutY(550*HR);
+        this.levelNameField.setStyle("-fx-border-width:0.5px; -fx-border-color: grey; -fx-border-radius: 50px; -fx-background-radius: 50px; -fx-font-size: 20px; -fx-padding: 0px; -fx-font-weight: 700; -fx-alignment: center;");
 
-        this.sizeXField = new TextField();
-        this.sizeXField.setPromptText("Length...");
+        this.sizeXField = new TextField("10");
         this.sizeXField.setFont(new Font("Microsoft YaHei", 20 * WR));
         this.sizeXField.setPrefWidth(100*WR);
-        this.sizeXField.setLayoutX(125*WR);
+        this.sizeXField.setLayoutX(200*WR);
         this.sizeXField.setLayoutY(600*HR);
+        this.sizeXField.setStyle("-fx-border-width:0.5px; -fx-border-color: grey; -fx-border-radius: 50px; -fx-background-radius: 50px; -fx-font-size: 30px; -fx-padding: 0px; -fx-font-weight: 700; -fx-alignment: center;");
         this.sizeXField.textProperty().addListener((observable, oldValue, newValue) -> {
             try{
                 this.numberX = Integer.parseInt(sizeYField.getText());
@@ -268,17 +281,17 @@ public class CreatorMenu
             }
         });
 
-        this.sizeYField = new TextField();
-        this.sizeYField.setPromptText("Height...");
+        this.sizeYField = new TextField("10");
         this.sizeYField.setFont(new Font("Microsoft YaHei", 20 * WR));
         this.sizeYField.setPrefWidth(100*WR);
-        this.sizeYField.setLayoutX(125*WR);
+        this.sizeYField.setLayoutX(200*WR);
         this.sizeYField.setLayoutY(650*HR);
+        this.sizeYField.setStyle("-fx-border-width:0.5px; -fx-border-color: grey; -fx-border-radius: 50px; -fx-background-radius: 50px; -fx-font-size: 30px; -fx-padding: 0px; -fx-font-weight: 700; -fx-alignment: center;");
         this.sizeYField.textProperty().addListener((observable, oldValue, newValue) -> {
             try{
-                this.numberX = Integer.parseInt(sizeYField.getText());
+                this.numberY = Integer.parseInt(sizeYField.getText());
             } catch (NumberFormatException exc) {
-                this.numberX = 10;
+                this.numberY = 10;
             }
         });
     }
@@ -288,10 +301,10 @@ public class CreatorMenu
      */
     private void addBlockRightMenu() {
     	this.rightVBox = new VBox();
-        this.rightVBox.setLayoutX(125*WR);
+        this.rightVBox.setLayoutX(75*WR);
         this.rightVBox.setLayoutY(50*HR);
 		
-        for(int i=0; i < 7; i++) {
+        for(int i=0; i < 9; i++) {
         	drawItemLevel(this.rightVBox, i);
         }
     }
@@ -302,8 +315,10 @@ public class CreatorMenu
      * @param i The number of item we have already drawn
      */
     private void drawItemLevel(VBox vBox, int i) {
+        HBox itemHBox = new HBox();
 		Rectangle rect = new Rectangle(110*WR, 110*HR);
         Text nameElemText = new Text();
+        styleText(nameElemText);
         switch (i) {
             case 0:
                 nameElemText.setText("Block Air");
@@ -333,9 +348,22 @@ public class CreatorMenu
         	    nameElemText.setText("Block Goal");
         	    setActionItem(rect, new Goal(0, 0));
         	    break;
+            case 7:
+                nameElemText.setText("Block Teleporter");
+                setActionItem(rect, new Teleport(0, 0,null));
+                break;
+            case 8:
+                nameElemText.setText("Block Ghost Wall");
+                setActionItem(rect, new GhostWall(0,0));
+                break;
         	}
-        vBox.getChildren().addAll(nameElemText, rect);
+        itemHBox.getChildren().addAll(rect, nameElemText);
+        vBox.getChildren().add(itemHBox);
 	}
+
+    private void styleText(Text text) {
+        text.setStyle("-fx-font-size: 13px; -fx-stroke: rgb(255, 249, 242); -fx-stroke-width: 1;");
+    }
 
     /**
      * Set the middleMenu with the square of MapEditor
@@ -345,7 +373,7 @@ public class CreatorMenu
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
             for(int x=0; x < numberX; x++) {
-                MapEditor mapEdit = new MapEditor(this.gameBoard, x, y, numberX, numberY, this.width-50, this.height-50, WR, HR);
+                MapEditor mapEdit = new MapEditor(this.gameBoard, x, y, numberX, numberY, this.width, this.height, WR, HR);
 
                 mapEdit.getElem().setOnMouseEntered(e -> {
                     mapEdit.getElem().setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");
