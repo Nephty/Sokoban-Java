@@ -516,6 +516,7 @@ public class Main extends Application {
         switch (resolutionID) {
             case 0:
                 dimension = getScreenDimension();
+                fullscreen = true;
                 break;
             case 1:
                 dimension = new Dimension(1280, 720);
@@ -539,9 +540,6 @@ public class Main extends Application {
                 throw new IllegalStateException("Unexpected value: " + resolutionID);
         }
 
-        if (dimension.width == getScreenDimension().width) {
-            fullscreen = true;
-        }
 
         WR = getWidthRatio(dimension.width);
         HR = getHeightRatio(dimension.height);
