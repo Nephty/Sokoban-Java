@@ -1,9 +1,9 @@
 {
 "savegame":"F",
 "restart":"R",
-"left":"D",
-"right":"Q",
+"left":"Q",
 "up":"Z",
+"right":"D",
 "loadsave":"T",
 "down":"S",
 "closeconsole":"L",
