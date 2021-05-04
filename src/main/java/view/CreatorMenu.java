@@ -250,7 +250,7 @@ public class CreatorMenu
      */
     private void prepareTextField() {
         this.numbX = new Text();
-        this.numbX.setText("Number of block AxeX :");
+        this.numbX.setText("Width :");
         this.numbX.setLayoutX(55*WR);
         this.numbX.setLayoutY(625*HR);
         styleText(numbX);
@@ -258,7 +258,7 @@ public class CreatorMenu
         this.numbY.setLayoutX(55*WR);
         this.numbY.setLayoutY(675*HR);
         styleText(numbY);
-        this.numbY.setText("Number of block AxeY :");
+        this.numbY.setText("Height :");
 
         this.levelNameField = new TextField("Name Level");
         this.levelNameField.setFont(new Font("Microsoft YaHei", 20 * WR));
@@ -304,7 +304,7 @@ public class CreatorMenu
         this.rightVBox.setLayoutX(75*WR);
         this.rightVBox.setLayoutY(50*HR);
 		
-        for(int i=0; i < 9; i++) {
+        for(int i=0; i < 8; i++) {
         	drawItemLevel(this.rightVBox, i);
         }
     }
@@ -321,40 +321,36 @@ public class CreatorMenu
         styleText(nameElemText);
         switch (i) {
             case 0:
-                nameElemText.setText("Block Air");
+                nameElemText.setText("Air");
                 setActionItem(rect, null);
                 break;
             case 1:
-                nameElemText.setText("Block Wall");
+                nameElemText.setText("Wall");
                 setActionItem(rect, new Wall(0, 0));
                 break;
         	case 2:
-        	    nameElemText.setText("Block Player");
+        	    nameElemText.setText("Player");
         	    setActionItem(rect, new Player(0, 0, false, null));
         	    break;
             case 3:
-                nameElemText.setText("Block Player on Goal");
+                nameElemText.setText("Player on Goal");
                 setActionItem(rect, new Player(0, 0, true, null));
                 break;
         	case 4:
-        	    nameElemText.setText("Block Box");
+        	    nameElemText.setText("Box");
         	    setActionItem(rect, new Box(0, 0, false));
         	    break;
         	case 5:
-        	    nameElemText.setText("Block Box on Goal");
+        	    nameElemText.setText("Box on Goal");
         	    setActionItem(rect, new Box(0, 0, true));
         	    break;
         	case 6:
-        	    nameElemText.setText("Block Goal");
+        	    nameElemText.setText("Goal");
         	    setActionItem(rect, new Goal(0, 0));
         	    break;
             case 7:
-                nameElemText.setText("Block Teleporter");
+                nameElemText.setText("Teleport");
                 setActionItem(rect, new Teleport(0, 0,null));
-                break;
-            case 8:
-                nameElemText.setText("Block Ghost Wall");
-                setActionItem(rect, new GhostWall(0,0));
                 break;
         	}
         itemHBox.getChildren().addAll(rect, nameElemText);
