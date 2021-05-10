@@ -3,10 +3,7 @@ package view;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -33,8 +30,7 @@ public class Tutorial extends Menu {
      * @param WR_ The width ratio that will be used to resize the components
      * @param HR_ The height ratio that will be used to resize the components
      */
-    public Tutorial(Parent parent_, double width_, double height_, float WR_, float HR_)
-            throws FileNotFoundException {
+    public Tutorial(Parent parent_, double width_, double height_, float WR_, float HR_) {
         super(parent_, width_, height_, WR_, HR_);
         this.prepareImages();
         this.images.add(this.tutorial0);
@@ -49,10 +45,8 @@ public class Tutorial extends Menu {
 
     /**
      * Create all the necessary images and only set the first image visible.
-     * @throws FileNotFoundException Exception thrown when a specified file could not be found
      */
-    public void prepareImages()
-            throws FileNotFoundException {
+    public void prepareImages() {
         this.tutorial0 = new CustomImage(0, 0, this.WR, this.HR, "tutorial0.png");
         this.tutorial1 = new CustomImage(0, 0, this.WR, this.HR, "tutorial1.png");
         this.tutorial2 = new CustomImage(0, 0, this.WR, this.HR, "tutorial2.png");
@@ -71,9 +65,8 @@ public class Tutorial extends Menu {
     /**
      * Create the images for the buttons used to navigate through the slideshow and set their respective
      * <code>EventHandler</code>.
-     * @throws FileNotFoundException Exception thrown when a specified file could not be found
      */
-    public void prepareArrowButtons() throws FileNotFoundException {
+    public void prepareArrowButtons() {
         this.leftArrow = new CustomImage(100, 880, this.WR, this.HR, "left arrow.png");
         this.rightArrow = new CustomImage(1720, 880, this.WR, this.HR, "right arrow.png");
         this.leftArrow.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {

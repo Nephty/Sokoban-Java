@@ -5,45 +5,34 @@ import model.*;
 
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.geometry.Pos;
 import java.util.ArrayList;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import org.json.simple.parser.ParseException;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.io.*;
-
-import org.json.simple.JSONObject;
-
 /**
- * An <code>CreatorMenu</code> is a user interface used to display all the settings and modifying them.
- * It contains a list of available resolutions and allows the user to change the resolution. The game must be
- * restarted in order to apply this change.
+ * A <code>CreatorMenu</code> is a user interface used to let the user create is own level.
+ * It has 3 menus : The left menu is used to change the settings of the map, save it,...
+ *                  The right menu is a VBox with all the block of the game where the user can select the block he
+ *   wants to add.
+ *                  The middle menu is a square of MapEditor. If we click on one MapEditor, it changes with the block
+ *   the user choose on the right menu.
  */
 public class CreatorMenu
         extends Menu {
 
     private final Pane leftMenu, middleMenu, rightMenu;
-    private CustomImage leftMenuImage, middleMenuImage, rightMenuImage;
+    private CustomImage leftMenuImage, rightMenuImage;
     private VBox gamePane, rightVBox;
     private CustomImage middleMenuBackground;
     private CustomButton saveButton, newMapButton, mainMenuButton;
@@ -58,12 +47,13 @@ public class CreatorMenu
     private TextField sizeXField;
     private TextField sizeYField;
     private TextField levelNameField;
+    private Text numbX, numbY;
 
 	private double width;
 	private double height;
 
     /**
-     * Create a new <code>CreatorMenu</code> and pepare the attributes and the resolution list and choice.
+     * Create a new <code>CreatorMenu</code> and prepare the attributes and the resolution list and choice.
      * @param parent_ The main <code>Pane</code> that we will be using to store the content. This pane should (but it's not
      *                mandatory) be the size of the window in order to be able to display content anywhere on
      *                the said window.
@@ -71,10 +61,8 @@ public class CreatorMenu
      * @param height_ The height of the menu (preferably the size of the window)
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
-     * @throws IOException Exception thrown when a provided file name doesn't match any file (during the <code>setComboBox()</code> method)
      */
-    public CreatorMenu(Parent parent_, double width_, double height_, float WR, float HR)
-    		throws IOException, ParseException {
+    public CreatorMenu(Parent parent_, double width_, double height_, float WR, float HR) {
         super(parent_, width_, height_, WR, HR);
         this.width = width_;
         this.height = height_;
@@ -100,7 +88,7 @@ public class CreatorMenu
         this.prepareTextField();
 
         this.gamePane = new VBox();
-        this.gamePane.setLayoutX(100*WR);
+        this.gamePane.setLayoutX(25*WR);
         this.gamePane.setLayoutY(25*HR);
 
         this.finalPane = new Pane();
@@ -116,7 +104,8 @@ public class CreatorMenu
         this.leftMenu.getChildren().add(this.leftMenuImage);
         this.leftMenu.getChildren().addAll(
                 this.levelNameField,
-                this.sizeXField, this.sizeYField,
+                this.numbX, this.sizeXField,
+                this.numbY, this.sizeYField,
                 this.saveButton, this.saveButton.overlay,
                 this.newMapButton, this.newMapButton.overlay,
                 this.mainMenuButton, this.mainMenuButton.overlay
@@ -181,10 +170,8 @@ public class CreatorMenu
 
     /**
      * Prepare every image and button displaying information in the left and right <code>Panes</code>.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareInterfaces()
-            throws FileNotFoundException {
+    private void prepareInterfaces() {
         this.prepareSaveButton();
         this.prepareSaveButtonAction();
         this.prepareNewMapButton();
@@ -193,12 +180,10 @@ public class CreatorMenu
     }
 
     /**
-     * Prepare the "Save" button to save a move.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
+     * Prepare the "Save" button to save the new level.
      */
-    private void prepareSaveButton()
-            throws FileNotFoundException {
-        this.saveButton = new CustomButton(65, 850, WR, HR, "save.png", (byte) 0);
+    private void prepareSaveButton() {
+        this.saveButton = new CustomButton(65, 850, WR, HR, "save.png", (byte) 1);
     }
 
     /**
@@ -207,59 +192,27 @@ public class CreatorMenu
     private void prepareSaveButtonAction() {
         this.saveButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if(gameBoard != null) {
-                int nPlayer = 0;
-                int nBox = 0;
-                int nGoal = 0;
                 ArrayList<String> content = new ArrayList<>();
                 for(Block[] line : gameBoard) {
                     String line_ = "";
                     for(Block elem : line) {
-                        if(elem instanceof Wall) {
-                            line_ += "#";
-                        }else if(elem instanceof Player && !(elem.amIOnGoal())) {
-                            line_ += "@";
-                            nPlayer++;
-                        }else if(elem instanceof Player && elem.amIOnGoal()) {
-                            line_ += "+";
-                            nPlayer++;
-                            nGoal++;
-                        }else if(elem instanceof Box && !(elem.amIOnGoal())) {
-                            line_ += "$";
-                            nBox++;
-                        }else if(elem instanceof Box && elem.amIOnGoal()) {
-                            line_ += "*";
-                            nBox++;
-                            nGoal++;
-                        }else if(elem instanceof Goal) {
-                            line_ += ".";
-                            nGoal++;
-                        }else if(elem == null) {
+                        if (elem == null){
                             line_ += " ";
+                        } else {
+                            line_ += elem.getTexture();
                         }
                     }
                     content.add(line_);
                 }
-                if(this.valideMapSave(nPlayer, nBox, nGoal)) {
-                    try{
-                        Fichier.saveFile(getLevelName(), "freePlay", content);
-                    }catch(IOException fileExcep) {
-                        fileExcep.printStackTrace();
-                    }
-                }else{
-                    AlertBox.display("Error", "La carte n'est pas valide");
+                if (getLevelName().equals(".xsb")){
+                    File.saveFile("EmptyName.xsb", "freePlay", content);
+                } else {
+                    File.saveFile(getLevelName(), "freePlay", content);
                 }
             }else {
-                AlertBox.display("Error", "Il n'y a pas de carte");
+                AlertBox.display("Error", "There's no map loaded");
             }
         });
-    }
-
-    private boolean valideMapSave(int nPlayer, int nBox, int nGoal) {
-        if(nPlayer == 0 || nPlayer > 1 || nBox == 0 || nGoal == 0 || nBox != nGoal) {
-            return false;
-        }else {
-            return true;
-        }
     }
 
     private String getLevelName() {
@@ -268,132 +221,149 @@ public class CreatorMenu
 
     /**
      * Prepare the "NewMap" button to undo a move.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareNewMapButton()
-            throws FileNotFoundException {
-        this.newMapButton = new CustomButton(65, 800, WR, HR, "newMap.png", (byte) 0);
+    private void prepareNewMapButton() {
+        this.newMapButton = new CustomButton(65, 800, WR, HR, "newMap.png", (byte) 1);
     }
 
     /**
-     * Prepare the <code>EventHandler</code> used with the "Restart" button.
+     * Prepare the <code>EventHandler</code> used with the "NewMap" button.
      */
     private void prepareNewMapButtonAction() {
         this.newMapButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            try{
+                this.numberX = Integer.parseInt(sizeXField.getText());
+                this.numberY = Integer.parseInt(sizeYField.getText());
+            } catch (NumberFormatException exc) {
+                exc.printStackTrace();
+                this.numberX = 10;
+                this.numberY = 10;
+            }
             this.gameBoard = new Block[numberX][numberY];
             this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
-            amptyMap();
+            emptyMap();
         });
     }
 
     /**
      * Prepare the "Main menu" button to go back to the main menu.
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    private void prepareMainMenuButton()
-            throws FileNotFoundException {
-        this.mainMenuButton = new CustomButton(55, 900, WR, HR, "main menu.png", (byte) 1);
+    private void prepareMainMenuButton() {
+        this.mainMenuButton = new CustomButton(65, 900, WR, HR, "main menu.png", (byte) 1);
     }
 
     /**
-     *
-     *
+     * Prepare all the <Code>TextFields</Code> in the leftMenu
+     * (levelName - width - height)
      */
     private void prepareTextField() {
-        this.levelNameField = new TextField();
+        this.numbX = new Text();
+        this.numbX.setText("Width :");
+        this.numbX.setLayoutX(55*WR);
+        this.numbX.setLayoutY(625*HR);
+        styleText(numbX);
+        this.numbY = new Text();
+        this.numbY.setLayoutX(55*WR);
+        this.numbY.setLayoutY(675*HR);
+        styleText(numbY);
+        this.numbY.setText("Height :");
+
+        this.levelNameField = new TextField("Name Level");
         this.levelNameField.setFont(new Font("Microsoft YaHei", 20 * WR));
         this.levelNameField.setPrefWidth(200*WR);
         this.levelNameField.setLayoutX(75*WR);
         this.levelNameField.setLayoutY(550*HR);
+        this.levelNameField.setStyle("-fx-border-width:0.5px; -fx-border-color: grey; -fx-border-radius: 50px; -fx-background-radius: 50px; -fx-font-size: 20px; -fx-padding: 0px; -fx-font-weight: 700; -fx-alignment: center;");
 
-        this.sizeXField = new TextField();
+        this.sizeXField = new TextField("10");
         this.sizeXField.setFont(new Font("Microsoft YaHei", 20 * WR));
         this.sizeXField.setPrefWidth(100*WR);
-        this.sizeXField.setLayoutX(125*WR);
+        this.sizeXField.setLayoutX(200*WR);
         this.sizeXField.setLayoutY(600*HR);
-        this.sizeXField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideEnter(sizeXField.getText())) {
-                this.numberX = Integer.parseInt(sizeXField.getText());
-            }else {
-                this.numberX = 10;
-            }
-        });
+        this.sizeXField.setStyle("-fx-border-width:0.5px; -fx-border-color: grey; -fx-border-radius: 50px; -fx-background-radius: 50px; -fx-font-size: 30px; -fx-padding: 0px; -fx-font-weight: 700; -fx-alignment: center;");
 
-        this.sizeYField = new TextField();
+        this.sizeYField = new TextField("10");
         this.sizeYField.setFont(new Font("Microsoft YaHei", 20 * WR));
         this.sizeYField.setPrefWidth(100*WR);
-        this.sizeYField.setLayoutX(125*WR);
+        this.sizeYField.setLayoutX(200*WR);
         this.sizeYField.setLayoutY(650*HR);
-        this.sizeYField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(valideEnter(sizeYField.getText())) {
-                this.numberY = Integer.parseInt(sizeYField.getText());
-            }else {
-                this.numberY = 10;
-            }
-        });
+        this.sizeYField.setStyle("-fx-border-width:0.5px; -fx-border-color: grey; -fx-border-radius: 50px; -fx-background-radius: 50px; -fx-font-size: 30px; -fx-padding: 0px; -fx-font-weight: 700; -fx-alignment: center;");
     }
 
-    private boolean valideEnter(String str) {
-        try{
-            Integer.parseInt(str);
-            return true;
-        }catch(Exception e) {
-            return false;
-        }
-    }
-
+    /**
+     * add all the blocks in the right menu
+     */
     private void addBlockRightMenu() {
     	this.rightVBox = new VBox();
-        this.rightVBox.setLayoutX(125*WR);
+        this.rightVBox.setLayoutX(75*WR);
         this.rightVBox.setLayoutY(50*HR);
 		
-        for(int i=0; i < 7; i++) {
+        for(int i=0; i < 8; i++) {
         	drawItemLevel(this.rightVBox, i);
         }
     }
 
+    /**
+     * draw all the items in the rightMenu
+     * @param vBox The instance of the rightMenu
+     * @param i The number of item we have already drawn
+     */
     private void drawItemLevel(VBox vBox, int i) {
+        HBox itemHBox = new HBox();
 		Rectangle rect = new Rectangle(110*WR, 110*HR);
         Text nameElemText = new Text();
+        styleText(nameElemText);
         switch (i) {
             case 0:
-                nameElemText.setText("Block Air");
+                nameElemText.setText("Air");
                 setActionItem(rect, null);
                 break;
             case 1:
-                nameElemText.setText("Block Wall");
+                nameElemText.setText("Wall");
                 setActionItem(rect, new Wall(0, 0));
                 break;
         	case 2:
-        	    nameElemText.setText("Block Player");
+        	    nameElemText.setText("Player");
         	    setActionItem(rect, new Player(0, 0, false, null));
         	    break;
             case 3:
-                nameElemText.setText("Block Player on Goal");
+                nameElemText.setText("Player on Goal");
                 setActionItem(rect, new Player(0, 0, true, null));
                 break;
         	case 4:
-        	    nameElemText.setText("Block Box");
+        	    nameElemText.setText("Box");
         	    setActionItem(rect, new Box(0, 0, false));
         	    break;
         	case 5:
-        	    nameElemText.setText("Block Box on Goal");
+        	    nameElemText.setText("Box on Goal");
         	    setActionItem(rect, new Box(0, 0, true));
         	    break;
         	case 6:
-        	    nameElemText.setText("Block Goal");
+        	    nameElemText.setText("Goal");
         	    setActionItem(rect, new Goal(0, 0));
         	    break;
+            case 7:
+                nameElemText.setText("Teleport");
+                setActionItem(rect, new Teleport(0, 0,null));
+                break;
         	}
-        vBox.getChildren().addAll(nameElemText, rect);
+        itemHBox.getChildren().addAll(rect, nameElemText);
+        vBox.getChildren().add(itemHBox);
 	}
 
-    private void amptyMap() {
+    private void styleText(Text text) {
+        text.setStyle("-fx-font-size: 13px; -fx-stroke: rgb(255, 249, 242); -fx-stroke-width: 1;");
+    }
+
+    /**
+     * Set the middleMenu with the square of MapEditor
+     */
+    private void emptyMap() {
         for(int y=0; y < numberY; y++) {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
             for(int x=0; x < numberX; x++) {
-                MapEditor mapEdit = new MapEditor(this.gameBoard, x, y, numberX, numberY, this.width-50, this.height-50, WR, HR);
+                MapEditor mapEdit = new MapEditor(this.gameBoard, x, y, numberX, numberY, 1320*WR, height-(100*WR), WR, HR);
 
                 mapEdit.getElem().setOnMouseEntered(e -> {
                     mapEdit.getElem().setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");
@@ -411,28 +381,30 @@ public class CreatorMenu
         }
 	}
 
+    /**
+     * Set the action to select the block on the rightMenu
+     * @param rect The rectangle in the rightMenu
+     * @param objet The object in the rightMenu
+     */
     private void setActionItem(Rectangle rect, Block objet) {
-        try{
-            String image;
-            if (objet == null){
-                image = "air.png";
-            } else {
-                image = objet.getImage();
-            }
-			ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + image)));
-			rect.setFill(modelImage);
+        try {
+            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (objet == null ? "air.png" : objet.getImage()))));
+            rect.setFill(modelImage);
             rect.setOnMouseEntered(e -> {
                 rect.setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");
             });
             rect.setOnMouseExited(e -> {
                 rect.setStyle("");
             });
-		}catch(FileNotFoundException fileExcep) {
-			fileExcep.printStackTrace();
-		}
-        rect.setOnMouseClicked(e -> {
-            item = objet;
-        });
+            rect.setOnMouseClicked(e -> {
+                item = objet;
+            });
+        } catch (FileNotFoundException e) {
+            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing." +
+                    "Check if the names have not been changed or if any file has not been deleted. " +
+                    "You can run the FileIntegrity checker for further information. Missing file : " + (objet == null ? "air.png" : objet.getImage()) + ".");
+            System.exit(-1);
+        }
     }
 
     /**

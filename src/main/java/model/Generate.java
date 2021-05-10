@@ -33,7 +33,6 @@ public class Generate {
     public Generate() {
         this.line = random.nextInt((20 - 3) + 1) + 3;
         this.row = random.nextInt((20 - 5) + 1) + 5;
-        System.out.println(line +" ; "+ row);
         createMap();
         contentToLevel();
     }
@@ -162,31 +161,14 @@ public class Generate {
     }
 
     private void vP(int i, int n) {
-        if(tabPosVal[i][n] != true) {
+        if(!tabPosVal[i][n]) {
             tabPosVal[i][n] = true;
         }
     }
 
     private void nVP(int i, int n) {
-        if(tabPosVal[i][n] != true && tabPosVal[i][n] != false) {
+        if(!tabPosVal[i][n] && tabPosVal[i][n]) {
             tabPosVal[i][n] = false;
-        }
-    }
-
-    public void printDeadNodes(){
-        for (int i=0;i<tabPosVal.length;i++){
-            String line = "";
-            for (int j=0;j<tabPosVal.length;j++){
-                boolean h = tabPosVal[i][j];
-                if (h == true){
-                    line += "true  ";
-                }else if (h == false){
-                    line += "false ";
-                }else{
-                    line += tabPosVal[i][j];
-                }
-            }
-            System.out.println(line);
         }
     }
 }

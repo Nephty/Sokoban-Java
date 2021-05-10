@@ -106,7 +106,8 @@ public abstract class Block {
 
     /**
      * This method always returns false in the class but it's implemented in the class <code>Player</code>
-     * @return True if the player is on a goal
+     * or in the class <code>Box</code>
+     * @return True if the player/Box is on a goal
      */
     public boolean amIOnGoal(){
         return false;

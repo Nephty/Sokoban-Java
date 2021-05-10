@@ -7,7 +7,6 @@ package model;
  */
 public class GhostWall extends Wall{
     private static final String Texture = "=";
-    private static final String Image = "wall.png";
 
     /**
      * <code>GhostWall</code> constructor
@@ -44,4 +43,15 @@ public class GhostWall extends Wall{
         player1.setValues(nextX, nextY);
         return currBoxOnObj;
     }
+
+
+    /**
+     * Texture accessor
+     * @return The Texture of the GhostWall
+     */
+    @Override
+    public String getTexture(){
+        return Texture;
+    }
+
 }

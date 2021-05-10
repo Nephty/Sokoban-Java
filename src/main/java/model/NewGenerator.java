@@ -1,9 +1,10 @@
 package model;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
+import view.AlertBox;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 /**
@@ -20,8 +21,6 @@ public class NewGenerator {
     public static boolean[][] mappedCanBeBox = new boolean[10][10];
     public static boolean[][] mappedCanBeGoal = new boolean[10][10];
     private final static String savesPath = "src\\main\\resources\\level\\generator\\";
-    private static int randomX;
-    private static int randomY;
     private static ArrayList<Position> boxes = new ArrayList<>();
     private static ArrayList<Position> goals = new ArrayList<>();
     private static ArrayList<Position> boxesOnObj = new ArrayList<>();
@@ -46,8 +45,11 @@ public class NewGenerator {
         try (FileInputStream FileInputStream = new FileInputStream(savesPath + fileName);
              ObjectInputStream ObjectInputStream = new ObjectInputStream(FileInputStream)) {
             return (ArrayList<Boolean>) ObjectInputStream.readObject();
-        } catch (IOException | ClassNotFoundException exception) {
-            exception.printStackTrace();
+        } catch (ClassNotFoundException exception) {
+            AlertBox.display("Minor error", "A serialized object could not be found in the file. " +
+                    "Check if the file extension is correct.");
+        } catch (IOException exception) {
+            AlertBox.display("Minor error", "Could not find the given file. Please try again.");
         }
         return new ArrayList<>();
     }
@@ -80,8 +82,6 @@ public class NewGenerator {
             } while (!correctPosition);
             goals.add(pos);
         }
-
-        System.out.println("goals size : " + goals.size());
 
         // generate boxes
         for (int i = 0; i < boxesCount; i++) {
@@ -131,9 +131,6 @@ public class NewGenerator {
             }
         }
 
-        System.out.println("boxes size : " + boxes.size());
-        System.out.println("boxes on obj size : " + boxesOnObj.size());
-
         // generate player
         boolean correctPosition;
         boolean isOnObj = false;
@@ -163,7 +160,7 @@ public class NewGenerator {
                         isOnObj = true;
                     }
                 }
-             }
+            }
 
             if (correctPosition) {
                 if (pos.getX() == 0 || pos.getX() == 9 || pos.getY() == 0 || pos.getY() == 9) {
@@ -175,6 +172,9 @@ public class NewGenerator {
     }
 
     public static void setContentBasedOnCurrentGeneration() {
+        // Clear the previous map
+        content = new ArrayList<>();
+
         for (int y = 0; y < mapHeight; y++) {
             String line = "";
             for (int x = 0; x < mapLength; x++) {
@@ -223,7 +223,6 @@ public class NewGenerator {
                     }
                 }
             }
-            System.out.println(line);
             content.add(line);
         }
     }

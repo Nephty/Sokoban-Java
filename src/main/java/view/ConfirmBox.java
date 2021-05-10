@@ -8,14 +8,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-/**
- * The <code>CompleteFieldBox</code> is a pop up window that can have a title, display a message, ask
- * the user for some input and have a prompt message to invite the user to give their input.
- * The input will be given in a <code>TextField</code> (see <code>javafx.scene.control.TextField</code>).
- * According to the selected method, the pop up can contain a <code>FileChooser</code>
- * (see <code>javafx.stage.FileChooser</code>). Upon selecting a file, its name is written into the TextField and
- * the user can still modify it or confirm.
- */
 
 /**
  * The <code>ConfirmBox</code> is a pop up window that can have a title and display a message, usually a

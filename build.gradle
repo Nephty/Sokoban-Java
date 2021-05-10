@@ -24,9 +24,9 @@ run {
     standardInput = System.in
 }
 
-mainClassName = "presenter.Main"
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+application {
+    mainClass = "presenter.Main"
+}
 
 javafx {
     version = "15.0.1"

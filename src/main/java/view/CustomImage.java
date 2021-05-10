@@ -28,10 +28,8 @@ public class CustomImage
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
      * @param fileName The name of the image file that will be used to display the button
-     * @throws FileNotFoundException Exception thrown when a provided file name doesn't match any file
      */
-    public CustomImage(int x_, int y_, float WR, float HR, String fileName)
-            throws FileNotFoundException {
+    public CustomImage(int x_, int y_, float WR, float HR, String fileName) {
         super(x_*WR, y_*HR);
 
         try {
@@ -49,7 +47,10 @@ public class CustomImage
             this.setX(this.x_);
             this.setY(this.y_);
         } catch (FileNotFoundException e){
-            throw new FileNotFoundException("Error : " + fileName + " isn't in src\\main\\resources\\img\\");
+            AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing." +
+                    "Check if the names have not been changed or if any file has not been deleted. " +
+                    "You can run the FileIntegrity checker for further information. Missing file : " + fileName + ".");
+            System.exit(-1);
         }
     }
 }
