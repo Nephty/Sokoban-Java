@@ -693,7 +693,7 @@ public class PlayingMenu extends Menu {
             applyMove(Direction.LEFT);
         });
 
-        rightButton = new CustomButton(218,725,WR,HR,"leftButton.png");
+        rightButton = new CustomButton(218,725,WR,HR,"rightButton.png");
         rightButton.addEventHandler(MouseEvent.MOUSE_CLICKED,e -> {
             game.setPlayerFacing(Direction.RIGHT);
             applyMove(Direction.RIGHT);
