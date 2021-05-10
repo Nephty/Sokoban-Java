@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.FileGetter;
 
 import java.io.File;
 import java.util.Arrays;
@@ -89,11 +90,11 @@ public class CompleteFieldBox {
         input.setPrefWidth(300);
         input.setPromptText(promptText);
 
-        File directoryPath = new File("src\\main\\resources\\level\\saves\\");
+        File directoryPath = new File(FileGetter.directory("saves"));
         String[] files = directoryPath.list();
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
+        fileChooser.setTitle("Open Resource FileGetter");
 
         Button openFileSelection = new Button("Open...");
         openFileSelection.setOnAction(e -> {
@@ -114,7 +115,7 @@ public class CompleteFieldBox {
                     if (!input.getText().endsWith(".mov")) {
                         fileNotFoundLabel.setText("Wrong file extension" + " (" + errorCount.toString() + ")");
                     } else {
-                        fileNotFoundLabel.setText("File not found" + " (" + errorCount.toString() + ")");
+                        fileNotFoundLabel.setText("FileGetter not found" + " (" + errorCount.toString() + ")");
                     }
                 }
             } else if (Arrays.asList(files).contains(input.getText())) {
@@ -131,7 +132,7 @@ public class CompleteFieldBox {
                         if (!input.getText().endsWith(".mov")) {
                             fileNotFoundLabel.setText("Wrong file extension" + " (" + errorCount.toString() + ")");
                         } else {
-                            fileNotFoundLabel.setText("File not found" + " (" + errorCount.toString() + ")");
+                            fileNotFoundLabel.setText("FileGetter not found" + " (" + errorCount.toString() + ")");
                         }
                     }
                 }

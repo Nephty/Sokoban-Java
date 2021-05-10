@@ -14,7 +14,7 @@ import model.*;
 
 import java.util.ArrayList;
 
-import model.File;
+import model.FileGetter;
 import presenter.Main;
 
 /**
@@ -102,7 +102,7 @@ public class PlayingMenu extends Menu {
         this.movesHistory = new ArrayList<>();
 
         this.setPaneSizes();
-        ArrayList<String> baseLevel = File.loadFile("level06.xsb", "campaign");
+        ArrayList<String> baseLevel = FileGetter.loadFile("level06.xsb", "campaign");
         this.game.setBoard(new Board(baseLevel));
         this.prepareMapSize();
         this.prepareInterfaces();
@@ -135,10 +135,10 @@ public class PlayingMenu extends Menu {
             }else if(str.equals(keyBinds[5])) {
                 LevelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
                         "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
-                        "File name..."));
+                        "FileGetter name..."));
                 direction = Direction.NULL;
             }else if(str.equals(keyBinds[6])) {
-                String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
+                String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "FileGetter name :", "FileGetter name...");
                 if (fileName != null && !fileName.equals("")) {
                     ArrayList<Direction> res = LevelSaver.getHistory(fileName, "");
                     if (res != null) {
@@ -634,7 +634,7 @@ public class PlayingMenu extends Menu {
                 this.beatPlayer.play();
 
             } else if (plate.getEffect().equals("SecretMap")){
-                setLevel(File.loadFile("secret.xsb","campaign"), "???","secret");
+                setLevel(FileGetter.loadFile("secret.xsb","campaign"), "???","secret");
             }
         }
     }
@@ -647,12 +647,12 @@ public class PlayingMenu extends Menu {
         saveButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
             LevelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
                     "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
-                    "File name..."));
+                    "FileGetter name..."));
         });
 
         loadSaveButton = new CustomButton(50, 600, WR,HR,"loadSaveButton.png", (byte) 1);
         loadSaveButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-            String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
+            String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "FileGetter name :", "FileGetter name...");
             if (fileName != null && !fileName.equals("")) {
                 ArrayList<Direction> res = LevelSaver.getHistory(fileName, "");
                 if (res != null) {

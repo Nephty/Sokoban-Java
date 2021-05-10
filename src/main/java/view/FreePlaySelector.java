@@ -6,7 +6,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import model.File;
+import model.FileGetter;
 
 /**
  * The <code>FreePlaySelector</code> is a user interface used to display all the different levels, their
@@ -43,7 +43,7 @@ public class FreePlaySelector extends LevelSelector{
     @Override
     public void setSelectors() {
         super.setSelectors();
-        String[] files = File.levelList("main\\resources\\level\\freePlay\\");
+        String[] files = FileGetter.levelList("freePlay");
         int xScale = 0;
         int yScale = 0;
         int nbrFiles = files.length;

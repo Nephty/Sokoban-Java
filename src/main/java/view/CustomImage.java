@@ -3,6 +3,8 @@ package view;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import model.FileGetter;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -33,7 +35,7 @@ public class CustomImage
         super(x_*WR, y_*HR);
 
         try {
-            FileInputStream inputStream = new FileInputStream("src\\main\\resources\\img\\" + fileName);
+            FileInputStream inputStream = new FileInputStream(FileGetter.directory("img") + fileName);
             this.image = new Image(inputStream);
             this.setFill(new ImagePattern(this.image));
 
@@ -47,9 +49,9 @@ public class CustomImage
             this.setX(this.x_);
             this.setY(this.y_);
         } catch (FileNotFoundException e){
-            AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing." +
-                    "Check if the names have not been changed or if any file has not been deleted. " +
-                    "You can run the FileIntegrity checker for further information. Missing file : " + fileName + ".");
+            AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing.\n" +
+                    "Check if the names have not been changed or if any file has not been deleted.\n" +
+                    "You can run the FileIntegrity checker for further information.\n Missing file : " + fileName + ".");
             System.exit(-1);
         }
     }

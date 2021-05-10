@@ -3,7 +3,6 @@ package view;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import model.Difficulty;
-import model.NewGenerator;
 import model.Gen;
 
 public class RandomSelector extends LevelSelector{

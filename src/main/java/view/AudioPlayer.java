@@ -4,6 +4,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
 import java.io.File;
 import javafx.util.Duration;
+import model.FileGetter;
 
 /**
  * The <code>AudioPlayer</code> is a support for playing audio files. The simple methods and constructors make it
@@ -13,7 +14,7 @@ import javafx.util.Duration;
  * the appropriate constructor. Other AudioPlayers (those you assign a file to) will not be on auto play by default.
  */
 public class AudioPlayer {
-    private String audioFile = System.getProperty("user.dir").concat("\\src\\main\\resources\\sound\\");
+    private final String audioFile = FileGetter.directory("sound");
 
     private MediaPlayer mediaPlayer;
     private Media currMedia;

@@ -8,8 +8,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import model.File;
+import model.FileGetter;
 import model.JSONReader;
+import presenter.Main;
 
 
 /**
@@ -49,7 +50,7 @@ public class CampaignSelector extends LevelSelector{
         super.setSelectors();
         JSONReader reader = new JSONReader("data.json");
         this.completedLevels = reader.getInt("completed levels");
-        int files = File.howManyLevel("main\\resources\\level\\campaign\\")-1;
+        int files = FileGetter.howManyLevel("campaign")-1;
         int xScale=0;
         int yScale=0;
 
@@ -101,9 +102,10 @@ public class CampaignSelector extends LevelSelector{
      */
     private void showLevel(Node node, byte level){
         node.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            String s = Main.SEPARATOR;
             selectedLevelViewer.setVisible(false);
             levelViewer.getChildren().removeAll(levelViewer.getChildren());
-            CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
+            CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps"+s+"level" + level + ".png");
             levelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
             levelViewer.getChildren().add(lvlImage);
         });
@@ -121,10 +123,11 @@ public class CampaignSelector extends LevelSelector{
      */
     private void selectLevel(Node node, byte level) {
         node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            String s = Main.SEPARATOR;
             this.selectedLevel = level;
             this.playButton.setVisible(true);
             selectedLevelViewer.getChildren().removeAll(selectedLevelViewer.getChildren());
-            CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps\\level" + level + ".png");
+            CustomImage lvlImage = new CustomImage(0, 0, WR, HR, "maps"+s+"level" + level + ".png");
             selectedLevelViewer.getChildren().add(lvlImage);
             selectedLevelViewer.setLayoutY((int) ((ORIGINAL_HEIGHT*HR/2) - (lvlImage.getHeight()/2)));
         });

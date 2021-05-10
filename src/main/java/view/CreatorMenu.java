@@ -205,9 +205,9 @@ public class CreatorMenu
                     content.add(line_);
                 }
                 if (getLevelName().equals(".xsb")){
-                    File.saveFile("EmptyName.xsb", "freePlay", content);
+                    FileGetter.saveFile("EmptyName.xsb", "freePlay", content);
                 } else {
-                    File.saveFile(getLevelName(), "freePlay", content);
+                    FileGetter.saveFile(getLevelName(), "freePlay", content);
                 }
             }else {
                 AlertBox.display("Error", "There's no map loaded");
@@ -388,7 +388,7 @@ public class CreatorMenu
      */
     private void setActionItem(Rectangle rect, Block objet) {
         try {
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (objet == null ? "air.png" : objet.getImage()))));
+            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream(FileGetter.directory("img")+ (objet == null ? "air.png" : objet.getImage()))));
             rect.setFill(modelImage);
             rect.setOnMouseEntered(e -> {
                 rect.setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");
