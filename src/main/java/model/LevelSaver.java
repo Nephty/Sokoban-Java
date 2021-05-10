@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class LevelSaver {
     final static String dateTimeFormat = "dd-MM-yyyy @ HH-mm-ss";
-    final static String savesPath = "src\\main\\resources\\level\\saves\\";
+    final static String savesPath = FileGetter.directory("saves");
 
 
     /**
@@ -55,7 +55,7 @@ public class LevelSaver {
     public static ArrayList<Direction> getHistory(String fileName, String origin) {
         String savePath;
         if (origin.equals("test")){
-            savePath = "src\\test\\resources\\";
+            savePath = FileGetter.directory("test");
         }else{
             savePath = savesPath;
         }

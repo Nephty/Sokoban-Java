@@ -39,7 +39,7 @@ public class MapEditor {
 
         this.rect = new Rectangle(sizeElem, sizeElem);
         try {
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (this.objet == null ? "air.png" : this.objet.getImage()))));
+            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream(FileGetter.directory("img") + (this.objet == null ? "air.png" : this.objet.getImage()))));
             this.rect.setFill(modelImage);
         } catch (FileNotFoundException e) {
             AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing." +
@@ -115,7 +115,7 @@ public class MapEditor {
      */
     private void blockSetFill() {
         try {
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (this.objet == null ? "air.png" : objet.getImage()))));
+            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream(FileGetter.directory("img") + (this.objet == null ? "air.png" : objet.getImage()))));
             rect.setFill(modelImage);
         } catch (FileNotFoundException e) {
             AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing." +
