@@ -1,8 +1,6 @@
 
 package model;
 
-import view.AlertBox;
-
 /**
  * <code>Goal</code> is one of the main Blocks of the game.
  * We have to put the <code>Boxes</code> on it.
@@ -51,7 +49,6 @@ public class Goal extends Block {
         } else if (player1.getCurrTp() != null){
             blockList[this.getY()][this.getX()] = player1;
             blockList[player1.getY()][player1.getX()] = player1.getCurrTp();
-            System.out.println(blockList[this.getY()][this.getX()].getTexture());
             player1.setValues(this.getX(), this.getY());
             player1.invertIsOnGoal();
             player1.setCurrTP(null);

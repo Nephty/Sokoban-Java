@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * It contains a "Play" button that shows a "Campaign", "Tutorial" and "Freeplay" button. The first button
  * allows the user to play on the campaign levels, the second button shows the tutorial to the user and the third
  * button allows the user to play on the freeplay levels. It also contains the "Options" button that opens the options
- * menu, a "Quests" button that opens the achievements menu and a "Quit" button that closes the game.
+ * menu and a "Quit" button that closes the game.
  */
 public class MainMenu
         extends Menu {
@@ -24,7 +24,7 @@ public class MainMenu
     // Objects //
     //---------//
 
-    private CustomButton playButton, createButton, optionsButton, quitButton, achievementsButton, campaignButton, tutorialButton,
+    private CustomButton playButton, createButton, optionsButton, quitButton, campaignButton, tutorialButton,
                         freePlayButton, randomButton;
     private CustomImage background;
     private static Stage window;
@@ -46,11 +46,8 @@ public class MainMenu
      * @param HR_ The height ratio that will be used to resize the components
      * @param window_ The window containing everything
      * @param background_ The background that will be displayed for the menu
-     * @throws IOException Exception thrown when any provided file could not be found
-     * @throws ParseException Exception thrown when a file could not be parsed
      */
-    public MainMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_, CustomImage background_)
-            throws IOException, ParseException {
+    public MainMenu(Parent parent_, double width_, double height_, float WR_, float HR_, Stage window_, CustomImage background_) {
         super(parent_, width_, height_, WR_, HR_, background_);
         window = window_;
         this.background = background_;
@@ -61,11 +58,8 @@ public class MainMenu
     /**
      * Prepare the "Play", "Options", "Quests", "Quit", "Campaign", "Tutorial" and "Freeplay" buttons.
      * The <code>EventHandlers</code> are not set here.
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    private void setButtons()
-            throws IOException, ParseException {
+    private void setButtons() {
         Dimension dimension = resolutionIDToDimension();
         float WR = getWidthRatio(dimension.width);
         float HR = getHeightRatio(dimension.height);
@@ -80,19 +74,15 @@ public class MainMenu
                 WR, HR, "play button.png");
         this.createButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
-                (int) (((ORIGINAL_HEIGHT/2)+25)),
+                (int) (((ORIGINAL_HEIGHT/2)+25+96+25)),
                 WR, HR, "create button.png");
         this.optionsButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
-                (int) (((ORIGINAL_HEIGHT/2)+25+96+25)),
+                (int) (((ORIGINAL_HEIGHT/2)+25)),
                 WR, HR, "options button.png");
-        this.achievementsButton = new CustomButton(
-                (int) (((ORIGINAL_WIDTH/2)-(480/2))),
-                (int) (((ORIGINAL_HEIGHT/2)+25+96+25+96+25)),
-                WR, HR, "achievements button.png");
         this.quitButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2))),
-                (int) (((ORIGINAL_HEIGHT/2)+25+96+25+96+25+96+25)),
+                (int) (((ORIGINAL_HEIGHT/2)+25+96+25+96+25)),
                 WR, HR, "quit button.png");
 
         this.campaignButton = new CustomButton(
@@ -101,7 +91,7 @@ public class MainMenu
                 WR, HR, "campaign button.png");
         this.tutorialButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
-                (int) (((ORIGINAL_HEIGHT/2)+15+(96/2))),
+                (int) (((ORIGINAL_HEIGHT/2)+96+25+(96/2))),
                 WR, HR, "tutorial button.png");
         this.freePlayButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
@@ -109,7 +99,7 @@ public class MainMenu
                 WR, HR, "freeplay button.png");
         this.randomButton = new CustomButton(
                 (int) (((ORIGINAL_WIDTH/2)-(480/2)+480+15)),
-                (int) (((ORIGINAL_HEIGHT/2)+96+25+(96/2))),
+                (int) (((ORIGINAL_HEIGHT/2)+15+(96/2))),
                 WR, HR, "random button.png");
 
         this.campaignButton.setVisible(false);
@@ -234,14 +224,6 @@ public class MainMenu
      */
     public CustomButton getQuitButton() {
         return quitButton;
-    }
-
-    /**
-     * Return the "Achievements" button used to switch to the <code>AchievementsMenu</code>.
-     * @return The "Achievements" button currently used
-     */
-    public CustomButton getAchievementsButton() {
-        return achievementsButton;
     }
 
     /**

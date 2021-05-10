@@ -5,18 +5,14 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
-import org.json.simple.parser.ParseException;
 import presenter.Main;
 
 public abstract class LevelSelector
         extends Menu {
 
-	protected Pane middleMenu, rightMenu, levelViewer, selectedLevelViewer;
-	protected CustomImage middleMenuBackground, rightMenuImage;
+    protected Pane middleMenu, rightMenu, levelViewer, selectedLevelViewer;
+    protected CustomImage middleMenuBackground, rightMenuImage;
     protected int completedLevels;
     protected byte page=0;
     protected CustomButton backButton, resumeButton, playButton, nextPageButton, previousPageButton;
@@ -32,11 +28,8 @@ public abstract class LevelSelector
      * @param height_ The height of the menu (preferably the size of the window)
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
-     * @throws IOException Exception thrown when a provided file name doesn't match any file
-     * @throws ParseException Exception thrown when the .json file could not be parsed
      */
-    public LevelSelector(Parent parent_, double width_, double height_, float WR, float HR)
-            throws IOException, ParseException {
+    public LevelSelector(Parent parent_, double width_, double height_, float WR, float HR) {
         super(parent_, width_, height_, WR, HR);
 
         this.rightMenu = new Pane();
@@ -65,21 +58,22 @@ public abstract class LevelSelector
         rightMenu.getChildren().addAll(rightMenuImage, selectedLevelViewer,levelViewer, nextPageButton, previousPageButton);
 
         //Back to main Menu
-        this.backButton = new CustomButton(50, (int)((height_-96-5)), WR, HR, "back button.png");
+        this.backButton = new CustomButton(15, (int)((height_-96-5)), WR, HR, "back button.png");
 
         //Visible when a level is selected and it starts the game
-        this.playButton = new CustomButton((int)(width_-900), (int)(height_-96-5), WR, HR, "start button.png");
+        this.playButton = new CustomButton((int)(width_-845), (int)(height_-96-5), WR, HR, "start button.png");
         this.playButton.setVisible(false);
 
         //Visible when the player comeback from the playingMenu.
         //It starts the game where the player was.
-        this.resumeButton = new CustomButton((int) (width_-900), (int) height_-96-5, WR, HR, "resume button.png");
+        this.resumeButton = new CustomButton((int) (width_-1375), (int) height_-96-5, WR, HR, "resume button.png");
         this.resumeButton.setVisible(false);
 
         this.middleMenu = new Pane();
 
         this.setSelectors();
         //Pane with all the buttons for the selection
+        // TODO : doesn't work
         this.middleMenuBackground.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 if (!this.resumeButton.isVisible() && this.hasSelected) {
@@ -116,12 +110,12 @@ public abstract class LevelSelector
         finalPane.getChildren().addAll(middleMenu, rightMenu);
 
     }
-    
+
     /**
      * Create the button for the level selection.
      * Read the completed levels in the data.json file and create the good number of buttons.
      */
-    public void setSelectors() throws IOException, ParseException {
+    public void setSelectors() {
         middleMenu.getChildren().removeAll(middleMenu.getChildren());
         this.middleMenuBackground = new CustomButton(0, 0, WR, HR, "background empty.png");
         this.middleMenu.getChildren().add(middleMenuBackground);
@@ -135,14 +129,10 @@ public abstract class LevelSelector
      */
     private void prepareNextPageButton(){
         this.nextPageButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-            try {
-                page++;
-                nextPageButton.setVisible(false);
-                previousPageButton.setVisible(true);
-                this.setSelectors();
-            } catch (IOException | ParseException exc){
-                AlertBox.display("Error", exc.getMessage());
-            }
+            page++;
+            nextPageButton.setVisible(false);
+            previousPageButton.setVisible(true);
+            this.setSelectors();
         });
     }
 
@@ -151,14 +141,10 @@ public abstract class LevelSelector
      */
     private void preparePreviousPageButton(){
         previousPageButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-            try {
-                page--;
-                nextPageButton.setVisible(true);
-                previousPageButton.setVisible(false);
-                this.setSelectors();
-            } catch (IOException | ParseException exc){
-                AlertBox.display("Error", exc.getMessage());
-            }
+            page--;
+            nextPageButton.setVisible(true);
+            previousPageButton.setVisible(false);
+            this.setSelectors();
         });
     }
 
@@ -255,7 +241,7 @@ public abstract class LevelSelector
         return this.backButton;
     }
 
-    /**
+    /** 
      * resumeButton accessor
      * @return (CustomButton) resumeButton
      */
