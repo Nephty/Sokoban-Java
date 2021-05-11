@@ -363,7 +363,7 @@ public class CreatorMenu
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
             for(int x=0; x < numberX; x++) {
-                MapEditor mapEdit = new MapEditor(this.gameBoard, x, y, numberX, numberY, 1320*WR, height-(100*WR), WR, HR);
+                MapEditor mapEdit = new MapEditor(this.gameBoard, y, x, numberX, numberY, width, height, WR, HR); //1320*WR, height-(100*WR), WR, HR);
 
                 mapEdit.getElem().setOnMouseEntered(e -> {
                     mapEdit.getElem().setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");

@@ -32,10 +32,10 @@ public class MapEditor {
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
      */
-    public MapEditor(Block[][] gameBoard, int x_, int y_, int numbElemX, int numbElemY, double spaceWidth ,double spaceHeight, float WR, float HR) {
+    public MapEditor(Block[][] gameBoard, int y_, int x_, int numbElemX, int numbElemY, double spaceWidth ,double spaceHeight, float WR, float HR) {
         double sizeElem = autoSizeElem(numbElemX, numbElemY, spaceWidth, spaceHeight, WR, HR);
-        pos = new Position(x_, y_);
-        gameBoard[x_][y_] = null;
+        pos = new Position(y_, x_);
+        gameBoard[y_][x_] = null;
 
         this.rect = new Rectangle(sizeElem, sizeElem);
         try {
@@ -60,8 +60,8 @@ public class MapEditor {
      * @return The new size for the MapEditor
      */
     private double autoSizeElem(int numbElemX, int numbElemY, double spaceWidth ,double spaceHeight, float WR, float HR) {
-        double sizeX = ((spaceWidth / numbElemX) * WR);
-        double sizeY = ((spaceHeight / numbElemY) * HR);
+        double sizeX = ((spaceWidth-(350*WR)-(350*WR)-(50*WR)) / numbElemX) * WR;
+        double sizeY = ((spaceHeight-(50*HR)) / numbElemY) * HR;
         if(sizeX <= sizeY) {
             return sizeX;
         }else {
