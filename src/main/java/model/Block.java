@@ -1,7 +1,14 @@
 package model;
 
 
+import javafx.scene.image.Image;
+import view.AlertBox;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+
 public abstract class Block {
+    public static final Image airImg = loadImg("air.png");
     private int x;
     private int y;
 
@@ -66,9 +73,9 @@ public abstract class Block {
 
     /**
      * Image accessor
-     * @return name of the image of the block
+     * @return The Image of the Block (Image object)
      */
-    public abstract String getImage();
+    public abstract Image getImage();
 
     /**
      * Used to know if we can move towards the block
@@ -113,4 +120,15 @@ public abstract class Block {
         return false;
     }
 
+    public static Image loadImg(String name){
+        try(FileInputStream inputStream = new FileInputStream(FileGetter.directory("img") + name)){
+            return new Image(inputStream);
+        } catch (IOException exc){
+            AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing.\n" +
+                    "Check if the names have not been changed or if any file has not been deleted.\n" +
+                    "You can run the FileIntegrity checker for further information.\n Missing file : " + name + ".");
+            System.exit(-1);
+            return null;
+        }
+    }
 }

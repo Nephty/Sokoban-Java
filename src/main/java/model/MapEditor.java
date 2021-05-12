@@ -38,15 +38,8 @@ public class MapEditor {
         gameBoard[x_][y_] = null;
 
         this.rect = new Rectangle(sizeElem, sizeElem);
-        try {
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream(FileGetter.directory("img") + (this.objet == null ? "air.png" : this.objet.getImage()))));
-            this.rect.setFill(modelImage);
-        } catch (FileNotFoundException e) {
-            AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing." +
-                    "Check if the names have not been changed or if any file has not been deleted. " +
-                    "You can run the FileIntegrity checker for further information. Missing file : " + (this.objet == null ? "air.png" : this.objet.getImage()) + ".");
-            System.exit(-1);
-        }
+        ImagePattern modelImage = new ImagePattern((this.objet == null ? Block.airImg : this.objet.getImage()));
+        this.rect.setFill(modelImage);
     }
 
     /**

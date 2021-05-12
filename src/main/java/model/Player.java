@@ -1,5 +1,5 @@
 package model;
-
+import javafx.scene.image.Image;
 
 public class Player extends Block {
     private boolean isOnGoal;
@@ -7,7 +7,10 @@ public class Player extends Block {
     private Teleport currTP;
 
     private static final String Texture = "@";
-    private static final String Image = "player down.png";
+    public static final Image playerDownImg = loadImg("player down.png");
+    public static final Image playerUpImg = loadImg("player up.png");
+    public static final Image playerRightImg = loadImg("player right.png");
+    public static final Image playerLeftImg = loadImg("player left.png");
     /**
      * <code>Player</code> constructor
      * @param x_ The row of the Player in the blockList
@@ -97,11 +100,11 @@ public class Player extends Block {
 
     /**
      * Image accessor
-     * @return the name of the image of the player
+     * @return The Image of the Player (Image object)
      */
     @Override
-    public String getImage(){
-        return Image;
+    public Image getImage(){
+        return playerDownImg;
     }
 
     /**

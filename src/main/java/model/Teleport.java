@@ -1,4 +1,5 @@
 package model;
+import javafx.scene.image.Image;
 
 /**
  * <code>Teleport</code> is a <code>Block</code> used to teleport the player to the second Teleporter.
@@ -7,7 +8,7 @@ package model;
  */
 public class Teleport extends Block{
     private static final String Texture = "%";
-    private static final String Image = "Teleport.png";
+    private static final Image tpImg = loadImg("Teleport.png");
     private Teleport nextTP;
     /**
      * <code>Teleport</code> Constructor
@@ -81,10 +82,10 @@ public class Teleport extends Block{
 
     /**
      * Image accessor
-     * @return The name of the image of the Teleport
+     * @return The Image of the Teleport (Image object)
      */
     @Override
-    public String getImage(){
-        return Image;
+    public Image getImage(){
+        return tpImg;
     }
 }

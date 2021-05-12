@@ -1,10 +1,13 @@
 package model;
+import javafx.scene.image.Image;
 
 public class Box extends Block {
     private boolean isOnGoal;
 
     private static final String Texture = "$";
     private static final String Image = "box.png";
+    private static final Image boxOnGoalImg = loadImg("boxOnGoal.png");
+    private static final Image boxImg = loadImg("box.png");
 
     /**
      * Box constructor
@@ -94,15 +97,16 @@ public class Box extends Block {
     }
 
     /**
-     * @return Return the image fileName if the box is on a obj or not
+     * Image accessor
+     * @return Test if the box is on a Goal and return the image (Image object)
      */
     @Override
-    public String getImage(){
-        String res = Image;
+    public Image getImage(){
         if (amIOnGoal()){
-            res = "boxonobjective.png";
+            return boxOnGoalImg;
+        }else {
+            return boxImg;
         }
-        return res;
     }
 
     /**
