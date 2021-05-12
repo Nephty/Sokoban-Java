@@ -39,7 +39,7 @@ public class PlayingMenu extends Menu {
             difficultyImg, difficultyImgContainer,
             averageRatingImg, averageRatingImgContainer,
             middleMenuBackground, upButton, rightButton, leftButton, downButton;
-    private CustomButton restartButton, mainMenuButton,saveButton, loadSaveButton;
+    private CustomButton restartButton, mainMenuButton,saveButton, loadSaveButton, nextLvlButton;
     private Text totalMovesText, totalPushesText, objectivesText, timeText,
             currentLevelText, currentLevelAverageRatingText,
             currentLevelDifficultyText, youWonText;
@@ -81,7 +81,7 @@ public class PlayingMenu extends Menu {
         this.beatPlayer = beatPlayer;
 
         this.effectPlayer = effectPlayer;
-        this.effectPlayer.prepareMusic("crash.mp3");
+        this.effectPlayer.prepareMusic(AudioPlayer.crashFile);
 
         if (Main.fullscreen) {
             this.leftMenuImage = new CustomImage(0, 0, WR, HR, "side menu perfect fit.png");
@@ -194,7 +194,8 @@ public class PlayingMenu extends Menu {
                 this.difficultyImg, this.difficultyImgContainer, this.currentLevelDifficultyText,
                 this.averageRatingImg, this.averageRatingImgContainer, this.currentLevelAverageRatingText,
                 this.mainMenuButton, this.mainMenuButton.overlay, rightButton, downButton, leftButton,upButton,
-                saveButton, loadSaveButton, saveButton.overlay, loadSaveButton.overlay
+                saveButton, loadSaveButton, saveButton.overlay, loadSaveButton.overlay,
+                nextLvlButton, nextLvlButton.overlay
         );
 
         this.middleMenu.getChildren().addAll(this.gamePane, this.youWonText);
@@ -256,6 +257,7 @@ public class PlayingMenu extends Menu {
                 game.addTotalMoves((byte) 1);
                 totalMovesText.setText(String.valueOf(game.getTotalMoves()));
                 if (moveResult.isB()) {
+                    effectPlayer.playEffect(AudioPlayer.pushFile);
                     game.addTotalPushes((byte) 1);
                     objectivesText.setText(game.getBoard().getCurrBoxOnObj() + " / " + game.getBoard().getBoxes().size());
                     totalPushesText.setText(String.valueOf(game.getTotalPushes()));
@@ -273,8 +275,7 @@ public class PlayingMenu extends Menu {
                 }
                 updateMapTiles();
             }else{
-                effectPlayer.getMediaPlayer().play();
-                effectPlayer.restart();
+                effectPlayer.playEffect(AudioPlayer.crashFile);
 
             }
         }
@@ -342,6 +343,8 @@ public class PlayingMenu extends Menu {
         this.prepareRestartButton();
         this.prepareRestartButtonAction();
         this.prepareMainMenuButton();
+        this.prepareNextLvlButton();
+        this.prepareNextLvlButtonAction();
         this.prepareCurrentLevelInterface();
         this.prepareDifficultyInterface();
         this.prepareAverageRatingInterface();
@@ -439,10 +442,31 @@ public class PlayingMenu extends Menu {
     }
 
     /**
+     * Prepare the <code>EventHandler</code> used with the "Next level" button.
+     */
+    private void prepareNextLvlButtonAction() {
+        this.nextLvlButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                String levelName = (currentCampaignLevel >= 10 ? String.valueOf(currentCampaignLevel+1) : ("0" + String.valueOf(currentCampaignLevel+1)));
+                setLevel(FileGetter.loadFile("level" + levelName+".xsb", "campaign"), levelName, "campaign");
+                this.nextLvlButton.setVisible(false);
+            }
+        });
+    }
+
+    /**
      * Prepare the "Main menu" button to go back to the main menu.
      */
     private void prepareMainMenuButton() {
         this.mainMenuButton = new CustomButton(50, 850, WR, HR, "main menu.png", (byte) 1);
+    }
+
+    /**
+     * Prepare the "Next level" button to go to the next level when the level is completed.
+     */
+    private void prepareNextLvlButton() {
+        this.nextLvlButton = new CustomButton(50, 900, WR, HR, "next level.png", (byte) 1);
+        this.nextLvlButton.setVisible(false);
     }
 
     /**
@@ -591,6 +615,9 @@ public class PlayingMenu extends Menu {
         }
         if (this.game.getBoard().isWin() && !currentLevelIsWon){
             //AlertBox.display("Victory !", "You won !");
+            if (currentCampaignLevel < 16) {
+                this.nextLvlButton.setVisible(true);
+            }
             youWonText.setVisible(true);
             currentLevelIsWon = true;
             stopWatch.stop();
@@ -633,7 +660,7 @@ public class PlayingMenu extends Menu {
 
             if (plate.getEffect().equals("RickRoll")){
                 this.rickRollImage.setVisible(true);
-                this.beatPlayer.prepareMusic("secret.mp3");
+                this.beatPlayer.prepareMusic(AudioPlayer.secretFile);
                 this.beatPlayer.play();
 
             } else if (plate.getEffect().equals("SecretMap")){

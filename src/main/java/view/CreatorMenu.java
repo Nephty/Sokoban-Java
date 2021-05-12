@@ -191,21 +191,22 @@ public class CreatorMenu
             if(gameBoard != null) {
                 ArrayList<String> content = new ArrayList<>();
                 for(Block[] line : gameBoard) {
-                    String line_ = "";
+                    StringBuilder line_ = new StringBuilder();
                     for(Block elem : line) {
                         if (elem == null){
-                            line_ += " ";
+                            line_.append(" ");
                         } else {
-                            line_ += elem.getTexture();
+                            line_.append(elem.getTexture());
                         }
                     }
-                    content.add(line_);
+                    content.add(line_.toString());
                 }
                 if (getLevelName().equals(".xsb")){
                     FileGetter.saveFile("EmptyName.xsb", "freePlay", content);
                 } else {
                     FileGetter.saveFile(getLevelName(), "freePlay", content);
                 }
+                AlertBox.display("Save completed", "You level has been saved in the freePlay file !");
             }else {
                 AlertBox.display("Error", "There's no map loaded");
             }
@@ -236,7 +237,7 @@ public class CreatorMenu
                 this.numberX = 10;
                 this.numberY = 10;
             }
-            this.gameBoard = new Block[numberX][numberY];
+            this.gameBoard = new Block[numberY][numberX];
             this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
             emptyMap();
         });

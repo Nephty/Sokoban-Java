@@ -14,24 +14,31 @@ import model.FileGetter;
  * the appropriate constructor. Other AudioPlayers (those you assign a file to) will not be on auto play by default.
  */
 public class AudioPlayer {
-    private final String audioFile = FileGetter.directory("sound");
+    private static final String audioFile = FileGetter.directory("sound");
+    public static final Media crashFile = getMediaFile("crash.mp3");
+    public static final Media pushFile = getMediaFile("push.mp3");
+    public static  final Media beatFile = getMediaFile("beat.mp3");
+    public static final Media secretFile = getMediaFile("secret.mp3");
 
     private MediaPlayer mediaPlayer;
     private Media currMedia;
 
     private double volume = 0.5;
 
-    private final String fileName = "beat.mp3";
 
     public static final byte MINIMUM_VOLUME = 0;
     public static final byte MAXIMUM_VOLUME = 1;
+
+    private static Media getMediaFile(String audioName){
+        return new Media(new File(audioFile.concat(audioName)).toURI().toString());
+    }
 
     /**
      * Create a new <code>AudioPlayer</code> object with the main theme music as default music.
      * Automatically plays the music upon creation.
      */
     public AudioPlayer(){
-        prepareMusic(fileName);
+        prepareMusic(beatFile);
         play();
         loop();
     }
@@ -39,11 +46,12 @@ public class AudioPlayer {
     /**
      * Create a new <code>AudioPlayer</code> object without automatically playing the music.
      * The object will remain silent if no playing method is applied.
-     * @param fileName The name of the media file containing the sound
+     * @param audio The Media object of the sound.
      */
-    public AudioPlayer(String fileName) {
-        prepareMusic(fileName);
+    public AudioPlayer(Media audio) {
+        prepareMusic(audio);
     }
+
 
     /**
      * Return the <code>MediaPlayer</code> attribute.
@@ -53,27 +61,32 @@ public class AudioPlayer {
         return this.mediaPlayer;
     }
 
-    /**
-     * Return the fileName attribute.
-     * @return The fileName in use.
-     */
-    public String getFileName() {
-        return fileName;
-    }
 
     /**
      * Create the <code>Media</code> object and the <code>MediaPlayer</code> object in use and sets the default
      * values for the rate and volume.
-     * @param fileName The name of the file that will be used as the audio track
+     * @param audio The Media object that will be used as the audio track.
      */
-    public void prepareMusic(String fileName) {
+    public void prepareMusic(Media audio) {
         if (mediaPlayer != null){
             mediaPlayer.stop();
         }
-        currMedia = new Media(new File(audioFile.concat(fileName)).toURI().toString());
+        currMedia = audio;
         mediaPlayer = new MediaPlayer(currMedia);
         mediaPlayer.setRate(1);
         mediaPlayer.setVolume(volume);
+    }
+
+    /**
+     * Plays an effect (a short sound)
+     * @param audio The effect we want to play.
+     */
+    public void playEffect(Media audio){
+        if (currMedia != audio){
+            prepareMusic(audio);
+        }
+        play();
+        restart();
     }
 
     /**

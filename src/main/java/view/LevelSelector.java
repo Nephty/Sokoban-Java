@@ -112,8 +112,7 @@ public abstract class LevelSelector
     }
 
     /**
-     * Create the button for the level selection.
-     * Read the completed levels in the data.json file and create the good number of buttons.
+     * Create the buttons for the level selection.
      */
     public void setSelectors() {
         middleMenu.getChildren().removeAll(middleMenu.getChildren());
