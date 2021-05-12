@@ -77,9 +77,6 @@ public class FileGetter {
      * @return The number of levels in the folder
      */
     public static int howManyLevel(String _def) {
-        String s = Main.SEPARATOR;
-        String dir = directory().concat("main"+s+"resources"+s+"level"+s+_def);
-        System.out.println(dir);
         String[] list = levelList(_def);
         return list.length;
     }
