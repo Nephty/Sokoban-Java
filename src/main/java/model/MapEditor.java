@@ -34,8 +34,8 @@ public class MapEditor {
      */
     public MapEditor(Block[][] gameBoard, int x_, int y_, int numbElemX, int numbElemY, double spaceWidth ,double spaceHeight, float WR, float HR) {
         double sizeElem = autoSizeElem(numbElemX, numbElemY, spaceWidth, spaceHeight, WR, HR);
-        pos = new Position(x_, y_);
-        gameBoard[x_][y_] = null;
+        pos = new Position(y_, x_);
+        gameBoard[y_][x_] = null;
 
         this.rect = new Rectangle(sizeElem, sizeElem);
         ImagePattern modelImage = new ImagePattern((this.objet == null ? Block.airImg : this.objet.getImage()));
