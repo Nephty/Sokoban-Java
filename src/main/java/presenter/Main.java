@@ -307,7 +307,7 @@ public class Main extends Application {
                     window.setScene(mainMenu);
                     window.setFullScreen(fullscreen);
                     playingMenu.getRickRollImage().setVisible(false);
-                    audioPlayer.prepareMusic(audioPlayer.getFileName());
+                    audioPlayer.prepareMusic(AudioPlayer.beatFile);
                     audioPlayer.play();
                 }
             });
