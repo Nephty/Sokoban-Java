@@ -34,8 +34,8 @@ public class MapEditor {
      */
     public MapEditor(Block[][] gameBoard, int x_, int y_, int numbElemX, int numbElemY, double spaceWidth ,double spaceHeight, float WR, float HR) {
         double sizeElem = autoSizeElem(numbElemX, numbElemY, spaceWidth, spaceHeight, WR, HR);
-        pos = new Position(y_, x_);
-        gameBoard[y_][x_] = null;
+        pos = new Position(x_, y_);
+        gameBoard[x_][y_] = null;
 
         this.rect = new Rectangle(sizeElem, sizeElem);
         ImagePattern modelImage = new ImagePattern((this.objet == null ? Block.airImg : this.objet.getImage()));
@@ -96,8 +96,6 @@ public class MapEditor {
             this.objet = new Box(pos.getX(), pos.getY(), true);
         }else if(item instanceof Goal) {
             this.objet = new Goal(pos.getX(), pos.getY());
-        } else if (item instanceof Teleport){
-            this.objet = new Teleport(pos.getX(), pos.getY(), null);
         } else {
             objet = null;
         }
