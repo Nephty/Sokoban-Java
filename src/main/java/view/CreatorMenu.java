@@ -9,12 +9,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.geometry.Pos;
 import java.util.ArrayList;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
@@ -365,15 +362,9 @@ public class CreatorMenu
             for(int x=0; x < numberX; x++) {
                 MapEditor mapEdit = new MapEditor(this.gameBoard, x, y, numberX, numberY, 1320*WR, height-(100*WR), WR, HR);
 
-                mapEdit.getElem().setOnMouseEntered(e -> {
-                    mapEdit.getElem().setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");
-                });
-                mapEdit.getElem().setOnMouseExited(e -> {
-                    mapEdit.getElem().setStyle("");
-                });
-                mapEdit.getElem().setOnMouseClicked(e -> {
-                    mapEdit.setObjet(this.gameBoard, item);
-                });
+                mapEdit.getElem().setOnMouseEntered(e -> mapEdit.getElem().setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;"));
+                mapEdit.getElem().setOnMouseExited(e -> mapEdit.getElem().setStyle(""));
+                mapEdit.getElem().setOnMouseClicked(e -> mapEdit.setObjet(this.gameBoard, item));
 
                 hBox.getChildren().add(mapEdit.getElem());
             }
@@ -386,25 +377,12 @@ public class CreatorMenu
      * @param rect The rectangle in the rightMenu
      * @param objet The object in the rightMenu
      */
-    private void setActionItem(Rectangle rect, Block objet) {
-        try {
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream(FileGetter.directory("img")+ (objet == null ? "air.png" : objet.getImage()))));
+    private void setActionItem(Rectangle rect, Block objet){
+            ImagePattern modelImage = new ImagePattern((objet == null ? Block.airImg : objet.getImage()));
             rect.setFill(modelImage);
-            rect.setOnMouseEntered(e -> {
-                rect.setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");
-            });
-            rect.setOnMouseExited(e -> {
-                rect.setStyle("");
-            });
-            rect.setOnMouseClicked(e -> {
-                item = objet;
-            });
-        } catch (FileNotFoundException e) {
-            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing." +
-                    "Check if the names have not been changed or if any file has not been deleted. " +
-                    "You can run the FileIntegrity checker for further information. Missing file : " + (objet == null ? "air.png" : objet.getImage()) + ".");
-            System.exit(-1);
-        }
+            rect.setOnMouseEntered(e -> rect.setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;"));
+            rect.setOnMouseExited(e -> rect.setStyle(""));
+            rect.setOnMouseClicked(e -> item = objet);
     }
 
     /**

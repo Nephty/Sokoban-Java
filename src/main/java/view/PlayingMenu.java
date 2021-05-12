@@ -3,6 +3,7 @@ package view;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -110,11 +111,11 @@ public class PlayingMenu extends Menu {
 
         this.gamePane = new Pane();
         this.gamePane.setLayoutX(60 * WR);
-        this.gamePane.setLayoutY(60 * WR);
+        this.gamePane.setLayoutY(60 * HR);
 
         EventHandler keyEventHandler = (EventHandler<KeyEvent>) keyEvent -> {
             Direction direction;
-            String str = keyEvent.getText().toUpperCase();
+            String str = keyEvent.getCode().toString();
             if(str.equals(keyBinds[0])) {
                 direction = Direction.UP;
                 game.setPlayerFacing(direction);
@@ -142,9 +143,12 @@ public class PlayingMenu extends Menu {
                 if (fileName != null && !fileName.equals("")) {
                     ArrayList<Direction> res = LevelSaver.getHistory(fileName, "");
                     if (res != null) {
-                        for (Direction dir : res) {
-                            applyMove(dir);
-                        }
+                        this.game.getBoard().applyMoves(res);
+                        updateMapTiles();
+
+
+
+
                     }
                 }
                 direction = Direction.NULL;
@@ -454,7 +458,7 @@ public class PlayingMenu extends Menu {
      * Prepare the real-time changing amount of pushes information display.
      */
     private void preparePushesText() {
-        this.totalPushesText = new Text(165 * this.WR, 295 * this.WR, String.valueOf(this.game.getTotalPushes()));
+        this.totalPushesText = new Text(165 * this.WR, 295 * this.HR, String.valueOf(this.game.getTotalPushes()));
         this.totalPushesText.setFont(this.font);
         this.totalPushesText.setFill(this.color);
     }
@@ -464,7 +468,7 @@ public class PlayingMenu extends Menu {
      */
     private void prepareObjectivesText() {
         String objectivesStr = this.game.getBoard().getCurrBoxOnObj() + " / " + this.game.getBoard().getBoxes().size();
-        this.objectivesText = new Text(135 * this.WR, 405 * this.WR, objectivesStr);
+        this.objectivesText = new Text(135 * this.WR, 405 * this.HR, objectivesStr);
         this.objectivesText.setFont(this.font);
         this.objectivesText.setFill(this.color);
     }
@@ -473,7 +477,7 @@ public class PlayingMenu extends Menu {
      * Prepare the real-time changing elapsed time information display.
      */
     private void prepareTimeText() {
-        this.timeText = new Text(105 * this.WR, 515 * this.WR, "");
+        this.timeText = new Text(105 * this.WR, 515 * this.HR, "");
         stopWatch = new StopWatch(timeText);
         this.timeText.setFont(this.font);
         this.timeText.setFill(this.color);
@@ -486,7 +490,7 @@ public class PlayingMenu extends Menu {
         if (this.currentCampaignLevel < 10) {
             this.currentLevelPosX += 10;
         }
-        this.currentLevelText = new Text(this.currentLevelPosX * WR, 185 * WR, String.valueOf(currentCampaignLevel));
+        this.currentLevelText = new Text(this.currentLevelPosX * WR, 185 * HR, String.valueOf(currentCampaignLevel));
         this.currentLevelText.setFont(this.font);
         this.currentLevelText.setFill(this.color);
     }
@@ -497,7 +501,7 @@ public class PlayingMenu extends Menu {
     private void prepareDifficultyText() {
         this.currentLevelDifficulty = Difficulty.NORMAL;
         this.difficultyPosX = 91;
-        this.currentLevelDifficultyText = new Text(this.difficultyPosX * WR, 330 * WR, String.valueOf(this.currentLevelDifficulty));
+        this.currentLevelDifficultyText = new Text(this.difficultyPosX * WR, 330 * HR, String.valueOf(this.currentLevelDifficulty));
         this.currentLevelDifficultyText.setFont(this.font);
         this.currentLevelDifficultyText.setFill(this.color);
     }
@@ -512,7 +516,7 @@ public class PlayingMenu extends Menu {
         } else if (this.currentLevelAverageRating <= 0.1) {
             this.averageRatingPosX += 10;
         }
-        this.currentLevelAverageRatingText = new Text(this.averageRatingPosX * WR, 475 * WR, averageRatingStr);
+        this.currentLevelAverageRatingText = new Text(this.averageRatingPosX * WR, 475 * HR, averageRatingStr);
         this.currentLevelAverageRatingText.setFont(this.font);
         this.currentLevelAverageRatingText.setFill(this.color);
     }
@@ -522,7 +526,7 @@ public class PlayingMenu extends Menu {
      */
     private void prepareYouWonText(){
         this.youWonText = new Text(100*WR,  150*HR, "YOU WON !");
-        this.youWonText.setFont(new Font("Microsoft YaHei", 175*WR));
+        this.youWonText.setFont(new Font("Microsoft YaHei", 175*HR));
         this.youWonText.setFill(Color.rgb(88, 38, 24));
         this.youWonText.setVisible(false);
     }
@@ -541,7 +545,7 @@ public class PlayingMenu extends Menu {
         }
         // no need to do limit < maxWidth <= 40 because maxWidth will always be > limit if we reach this point
         else if (maxWidth <= (int) ((1000 * WR) / 25)) {
-            this.imageLength = (int) (availableSpace / maxWidth);
+            this.imageLength = (int) (availableSpace / Math.ceil(maxWidth/WR));
         }
     }
 
@@ -549,40 +553,39 @@ public class PlayingMenu extends Menu {
      * Update the currently displayed map layout based on the new generated <code>Board</code> and its blockList.
      * This method is used every time the user makes a move. Handles the task of showing the congratulations message
      * if the user won the game.
-     * destination, but "campaign" is. It will always be a coding error, it is not throwable by the user
      */
     private void updateMapTiles() { // was previously called setMap()
         Block[][] blockList = this.game.getBoard().getBlockList();
-        final int spaceConstant = (int) ((this.imageLength)/HR);
+        final int spaceConstant = (int) Math.ceil((this.imageLength)/HR);
         this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
 
-        String fileName = "";
+        Image blockImg = Block.airImg;
         for (int y = 0; y < this.game.getBoard().getLevelHeight(); y++) {
             for (int x = 0; x < blockList[y].length; x++) {
                 Block currentItem = blockList[y][x];
                 if (currentItem != null && !(currentItem instanceof Player)) {
-                    fileName = currentItem.getImage();
+                    blockImg = currentItem.getImage();
                 } else if (currentItem != null) {  // No need to check if a player because the two possible cases are null or player
                     switch (this.game.getPlayerFacing()) {
                         case DOWN:
-                            fileName = "player down.png";
+                            blockImg = Player.playerDownImg;
                             break;
                         case UP:
-                            fileName = "player up.png";
+                            blockImg = Player.playerUpImg;
                             break;
                         case LEFT:
-                            fileName = "player left.png";
+                            blockImg = Player.playerLeftImg;
                             break;
                         case RIGHT:
-                            fileName = "player right.png";
+                            blockImg = Player.playerRightImg;
                             break;
                         default:
                             break;
                     }
                 } else {
-                    fileName = "air.png";
+                    blockImg = Block.airImg;
                 }
-                CustomImage currentItemImg = new CustomImage((x * spaceConstant),(y * spaceConstant), this.WR, this.HR, fileName);
+                CustomImage currentItemImg = new CustomImage((x * spaceConstant),(y * spaceConstant), this.WR, this.HR, blockImg);
                 this.gamePane.getChildren().add(currentItemImg);
             }
         }
@@ -672,7 +675,7 @@ public class PlayingMenu extends Menu {
     private void prepareMoveButtons(EventHandler keyEventHandler) {
         this.moveButton = new Button();
         this.moveButton.setLayoutX(25*WR);
-        this.moveButton.setLayoutY(25*WR);
+        this.moveButton.setLayoutY(25*HR);
         this.moveButton.setOnKeyPressed(keyEventHandler);
 
         upButton = new CustomImage(148,675,WR,HR,"upButton.png");
