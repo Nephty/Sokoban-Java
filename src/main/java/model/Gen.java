@@ -18,6 +18,20 @@ public class Gen {
 
 
     /**
+     * Launch the generation with the given parameters.
+     * @param width The width of the map (and the height)
+     * @param numberOfObject The number of boxes in the game.
+     */
+    public void launch(int width, int numberOfObject){
+        line = width;
+        row = width;
+        this.numberOfObject = numberOfObject;
+        tabPosVal = new boolean[line][row];
+        content = new String[line][row];
+        createMap();
+        contentToLevel();
+    }
+    /**
      * Launch the generation with the given difficulty
      * @param difficulty The difficulty of the level that will be generated (EASY - NORMAL - HARD)
      */
@@ -25,9 +39,9 @@ public class Gen {
         try {
             switch (difficulty) {
                 case EASY:
-                    line = 10;
-                    row = 10;
-                    numberOfObject = 5;
+                    line = 7;
+                    row = 7;
+                    numberOfObject = 3;
                     break;
                 case NORMAL:
                     line = 15;
@@ -52,13 +66,14 @@ public class Gen {
         }
     }
 
+    /**
+     * Reset the current generated level.
+     */
     private void restart(){
         tabPosVal = new boolean[line][row];
         content = new String[line][row];
         createMap();
         contentToLevel();
-        printMap();
-        printDeadNodes();
     }
 
     /**
@@ -83,7 +98,9 @@ public class Gen {
     }
 
     /**
-     * Add content to the level.
+     * Add all the Blocks to the level. At first, we add the player.
+     * Then, we add the Goal and we get the <code>DeadLocks</code>
+     * Finally, we add the boxes. We get the new <code>DeadLocks</code> each time we add a Box.
      */
     private void contentToLevel() {
         try {
@@ -163,8 +180,8 @@ public class Gen {
      * Get all the deadlocks of the board (the squares where a box is blocked.
      */
     private void getDeadLocks() {
-        for(int i=0; i < line; i++) {
-            for(int n=0; n < row; n++) {
+        for(int i=1; i < line-1; i++) {
+            for(int n=1; n < row-1; n++) {
                     //if we're on a wall or a Goal.
                 if (content[i][n].equals("#") || content[i][n].equals(".")) {
                     nVP(i, n);
@@ -276,31 +293,6 @@ public class Gen {
         }
     }
 
-    public void printDeadNodes(){
-        for (boolean[] booleans : tabPosVal) {
-            StringBuilder line = new StringBuilder();
-            for (int j = 0; j < tabPosVal.length; j++) {
-                boolean h = booleans[j];
-                if (h) {
-                    line.append("true  ");
-                } else {
-                    line.append("false ");
-                }
-            }
-            System.out.println(line);
-        }
-    }
-
-    public void printMap(){
-        for (String[] line : content){
-            StringBuilder res = new StringBuilder();
-            for (String l : line){
-                res.append(l);
-            }
-            System.out.println(res);
-        }
-    }
-
     /**
      * Content accessor
      * @return The ArrayList of String with the map that has been generated.
@@ -315,15 +307,5 @@ public class Gen {
             res.add(BobTheBuilder.toString());
         }
         return res;
-    }
-
-    public static void main(String[] args){
-        Gen generate = new Gen();
-        Difficulty difficulty = Difficulty.EASY;
-        for (int i=0; i<10;i++){
-            generate.launch(difficulty);
-            generate.printMap();
-            generate.printDeadNodes();
-        }
     }
 }
