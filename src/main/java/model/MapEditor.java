@@ -96,6 +96,8 @@ public class MapEditor {
             this.objet = new Box(pos.getX(), pos.getY(), true);
         }else if(item instanceof Goal) {
             this.objet = new Goal(pos.getX(), pos.getY());
+        } else if (item instanceof Teleport){
+            this.objet = new Teleport(pos.getX(), pos.getY(), null);
         } else {
             objet = null;
         }
