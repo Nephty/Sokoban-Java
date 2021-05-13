@@ -201,20 +201,37 @@ public class CreatorMenu
                     }
                     content.add(line_.toString());
                 }
-                if (getLevelName().equals(".xsb")){
-                    FileGetter.saveFile("EmptyName.xsb", "freePlay", content);
-                } else {
-                    FileGetter.saveFile(getLevelName(), "freePlay", content);
+                if (isInAGoodFormat(content)){
+                    if (getLevelName().equals(".xsb")){
+                        FileGetter.saveFile("EmptyName.xsb", "freePlay", content);
+                    } else {
+                        FileGetter.saveFile(getLevelName(), "freePlay", content);
+                    }
+                    AlertBox.display("Save completed", "You level has been saved in the freePlay file !");
                 }
-                AlertBox.display("Save completed", "You level has been saved in the freePlay file !");
             }else {
                 AlertBox.display("Error", "There's no map loaded");
             }
         });
     }
 
+
+    private boolean isInAGoodFormat(ArrayList<String> content){
+        try{
+            Board tmp = new Board(content);
+            return true;
+        } catch (IllegalArgumentException e){
+            AlertBox.display("Error", e.getMessage());
+            return false;
+        }
+    }
+
     private String getLevelName() {
-        return levelNameField.getText().concat(".xsb");
+        if (levelNameField.getText().endsWith(".xsb")){
+            return levelNameField.getText();
+        }else {
+            return levelNameField.getText().concat(".xsb");
+        }
     }
 
     /**
