@@ -622,7 +622,7 @@ public class PlayingMenu extends Menu {
             stopWatch.stop();
             addLevel();
 
-            if (currentMode.equals("campaign")) {
+            if (currentMode.equals("campaign") && OptionsMenu.doAutoPromptRating()) {
                 String key = "";
                 key += "c";
                 key += currentCampaignLevel;
