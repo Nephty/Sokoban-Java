@@ -559,7 +559,7 @@ public class PlayingMenu extends Menu {
      */
     private void prepareMapSize() {
         int maxWidth = this.game.getBoard().getLevelWidth();
-        int limit = (int) (30 * this.WR);
+        int limit = (int) (20 * this.WR);
         int availableSpace = (int) (1000 * WR);
 
         // case maxWidth <= 0 doesn't need to be checked because there will always be at least one block on every line
