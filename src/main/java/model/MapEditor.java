@@ -80,9 +80,9 @@ public class MapEditor {
         if(item instanceof Wall) {
             this.objet = new Wall(pos.getX(), pos.getY());
         }else if(item instanceof Player && !(item.amIOnGoal())) {
-            this.objet = new Player(pos.getX(), pos.getY(), false, null);
+            this.objet = new Player(pos.getX(), pos.getY(), false);
         }else if(item instanceof Player && item.amIOnGoal()) {
-            this.objet = new Player(pos.getX(), pos.getY(), true, null);
+            this.objet = new Player(pos.getX(), pos.getY(), true);
         }else if(item instanceof Box && !(item.amIOnGoal())) {
             this.objet = new Box(pos.getX(), pos.getY(), false);
         }else if(item instanceof Box && item.amIOnGoal()) {
