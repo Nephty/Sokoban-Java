@@ -97,7 +97,7 @@ public class RandomSelector extends LevelSelector{
             try{
                 int size = Integer.parseInt(sizeField.getText());
                 int nbrBoxes = Integer.parseInt(boxesField.getText());
-                if (size > 6 && size <= 25*WR){
+                if (size > 6 && size <= 25){
                     int maxBoxes = 4*(size-6);
                     if (nbrBoxes <= maxBoxes){
                         selectedDifficulty = null;
@@ -109,7 +109,7 @@ public class RandomSelector extends LevelSelector{
                         + " with a width of " + size);
                     }
                 }else {
-                    AlertBox.display("Minor error","Width must be between 6 and " + (int) Math.ceil(25*WR));
+                    AlertBox.display("Minor error","Width must be between 7 and 25");
                 }
             } catch (NumberFormatException exc){
                 AlertBox.display("Minor error", "Width or the number of boxes have to be integers !");
