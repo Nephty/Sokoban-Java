@@ -58,6 +58,10 @@ public class CompleteFieldBox {
         window.setScene(scene);
         window.showAndWait();
 
+        window.setOnCloseRequest(e-> {
+            window.close();
+        });
+
         return input.getText();
     }
 
@@ -94,7 +98,8 @@ public class CompleteFieldBox {
         String[] files = directoryPath.list();
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource FileGetter");
+        fileChooser.setTitle("Open Resource File");
+        fileChooser.setInitialDirectory(new File(FileGetter.directory("saves")));
 
         Button openFileSelection = new Button("Open...");
         openFileSelection.setOnAction(e -> {
@@ -115,7 +120,7 @@ public class CompleteFieldBox {
                     if (!input.getText().endsWith(".mov")) {
                         fileNotFoundLabel.setText("Wrong file extension" + " (" + errorCount.toString() + ")");
                     } else {
-                        fileNotFoundLabel.setText("FileGetter not found" + " (" + errorCount.toString() + ")");
+                        fileNotFoundLabel.setText("File not found" + " (" + errorCount.toString() + ")");
                     }
                 }
             } else if (Arrays.asList(files).contains(input.getText())) {
@@ -132,7 +137,7 @@ public class CompleteFieldBox {
                         if (!input.getText().endsWith(".mov")) {
                             fileNotFoundLabel.setText("Wrong file extension" + " (" + errorCount.toString() + ")");
                         } else {
-                            fileNotFoundLabel.setText("FileGetter not found" + " (" + errorCount.toString() + ")");
+                            fileNotFoundLabel.setText("File not found" + " (" + errorCount.toString() + ")");
                         }
                     }
                 }

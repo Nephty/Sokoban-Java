@@ -6,7 +6,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import model.JSONReader;
 import model.JSONWriter;
 import presenter.Main;
 
@@ -24,6 +23,7 @@ public class Console {
     private static final String COMMAND_KEY = "/";
     private static final String SET_DATA_COMMAND = "setdata";
     private static final String RESET_RATING_COMMAND = "resetrating";
+    private static final String RESET_DATA = "resetdata";
 
     /**
      * Open the console.
@@ -75,7 +75,6 @@ public class Console {
     private static void prepareCommands(TextField textInput) {
         textInput.setOnAction(e -> {
             String input = textInput.getText();
-            System.out.println(input);
             textInput.setText("");
 
             if (input.startsWith(COMMAND_KEY)) {
@@ -83,7 +82,6 @@ public class Console {
 
                 // COMMAND : /setdata [key] [value] --> Set the data with the key [key] to the value [value] in the data.json file
                 if (command.startsWith(SET_DATA_COMMAND) && !command.endsWith(SET_DATA_COMMAND)) {
-                    System.out.println("YAY2");
                     String key = command.substring(8);
                     String value;
 
@@ -116,7 +114,6 @@ public class Console {
                 }
 
                 else if (command.startsWith(RESET_RATING_COMMAND)) {
-                    System.out.println("YAY");
 
                     // COMMAND : /resetrating
                     JSONWriter jsonWriter = new JSONWriter("avg.json");
@@ -125,6 +122,22 @@ public class Console {
                         jsonWriter.set(modeKey + levelID + "q", "0");
                         jsonWriter.set(modeKey + levelID + "r", "0");
                     }
+
+                    // COMMAND : /resetdata
+                } else if (command.startsWith(RESET_DATA)) {
+                    // /resetrating
+                    JSONWriter jsonWriter = new JSONWriter("avg.json");
+                    String modeKey = "c";  // key to specify campaign levels
+                    for (int levelID = 0; levelID <= 15; levelID++) {
+                        jsonWriter.set(modeKey + levelID + "q", "0");
+                        jsonWriter.set(modeKey + levelID + "r", "0");
+                    }
+
+                    JSONWriter data = new JSONWriter("data.json");
+                    data.set("completed levels", "0");
+                    data.set("music", "0.5");
+                    data.set("effect", "0.5");
+                    data.set("resolution", "0");
                 }
 
                 // OTHER COMMANDS...

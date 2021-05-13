@@ -134,21 +134,20 @@ public class PlayingMenu extends Menu {
                 game.setPlayerFacing(Direction.DOWN);
                 direction = Direction.RESTART;
             }else if(str.equals(keyBinds[5])) {
-                LevelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
+                String name = CompleteFieldBox.display("Enter a file name",
                         "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
-                        "FileGetter name..."));
+                        "File name...");
+                if (name != null) {
+                    LevelSaver.saveLevel(movesHistory, currentCampaignLevel, name);
+                }
                 direction = Direction.NULL;
             }else if(str.equals(keyBinds[6])) {
-                String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "FileGetter name :", "FileGetter name...");
+                String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
                 if (fileName != null && !fileName.equals("")) {
                     ArrayList<Direction> res = LevelSaver.getHistory(fileName, "");
                     if (res != null) {
                         this.game.getBoard().applyMoves(res);
                         updateMapTiles();
-
-
-
-
                     }
                 }
                 direction = Direction.NULL;
@@ -677,12 +676,12 @@ public class PlayingMenu extends Menu {
         saveButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
             LevelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
                     "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
-                    "FileGetter name..."));
+                    "File name..."));
         });
 
         loadSaveButton = new CustomButton(50, 600, WR,HR,"loadSaveButton.png", (byte) 1);
         loadSaveButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-            String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "FileGetter name :", "FileGetter name...");
+            String fileName = CompleteFieldBox.displayFileSelector("Enter file name", "File name :", "File name...");
             if (fileName != null && !fileName.equals("")) {
                 ArrayList<Direction> res = LevelSaver.getHistory(fileName, "");
                 if (res != null) {

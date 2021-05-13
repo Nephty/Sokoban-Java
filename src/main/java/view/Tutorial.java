@@ -17,7 +17,7 @@ public class Tutorial extends Menu {
             tutorial1, tutorial2, tutorial3,
             tutorial4, tutorial5, tutorial6,
             leftArrow, rightArrow;
-    private ArrayList<CustomImage> images = new ArrayList<>();
+    private final ArrayList<CustomImage> images = new ArrayList<>();
     private byte currentImage = 0;
 
     /**

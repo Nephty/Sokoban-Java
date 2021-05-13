@@ -72,16 +72,6 @@ public abstract class LevelSelector
         this.middleMenu = new Pane();
 
         this.setSelectors();
-        //Pane with all the buttons for the selection
-        // TODO : doesn't work
-        this.middleMenuBackground.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                if (!this.resumeButton.isVisible() && this.hasSelected) {
-                    this.resumeButton.setVisible(true);
-                    this.playButton.setVisible(false);
-                }
-            }
-        });
 
         if (!Main.fullscreen) {
             this.backButton.setLayoutY(-50);
