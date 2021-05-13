@@ -38,6 +38,7 @@ public class OptionsMenu
     private TextField restartControl, loadControl, saveControl, openConsControl, closeConsControl;
     // If we want to move every keybind selector to the right of to the left, we can simply modify this value
     private final int keybindOffset = 0;
+    private static boolean autoPromptRating = true;
 
     /**
      * Create a new <code>OptionsMenu</code> and pepare the attributes and the resolution list and choice.
@@ -203,6 +204,16 @@ public class OptionsMenu
         Label closeConsLabel = new Label("Close Console :");
         closeConsLabel.setTextFill(Color.rgb(88, 38, 24));
         closeConsLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
+        Label autoPromptLabel = new Label("Automatically prompt for rating :");
+        autoPromptLabel.setTextFill(Color.rgb(88, 38, 24));
+        autoPromptLabel.setFont(new Font("Microsoft YaHei", 25 * WR));
+        CheckBox promptBox = new CheckBox();
+        promptBox.setPrefSize(50, 50);
+        promptBox.setSelected(true);
+        promptBox.setOnAction(e -> {
+            autoPromptRating = !autoPromptRating;
+            System.out.println(autoPromptRating);
+        });
 
         this.upControl = new TextField (this.getJsonControl("up"));
         textFieldProperty(upControl);
@@ -286,6 +297,12 @@ public class OptionsMenu
         closeConsHBox.setLayoutY(575*HR);
         closeConsHBox.setSpacing((54+keybindOffset)*WR);
         closeConsHBox.getChildren().addAll(closeConsLabel, closeConsControl);
+            
+        this.autoPromptHBox = new HBox();
+        autoPromptHBox.setLayoutX(700*WR);
+        autoPromptHBox.setLayoutY(750*HR);
+        autoPromptHBox.setSpacing((54+keybindOffset)*WR);
+        autoPromptHBox.getChildren().addAll(autoPromptLabel, promptBox);
     }
 
     private void setJsonControl(String text, String touch) {
@@ -434,5 +451,21 @@ public class OptionsMenu
      */
     public CustomButton getBackButtonOptions(){
         return backButtonOptions;
+    }
+
+    /**
+     * AutoPromptHBox accessor
+     * @return The AutoPromptHBox
+     */
+    public HBox getAutoPromptHBox() {
+        return autoPromptHBox;
+    }
+        
+     /**
+     * AutoPromptRating accessor
+     * @return The AutoPromptRating value
+     */
+    public static boolean doAutoPromptRating() {
+        return autoPromptRating;
     }
 }
