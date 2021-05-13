@@ -109,7 +109,7 @@ public class RandomSelector extends LevelSelector{
                             AlertBox.display("Minor error", "Number of boxes must be lower than "+maxBoxes
                             + " with a width of " + size);
                         }
-                    else{
+                    }else{
                        AlertBox.display("Minor error", "Size must be lower than 26");
                     }
                 }else {
