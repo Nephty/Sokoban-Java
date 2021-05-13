@@ -342,11 +342,11 @@ public class CreatorMenu
                 break;
         	case 2:
         	    nameElemText.setText("Player");
-        	    setActionItem(rect, new Player(0, 0, false, null));
+        	    setActionItem(rect, new Player(0, 0, false));
         	    break;
             case 3:
                 nameElemText.setText("Player on Goal");
-                setActionItem(rect, new Player(0, 0, true, null));
+                setActionItem(rect, new Player(0, 0, true));
                 break;
         	case 4:
         	    nameElemText.setText("Box");
