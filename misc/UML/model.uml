@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>model</OriginalElement>
+  <nodes>
+    <node x="814.0" y="1782.0">model.IntegrityChecker</node>
+    <node x="0.0" y="964.0">model.Board</node>
+    <node x="1083.0" y="1782.0">model.LogInMenu</node>
+    <node x="0.0" y="1528.0">model.Direction</node>
+    <node x="1405.0" y="964.0">model.Achievement</node>
+    <node x="0.0" y="774.0">model.GhostWall</node>
+    <node x="785.0" y="0.0">model.Block</node>
+    <node x="948.5" y="359.0">model.Player</node>
+    <node x="536.0" y="1782.0">model.BooleanCouple</node>
+    <node x="598.5" y="436.0">model.Teleport</node>
+    <node x="929.0" y="964.0">model.Generate</node>
+    <node x="226.0" y="1528.0">model.MapEditor</node>
+    <node x="1220.0" y="964.0">model.StopWatch</node>
+    <node x="0.0" y="1782.0">model.LevelSaver</node>
+    <node x="657.0" y="1528.0">model.JSONReader</node>
+    <node x="1386.0" y="1528.0">model.FileGetter</node>
+    <node x="248.5" y="447.0">model.Goal</node>
+    <node x="1694.5" y="447.0">model.PressurePlate</node>
+    <node x="598.0" y="964.0">model.NewGenerator</node>
+    <node x="1344.5" y="392.0">model.Box</node>
+    <node x="1722.0" y="1528.0">model.Fichier</node>
+    <node x="101.5" y="469.5">model.Wall</node>
+    <node x="908.0" y="1528.0">model.JSONWriter</node>
+    <node x="1160.0" y="1528.0">model.Difficulty</node>
+    <node x="354.0" y="1782.0">model.Position</node>
+    <node x="302.0" y="964.0">model.Gen</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="model.PressurePlate" target="model.Block">
+      <point x="0.0" y="-94.5" />
+      <point x="1859.5" y="319.0" />
+      <point x="1087.5" y="319.0" />
+      <point x="137.5" y="149.5" />
+    </edge>
+    <edge source="model.GhostWall" target="model.Wall">
+      <point x="0.0" y="-72.5" />
+      <point x="0.0" y="72.0" />
+    </edge>
+    <edge source="model.Player" target="model.Block">
+      <point x="0.0" y="-182.5" />
+      <point x="1136.5" y="339.0" />
+      <point x="977.5" y="339.0" />
+      <point x="27.5" y="149.5" />
+    </edge>
+    <edge source="model.Teleport" target="model.Block">
+      <point x="0.0" y="-105.5" />
+      <point x="763.5" y="339.0" />
+      <point x="922.5" y="339.0" />
+      <point x="-27.5" y="149.5" />
+    </edge>
+    <edge source="model.Goal" target="model.Block">
+      <point x="0.0" y="-94.5" />
+      <point x="413.5" y="329.0" />
+      <point x="867.5" y="329.0" />
+      <point x="-82.5" y="149.5" />
+    </edge>
+    <edge source="model.Wall" target="model.Block">
+      <point x="0.0" y="-72.0" />
+      <point x="165.0" y="319.0" />
+      <point x="812.5" y="319.0" />
+      <point x="-137.5" y="149.5" />
+    </edge>
+    <edge source="model.Box" target="model.Block">
+      <point x="0.0" y="-149.5" />
+      <point x="1509.5" y="329.0" />
+      <point x="1032.5" y="329.0" />
+      <point x="82.5" y="149.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.5000000000000001" x="945.8080808080806" y="1340.0202020202019" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Constructors</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

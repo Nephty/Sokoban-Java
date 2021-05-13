@@ -1,0 +1,11 @@
+{
+"savegame":"F",
+"restart":"R",
+"left":"Q",
+"up":"Z",
+"right":"D",
+"loadsave":"T",
+"down":"S",
+"closeconsole":"L",
+"openconsole":"K"
+}
