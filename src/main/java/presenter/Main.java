@@ -63,7 +63,7 @@ public class Main extends Application {
 
             //MUSIC --------------
 
-            setAudioPlayers(); // TODO : Set the exceptions messages
+            setAudioPlayers();
 
             // --------------------
 

@@ -5,7 +5,6 @@ public class Box extends Block {
     private boolean isOnGoal;
 
     private static final String Texture = "$";
-    private static final String Image = "box.png";
     private static final Image boxOnGoalImg = loadImg("boxOnGoal.png");
     private static final Image boxImg = loadImg("box.png");
 

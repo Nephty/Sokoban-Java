@@ -6,8 +6,6 @@ import presenter.Main;
 import java.io.File;
 import java.util.Arrays;
 
-// TODO : move it out of the src and make imports working OR make it assume java file are there
-
 public class IntegrityChecker {
     public static boolean checkFileIntegrity() {
         String s = Main.getFileDistination();
@@ -301,7 +299,7 @@ public class IntegrityChecker {
         System.out.println();
         System.out.println();
 
-        System.out.println("FileGetter integrity check finished. No missing file reported.");
+        System.out.println("File integrity check finished. No missing file reported.");
         return true;
     }
 

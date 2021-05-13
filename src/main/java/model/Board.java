@@ -296,32 +296,19 @@ public class Board {
     public ArrayList<String> toArrayList(){
         ArrayList<String> res = new ArrayList<>();
         for (Block[] blocks : blockList) {
-            String line = "";
+            StringBuilder line = new StringBuilder();
             for (Block block : blocks) {
                 if (block == null) {
-                    line += " ";
+                    line.append(" ");
                 } else {
-                    line += block.getTexture();
+                    line.append(block.getTexture());
                 }
             }
-            res.add(line);
+            res.add(line.toString());
         }
         return res;
     }
 
-    public void printList(){
-        for (Block[] blocks : blockList){
-            String line = "";
-            for (Block block : blocks) {
-                if (block == null) {
-                    line += " ";
-                } else {
-                    line += block.getTexture();
-                }
-            }
-            System.out.println(line);
-        }
-    }
 
     /**
      * Apply the moves to the current map
