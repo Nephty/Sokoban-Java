@@ -48,6 +48,8 @@ public class OptionsMenu
      * @param WR The width ratio that will be used to resize the components
      * @param HR The height ratio that will be used to resize the components
      * @param background_ The background displayed on the options menu
+     * @param audioPlayer_ The <code>AudioPlayer</code> that will play the main theme music
+     * @param effectPlayer_ The <code>AudioPlayer</code> that will be used to play sound effects
      */
     public OptionsMenu(Parent parent_, double width_, double height_, float WR, float HR, CustomImage background_, AudioPlayer audioPlayer_, AudioPlayer effectPlayer_) {
         super(parent_, width_, height_, WR, HR, background_);

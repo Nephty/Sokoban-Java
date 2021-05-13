@@ -1,6 +1,9 @@
 package model;
 import javafx.scene.image.Image;
 
+/**
+ * The <code>Player</code> is a special <code>Block</code> of the game. It is the moving character controlled by the user.
+ */
 public class Player extends Block {
     private boolean isOnGoal;
     private PressurePlate plate;
@@ -17,10 +20,9 @@ public class Player extends Block {
      * @param y_ The line of the Player in the blockList
      * @param isOnGoal Is the Player is on a goal.
      */
-    public Player(int x_, int y_, boolean isOnGoal, Teleport currTP) {
+    public Player(int x_, int y_, boolean isOnGoal) {
         super(x_, y_);
         this.isOnGoal = isOnGoal;
-        this.currTP = currTP;
     }
 
 

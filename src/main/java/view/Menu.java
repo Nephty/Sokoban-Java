@@ -15,9 +15,8 @@ import java.util.ArrayList;
 
 /**
  * A <code>Menu</code> is a user interface used to build different types of menus. The <code>Menu</code> is
- * not a visually implementable class : we can not create a new <code>Menu</code> object and have it working as
- * others menus, it is more of a template rather than a functional menu. For example, creating a new <code>Menu</code>
- * and expecting it to work as a <code>MainMenu</code> or a <code>PlayingMenu</code> is not intended nor recommended.
+ * not an implementable class : we can not create a new <code>Menu</code> object and have it working as
+ * others menus, it is an abstract class.
  */
 public abstract class Menu
         extends Scene {
@@ -27,8 +26,6 @@ public abstract class Menu
     //---------//
 
     protected CustomImage background;
-    protected ArrayList<CustomImage> images = new ArrayList<>();
-    protected ArrayList<CustomButton> buttons = new ArrayList<>();
 
     //------//
     // Data //
@@ -81,9 +78,9 @@ public abstract class Menu
         this.WR = WR_;
         this.HR = HR_;
         this.width = (int) width_;
-        this.height = (int) height;
-        final Font font = new Font("Microsoft YaHei", 35*WR);
-        final Color color = Color.rgb(88, 38, 24);
+        this.height = (int) height_;
+        this.font = new Font("Microsoft YaHei", 35*WR);
+        this.color = Color.rgb(88, 38, 24);
     }
 
     /**

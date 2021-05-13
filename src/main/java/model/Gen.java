@@ -6,6 +6,11 @@ import javax.naming.TimeLimitExceededException;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * The <Gen>Gen</Gen> class handle the generation. It has 2 possibility for the generation :
+ * With the Difficulty (EASY-NORMAL-HARD) or with a custom size and a custom number of boxes.
+ * The generation can only create squares and use DeadLocks method to generate a playable level.
+ */
 public class Gen {
 
     private final Random random = new Random();
@@ -177,7 +182,7 @@ public class Gen {
     }
 
     /**
-     * Get all the deadlocks of the board (the squares where a box is blocked.
+     * Get all the deadlocks of the board (the squares where a box is blocked).
      */
     private void getDeadLocks() {
         for(int i=1; i < line-1; i++) {

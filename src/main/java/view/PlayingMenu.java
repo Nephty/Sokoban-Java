@@ -68,11 +68,15 @@ public class PlayingMenu extends Menu {
      * the texts and images to display information about the on-going level, the central <code>Pane</code>,
      * the <code>Game</code> and the <code>Board</code> used for the current game, the moves history,
      * the <code>EventHandler</code> in order to use the keyboard  and the saving/loading features.
+     * @param parent_ The main <code>Pane</code> that we will be using to store the content. This pane should (but it's not
+     *                mandatory) be the size of the window in order to be able to display content anywhere on
+     *                the said window.
      * @param width_ The width of the menu (preferably the size of the window)
      * @param height_ The height of the menu (preferably the size of the window)
      * @param WR_ The width ratio that will be used to resize the components
      * @param HR_ The height ratio that will be used to resize the components
      * @param beatPlayer The <code>AudioPlayer</code> that will play the main theme music
+     * @param effectPlayer The <code>AudioPlayer</code> that will be used to play sound effects
      */
     public PlayingMenu(Parent parent_, double width_, double height_, float WR_, float HR_, AudioPlayer beatPlayer, AudioPlayer effectPlayer) {
         super(parent_, width_, height_, WR_, HR_);
@@ -138,7 +142,7 @@ public class PlayingMenu extends Menu {
                         "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
                         "File name...");
                 if (name != null) {
-                    LevelSaver.saveLevel(movesHistory, currentCampaignLevel, name);
+                    LevelSaver.saveLevel(movesHistory, currentCampaignLevel, name, currentLevelText.getText());
                 }
                 direction = Direction.NULL;
             }else if(str.equals(keyBinds[6])) {
@@ -674,9 +678,12 @@ public class PlayingMenu extends Menu {
     private void prepareSaveButtons(){
         saveButton = new CustomButton(50, 550,WR,HR,"saveButton.png", (byte) 1);
         saveButton.overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-            LevelSaver.saveLevel(movesHistory, currentCampaignLevel, CompleteFieldBox.display("Enter a file name",
+            String name = CompleteFieldBox.display("Enter a file name",
                     "Enter the name you want to use for the file.\nLeave blank for an automatic file name.",
-                    "File name..."));
+                    "File name...");
+            if (name != null) {
+                LevelSaver.saveLevel(movesHistory, currentCampaignLevel, name, currentLevelText.getText());
+            }
         });
 
         loadSaveButton = new CustomButton(50, 600, WR,HR,"loadSaveButton.png", (byte) 1);

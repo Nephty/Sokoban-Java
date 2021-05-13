@@ -6,9 +6,18 @@ import presenter.Main;
 import java.io.File;
 import java.util.Arrays;
 
+/**
+ * The <code>IntegrityChecker</code> is a class used to check if all the files of the game are in the good directories.
+ * The name of the files and their position in the directories are stored in the JSON file "integrity.json".
+ */
 public class IntegrityChecker {
+
+    /**
+     * Check if all the files are in the good directories
+     * @return True if the check is completed without error.
+     */
     public static boolean checkFileIntegrity() {
-        String s = Main.getFileDistination();
+        String s = Main.getFileDestination();
         JSONReader jsonReader = new JSONReader("integrity.json");
         System.out.println("Initializing file integrity check up... 0%");
         System.out.println("Initializing file integrity check up... 100%");
@@ -303,6 +312,12 @@ public class IntegrityChecker {
         return true;
     }
 
+    /**
+     * This method check if the String object is the lst.
+     * @param lst The String table where we want to check
+     * @param has The String we want to know if he's in the list
+     * @return True if the String is in the list, false otherwise.
+     */
     private static boolean contains(String[] lst, String has) {
         return Arrays.asList(lst).contains(has);
     }

@@ -22,14 +22,9 @@ public class Game {
     Direction playerFacing = Direction.DOWN;
 
     /**
-     * Create a new <code>Game</code> object without any defined Board.
-     */
-    public Game() {
-    }
-
-    /**
      * Create a new <code>Game</code> object with a defined Board.
-     * @param board The Board on which the game will be playedµ
+     *
+     * @param board The Board on which the game will be playedÂµ
      */
     public Game(Board board) {
         this.board = board;
@@ -37,6 +32,7 @@ public class Game {
 
     /**
      * Return the total amount of moves made during the current game.
+     *
      * @return The attribute containing the total amount of moves
      */
     public int getTotalMoves() {
@@ -45,6 +41,8 @@ public class Game {
 
     /**
      * Set the total amount of moves made during the current game.
+     *
+     * @param totalMoves The new value
      */
     public void setTotalMoves(int totalMoves) {
         this.totalMoves = totalMoves;
@@ -52,6 +50,7 @@ public class Game {
 
     /**
      * Return the current magnitude of the current total amount of moves.
+     *
      * @return The attribute containing the magnitude of the total amount of moves
      */
     public byte getTotalMovesMagnitude() {
@@ -60,6 +59,7 @@ public class Game {
 
     /**
      * Return the total amount of pushes made during the current game.
+     *
      * @return The attribute containing the total amount of pushes
      */
     public int getTotalPushes() {
@@ -68,6 +68,8 @@ public class Game {
 
     /**
      * Set the total amount of pushes made during the current game.
+     *
+     * @param totalPushes The new value
      */
     public void setTotalPushes(int totalPushes) {
         this.totalPushes = totalPushes;
@@ -75,6 +77,7 @@ public class Game {
 
     /**
      * Return the total amount of pushes made during the current game.
+     *
      * @return The attribute containing the magnitude of the total amount of pushes
      */
     public byte getTotalPushesMagnitude() {
@@ -90,6 +93,8 @@ public class Game {
 
     /**
      * Increment the total amount of pushes made during the current game.
+     *
+     * @param value The value to add
      */
     public void addTotalPushes(byte value) {
         this.totalPushes += value;
@@ -97,6 +102,8 @@ public class Game {
 
     /**
      * Increment the current magnitude of the total amount of moves made during the current game.
+     *
+     * @param value The value to add
      */
     public void addTotalPushesMagnitude(byte value) {
         this.totalPushesMagnitude += value;
@@ -104,6 +111,8 @@ public class Game {
 
     /**
      * Increment the current magnitude of the total amount of pushes made during the current game.
+     *
+     * @param value The value to add
      */
     public void addTotalMovesMagnitude(byte value) {
         this.totalMovesMagnitude += value;
@@ -111,6 +120,7 @@ public class Game {
 
     /**
      * Return the current <code>Direction</code> towards which the player is facing.
+     *
      * @return The attribute containing the facing direction
      */
     public Direction getPlayerFacing() {
@@ -119,6 +129,8 @@ public class Game {
 
     /**
      * Set the current <code>Direction</code> towards which the player is facing.
+     *
+     * @param playerFacing The new <code>Direction</code>
      */
     public void setPlayerFacing(Direction playerFacing) {
         this.playerFacing = playerFacing;
@@ -126,6 +138,8 @@ public class Game {
 
     /**
      * Set the current <code>Board</code> on which the game is played.
+     *
+     * @param board The new <code>Board</code>
      */
     public void setBoard(Board board) {
         this.board = board;
@@ -133,7 +147,8 @@ public class Game {
 
     /**
      * Return the current <code>Board</code> on which the game is played.
-     * @return The attribute containing the current Board
+     *
+     * @return The attribute containing the current <code>Board</code>
      */
     public Board getBoard() {
         return this.board;

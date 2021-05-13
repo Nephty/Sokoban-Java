@@ -7,6 +7,12 @@ import view.AlertBox;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+/**
+ * The <code>Block</code> is the super class of all the blocks of the game.
+ * Every blocks has their position (x,y) in attributes and they also have an Image (Image object)
+ * and a Texture (Used in .xsb files). Each subclass of <code>Block</code> must implements the methods getTexture() and
+ * getImage().
+ */
 public abstract class Block {
     public static final Image airImg = loadImg("air.png");
     private int x;
@@ -25,7 +31,7 @@ public abstract class Block {
 
     /**
      * X accessor
-     * @return The row of the object
+     * @return The row of the Block
      */
     public int getX() {
         return this.x;
@@ -33,7 +39,7 @@ public abstract class Block {
 
     /**
      * Y accessor
-     * @return The line of the object
+     * @return The line of the Block
      */
     public int getY() {
         return this.y;
@@ -67,7 +73,7 @@ public abstract class Block {
 
     /**
      * Texture accessor
-     * @return name of the image of the block
+     * @return The texture of the Block (the char in .xsb file)
      */
     public abstract String getTexture();
 

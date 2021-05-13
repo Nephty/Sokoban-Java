@@ -3,6 +3,10 @@ package model;
 
 import javafx.scene.image.Image;
 
+/**
+ * The <code>Wall</code> is a special <code>Block</code> of the game. If the player want to go in the direction of the wall,
+ * he doesn't move.
+ */
 public class Wall extends Block {
 
     private static final String Texture = "#";

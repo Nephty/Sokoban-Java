@@ -6,6 +6,10 @@ import view.AlertBox;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * <code>FileGetter</code> is a class that contains static method used to loadFile, get a directory,
+ * get the number of files in a given directory,etc..
+ */
 public class FileGetter {
 
     /**

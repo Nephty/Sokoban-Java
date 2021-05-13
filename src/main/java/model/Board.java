@@ -1,6 +1,10 @@
 package model;
 import java.util.ArrayList;
 
+/**
+ * The <code>Board</code> is the main class of the game, it creates the blockList with each block of the level and
+ * it handles the moves.
+ */
 public class Board {
     private ArrayList<String> level;
     private ArrayList<Block> world;
@@ -80,7 +84,7 @@ public class Board {
                         if (player1 != null){
                             throw new IllegalArgumentException("Error : There can only be 1 player in the map !");
                         }else {
-                            player1 = new Player(x,y,false, null);
+                            player1 = new Player(x,y,false);
                             x++;
                             break;  
                         }
@@ -88,7 +92,7 @@ public class Board {
                         if (player1 != null){
                             throw new IllegalArgumentException("Error : There can only be 1 player in the map !");
                         }else{
-                            player1 = new Player(x,y,true, null);
+                            player1 = new Player(x,y,true);
                             x++;
                             break;
                         }

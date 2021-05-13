@@ -8,6 +8,10 @@ import view.AlertBox;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * The <Code>JSONReader</Code> is a support for reading .json files. The methods and constructors make it very easy
+ * to read object in the json file.
+ */
 public class JSONReader {
     JSONObject obj;
 
@@ -35,6 +39,10 @@ public class JSONReader {
         }
     }
 
+    /**
+     * @param key The name of the key we want to read the value
+     * @return The Object value associated to the key
+     */
     public JSONObject getObject(String key) {
         return (JSONObject) this.obj.get(key);
     }

@@ -6,6 +6,10 @@ import view.AlertBox;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * The <code>JSONWriter</code> is support for writing in json files. The methods and constructors make it very easy
+ *  * to read object in the json file.
+ */
 public class JSONWriter {
     JSONObject obj;
     String fileName;
