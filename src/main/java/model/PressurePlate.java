@@ -1,11 +1,12 @@
 package model;
+import javafx.scene.image.Image;
 
 /**
  * The <code>Pressure Plate</code> is a special Block of the game. It starts a new event when the player walk on it
  * Used for the EasterEggs.
  */
 public class PressurePlate extends Block {
-    private static final String Image = "air.png";
+    private static final Image plateImg = loadImg("air.png");
     private String texture;
     private String effect;
 
@@ -70,10 +71,10 @@ public class PressurePlate extends Block {
 
     /**
      * Image accessor
-     * @return The name of the image of the PressurePlate
+     * @return The image of the PressurePlate (Image object)
      */
-    public String getImage(){
-        return Image;
+    public Image getImage(){
+        return plateImg;
     }
 
 

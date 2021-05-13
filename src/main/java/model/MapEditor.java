@@ -1,12 +1,9 @@
 package model;
 
-import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import view.AlertBox;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 
 /**
  * The <code>MapEditor</code> class is a class used in the <code>CreatorMenu</code>. Each square of the level is
@@ -34,19 +31,12 @@ public class MapEditor {
      */
     public MapEditor(Block[][] gameBoard, int x_, int y_, int numbElemX, int numbElemY, double spaceWidth ,double spaceHeight, float WR, float HR) {
         double sizeElem = autoSizeElem(numbElemX, numbElemY, spaceWidth, spaceHeight, WR, HR);
-        pos = new Position(x_, y_);
-        gameBoard[x_][y_] = null;
+        pos = new Position(y_,x_);
+        gameBoard[y_][x_] = null;
 
         this.rect = new Rectangle(sizeElem, sizeElem);
-        try {
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (this.objet == null ? "air.png" : this.objet.getImage()))));
-            this.rect.setFill(modelImage);
-        } catch (FileNotFoundException e) {
-            AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing." +
-                    "Check if the names have not been changed or if any file has not been deleted. " +
-                    "You can run the FileIntegrity checker for further information. Missing file : " + (this.objet == null ? "air.png" : this.objet.getImage()) + ".");
-            System.exit(-1);
-        }
+        ImagePattern modelImage = new ImagePattern((this.objet == null ? Block.airImg : this.objet.getImage()));
+        this.rect.setFill(modelImage);
     }
 
     /**
@@ -62,11 +52,7 @@ public class MapEditor {
     private double autoSizeElem(int numbElemX, int numbElemY, double spaceWidth ,double spaceHeight, float WR, float HR) {
         double sizeX = ((spaceWidth / numbElemX) * WR);
         double sizeY = ((spaceHeight / numbElemY) * HR);
-        if(sizeX <= sizeY) {
-            return sizeX;
-        }else {
-            return sizeY;
-        }
+        return Math.min(sizeX, sizeY);
     }
 
     /**
@@ -103,6 +89,8 @@ public class MapEditor {
             this.objet = new Box(pos.getX(), pos.getY(), true);
         }else if(item instanceof Goal) {
             this.objet = new Goal(pos.getX(), pos.getY());
+        } else if (item instanceof Teleport){
+            this.objet = new Teleport(pos.getX(), pos.getY(), null);
         } else {
             objet = null;
         }
@@ -114,14 +102,7 @@ public class MapEditor {
      * Change the image of the MapEditor with the image of the object.
      */
     private void blockSetFill() {
-        try {
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (this.objet == null ? "air.png" : objet.getImage()))));
-            rect.setFill(modelImage);
-        } catch (FileNotFoundException e) {
-            AlertBox.display("Fatal error", "A .png file could not be found. Check if no file is missing." +
-                    "Check if the names have not been changed or if any file has not been deleted. " +
-                    "You can run the FileIntegrity checker for further information. Missing file : " + this.objet.getImage() + ".");
-            System.exit(-1);
-        }
+        ImagePattern modelImage = new ImagePattern((this.objet == null ? Block.airImg : this.objet.getImage()));
+        rect.setFill(modelImage);
     }
 }

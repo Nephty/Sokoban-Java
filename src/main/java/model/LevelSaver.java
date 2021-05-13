@@ -7,10 +7,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * A <code>LevelSave</code> is a class with two static methods : one to save current progression and one
+ * to load a previously save progression. It links the user and the save files.
+ */
 public class LevelSaver {
     final static String dateTimeFormat = "dd-MM-yyyy @ HH-mm-ss";
-    final static String savesPath = "src\\main\\resources\\level\\saves\\";
-
+    final static String savesPath = FileGetter.directory("saves");
 
     /**
      * Use the serialization to save the <code>movesHistory</code> in a file.
@@ -18,31 +21,57 @@ public class LevelSaver {
      * @param movesHistory The ArrayList with all the Direction the player made before he saved the game.
      * @param level The level where we're saving the moves.
      * @param userFileName The name the player gave for the save file
+     * @param currentLevelText Text naming the current level ("1", "2", "3",... for campaign and e.g. "MyLevel" for the freePlay)
      */
-    public static void saveLevel(ArrayList<Direction> movesHistory, byte level, String userFileName) {
-        String fileName;
-        if (userFileName.equals("")) {
-            fileName = "level" + (level < 10 ? "0" + level : level);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-            String currentTime = LocalDateTime.now().format(formatter);
-            fileName += " " + currentTime;
-            fileName += ".mov";
-        } else {
-            if (!userFileName.endsWith(".mov")) {
-                fileName = userFileName + ".mov";
+    public static void saveLevel(ArrayList<Direction> movesHistory, byte level, String userFileName, String currentLevelText) {
+        boolean canSave = true;
+        String fileName = "";
+        try {
+            Integer.parseInt(currentLevelText);
+            if (userFileName.equals("")) {
+                fileName = "level" + (level < 10 ? "0" + level : level);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+                String currentTime = LocalDateTime.now().format(formatter);
+                fileName += " " + currentTime;
+                fileName += ".mov";
+            } else if (isValid(userFileName)) {
+                if (!userFileName.endsWith(".mov")) {
+                    fileName = userFileName + ".mov";
+                } else {
+                    fileName = userFileName;
+                }
             } else {
-                fileName = userFileName;
+                AlertBox.display("Minor Error", "Your file name contains forbidden characters.");
+                canSave = false;
+            }
+        } catch (NumberFormatException exc) {
+            if (userFileName.equals("")) {
+                fileName = currentLevelText;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+                String currentTime = LocalDateTime.now().format(formatter);
+                fileName += " " + currentTime;
+                fileName += ".mov";
+            } else if (isValid(userFileName)) {
+                if (!userFileName.endsWith(".mov")) {
+                    fileName = userFileName + ".mov";
+                } else {
+                    fileName = userFileName;
+                }
+            } else {
+                AlertBox.display("Minor Error", "Your file name contains forbidden characters.");
+                canSave = false;
             }
         }
 
-        try {
-            FileOutputStream FileOutputStream = new FileOutputStream(savesPath + fileName);
-            ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(FileOutputStream);
-            ObjectOutputStream.writeObject(movesHistory);
-        } catch (IOException e) {
-            AlertBox.display("Minor Error", "Could not save the file. Check the name and try again.");
+        if (canSave) {
+            try {
+                FileOutputStream FileOutputStream = new FileOutputStream(savesPath + fileName);
+                ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(FileOutputStream);
+                ObjectOutputStream.writeObject(movesHistory);
+            } catch (IOException e) {
+                AlertBox.display("Minor Error", "Could not save the file. Check the name and try again.");
+            }
         }
-
     }
 
     /**
@@ -55,7 +84,7 @@ public class LevelSaver {
     public static ArrayList<Direction> getHistory(String fileName, String origin) {
         String savePath;
         if (origin.equals("test")){
-            savePath = "src\\test\\resources\\";
+            savePath = FileGetter.directory("test");
         }else{
             savePath = savesPath;
         }
@@ -72,5 +101,14 @@ public class LevelSaver {
             AlertBox.display("Minor error", "Could not find the given file. Please try again.");
             return null;
         }
+    }
+
+    /**
+     * Check if the given <code>String</code> is a valid file name.
+     * @param s The <code>String</code> to validate
+     * @return true if the <code>String</code> is a valid file name, else otherwise
+     */
+    private static boolean isValid(String s) {
+        return !s.contains("/") && !s.contains("\\") && !s.contains(":") && !s.contains("*") && !s.contains("?") && !s.contains("\"") && !s.contains("<") && !s.contains(">") && !s.contains("|");
     }
 }

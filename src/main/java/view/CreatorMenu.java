@@ -9,12 +9,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.geometry.Pos;
 import java.util.ArrayList;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
@@ -194,20 +191,23 @@ public class CreatorMenu
             if(gameBoard != null) {
                 ArrayList<String> content = new ArrayList<>();
                 for(Block[] line : gameBoard) {
-                    String line_ = "";
+                    StringBuilder line_ = new StringBuilder();
                     for(Block elem : line) {
                         if (elem == null){
-                            line_ += " ";
+                            line_.append(" ");
                         } else {
-                            line_ += elem.getTexture();
+                            line_.append(elem.getTexture());
                         }
                     }
-                    content.add(line_);
+                    content.add(line_.toString());
                 }
-                if (getLevelName().equals(".xsb")){
-                    File.saveFile("EmptyName.xsb", "freePlay", content);
-                } else {
-                    File.saveFile(getLevelName(), "freePlay", content);
+                if (isInAGoodFormat(content)){
+                    if (getLevelName().equals(".xsb")){
+                        FileGetter.saveFile("EmptyName.xsb", "freePlay", content);
+                    } else {
+                        FileGetter.saveFile(getLevelName(), "freePlay", content);
+                    }
+                    AlertBox.display("Save completed", "You level has been saved in the freePlay file !");
                 }
             }else {
                 AlertBox.display("Error", "There's no map loaded");
@@ -215,8 +215,23 @@ public class CreatorMenu
         });
     }
 
+
+    private boolean isInAGoodFormat(ArrayList<String> content){
+        try{
+            Board tmp = new Board(content);
+            return true;
+        } catch (IllegalArgumentException e){
+            AlertBox.display("Error", e.getMessage());
+            return false;
+        }
+    }
+
     private String getLevelName() {
-        return levelNameField.getText().concat(".xsb");
+        if (levelNameField.getText().endsWith(".xsb")){
+            return levelNameField.getText();
+        }else {
+            return levelNameField.getText().concat(".xsb");
+        }
     }
 
     /**
@@ -234,14 +249,17 @@ public class CreatorMenu
             try{
                 this.numberX = Integer.parseInt(sizeXField.getText());
                 this.numberY = Integer.parseInt(sizeYField.getText());
+                if (numberY > 25*HR || numberX > 25*WR){
+                    AlertBox.display("Minor error","Height must be lower than "+(int) Math.floor(25*HR)
+                    +"\nWidth must be lower than "+(int) Math.floor(25*WR));
+                }else {
+                    this.gameBoard = new Block[numberY][numberX];
+                    this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
+                    emptyMap();
+                }
             } catch (NumberFormatException exc) {
-                exc.printStackTrace();
-                this.numberX = 10;
-                this.numberY = 10;
+                AlertBox.display("Minor error", "The width and Height must be integers !");
             }
-            this.gameBoard = new Block[numberX][numberY];
-            this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
-            emptyMap();
         });
     }
 
@@ -365,15 +383,9 @@ public class CreatorMenu
             for(int x=0; x < numberX; x++) {
                 MapEditor mapEdit = new MapEditor(this.gameBoard, x, y, numberX, numberY, 1320*WR, height-(100*WR), WR, HR);
 
-                mapEdit.getElem().setOnMouseEntered(e -> {
-                    mapEdit.getElem().setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");
-                });
-                mapEdit.getElem().setOnMouseExited(e -> {
-                    mapEdit.getElem().setStyle("");
-                });
-                mapEdit.getElem().setOnMouseClicked(e -> {
-                    mapEdit.setObjet(this.gameBoard, item);
-                });
+                mapEdit.getElem().setOnMouseEntered(e -> mapEdit.getElem().setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;"));
+                mapEdit.getElem().setOnMouseExited(e -> mapEdit.getElem().setStyle(""));
+                mapEdit.getElem().setOnMouseClicked(e -> mapEdit.setObjet(this.gameBoard, item));
 
                 hBox.getChildren().add(mapEdit.getElem());
             }
@@ -386,25 +398,12 @@ public class CreatorMenu
      * @param rect The rectangle in the rightMenu
      * @param objet The object in the rightMenu
      */
-    private void setActionItem(Rectangle rect, Block objet) {
-        try {
-            ImagePattern modelImage = new ImagePattern(new Image(new FileInputStream("src\\main\\resources\\img\\" + (objet == null ? "air.png" : objet.getImage()))));
+    private void setActionItem(Rectangle rect, Block objet){
+            ImagePattern modelImage = new ImagePattern((objet == null ? Block.airImg : objet.getImage()));
             rect.setFill(modelImage);
-            rect.setOnMouseEntered(e -> {
-                rect.setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;");
-            });
-            rect.setOnMouseExited(e -> {
-                rect.setStyle("");
-            });
-            rect.setOnMouseClicked(e -> {
-                item = objet;
-            });
-        } catch (FileNotFoundException e) {
-            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing." +
-                    "Check if the names have not been changed or if any file has not been deleted. " +
-                    "You can run the FileIntegrity checker for further information. Missing file : " + (objet == null ? "air.png" : objet.getImage()) + ".");
-            System.exit(-1);
-        }
+            rect.setOnMouseEntered(e -> rect.setStyle("-fx-stroke: rgb(140, 55, 40); -fx-stroke-width: 2;"));
+            rect.setOnMouseExited(e -> rect.setStyle(""));
+            rect.setOnMouseClicked(e -> item = objet);
     }
 
     /**

@@ -1,12 +1,15 @@
 package model;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import view.AlertBox;
 
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * The <code>JSONWriter</code> is support for writing in json files. The methods and constructors make it very easy
+ *  * to read object in the json file.
+ */
 public class JSONWriter {
     JSONObject obj;
     String fileName;
@@ -32,13 +35,13 @@ public class JSONWriter {
         temporaryReader.obj.put(key, value);
 
         try {
-            FileWriter file = new FileWriter("resources\\json\\" + this.fileName);
+            FileWriter file = new FileWriter(FileGetter.directory("json")+ this.fileName);
             file.write(temporaryReader.obj.toString());
             file.flush();
         } catch (IOException exception) {
-            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing." +
-                    "Check if the names have not been changed or if any file has not been deleted. " +
-                    "You can run the FileIntegrity checker for further information. Missing file : " + fileName + ".");
+            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing.\n" +
+                    "Check if the names have not been changed or if any file has not been deleted.\n" +
+                    "You can run the FileIntegrity checker for further information.\nMissing file : " + fileName + ".");
             System.exit(-1);
         }
     }
@@ -68,13 +71,13 @@ public class JSONWriter {
             }
         }
         try {
-            FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\resources\\json\\" + this.fileName);
+            FileWriter file = new FileWriter(FileGetter.directory("json") + this.fileName);
             file.write(finalStr.toString());
             file.flush();
         } catch (IOException exception) {
-            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing." +
-                    "Check if the names have not been changed or if any file has not been deleted. " +
-                    "You can run the FileIntegrity checker for further information. Missing file : " + fileName + ".");
+            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing.\n" +
+                    "Check if the names have not been changed or if any file has not been deleted.\n" +
+                    "You can run the FileIntegrity checker for further information.\n Missing file : " + fileName + ".");
             System.exit(-1);
         }
     }

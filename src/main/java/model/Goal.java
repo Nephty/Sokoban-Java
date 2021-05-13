@@ -1,13 +1,15 @@
 
 package model;
 
+import javafx.scene.image.Image;
+
 /**
  * <code>Goal</code> is one of the main Blocks of the game.
  * We have to put the <code>Boxes</code> on it.
  */
 public class Goal extends Block {
     private static final String Texture = ".";
-    private static final String Image = "objective.png";
+    private static final Image goalImg = loadImg("objective.png");
 
     /**
      * <code>Goal</code> constructor
@@ -70,11 +72,12 @@ public class Goal extends Block {
     }
 
     /**
-     * @return The name of the image of the Goal
+     * Image accessor
+     * @return The image of the goal (Image object)
      */
     @Override
-    public String getImage(){
-        return Image;
+    public Image getImage(){
+        return goalImg;
     }
 
 }

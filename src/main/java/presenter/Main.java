@@ -12,7 +12,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-@SuppressWarnings("ALL")
 /**
  * The <code>Main</code> class is the class that will be executed when running the program.
  */
@@ -22,6 +21,7 @@ public class Main extends Application {
 
     public static AudioPlayer audioPlayer;
     public static AudioPlayer effectPlayer;
+    public static final String SEPARATOR = getFileDestination();
 
 
     static final int windowX = 0;
@@ -38,7 +38,6 @@ public class Main extends Application {
 
     /**
      * The main method that will be ran when starting the game.
-     *
      * @param primaryStage The window that will contain almost all the content
      */
     @Override
@@ -53,22 +52,15 @@ public class Main extends Application {
             CustomImage background = new CustomImage(windowX, windowY, WR, HR, "background.png");
             MainMenu mainMenu = new MainMenu(mainMenuPanel, windowWidth, windowHeight, WR, HR, window, background);
 
-            // Set all buttons & overlays
-
-            CustomButton backButtonGame = new CustomButton(0, 0, WR, HR, "back button.png");
-
-            // --------------------
-
 
             //MUSIC --------------
 
-            setAudioPlayers(); // TODO : Set the exceptions messages
+            setAudioPlayers();
 
             // --------------------
 
 
             // BUTTONS ACTIONS (SCENE SWITCHERS) ----
-
 
             mainMenu.getQuitButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
@@ -135,7 +127,8 @@ public class Main extends Application {
                     optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume(),
                     optionsMenu.getUpControl(), optionsMenu.getDownControl(), optionsMenu.getRightControl(),
                     optionsMenu.getLeftControl(), optionsMenu.getRestartControl(), optionsMenu.getLoadControl(),
-                    optionsMenu.getSaveControl(), optionsMenu.getOpenConsControl(), optionsMenu.getCloseConsControl());
+                    optionsMenu.getSaveControl(), optionsMenu.getOpenConsControl(), optionsMenu.getCloseConsControl(),
+                    optionsMenu.getAutoPromptHBox());
 
             mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
@@ -230,7 +223,7 @@ public class Main extends Application {
                     }
                     levelFileName += String.valueOf(currentLevel);
                     levelFileName += ".xsb";
-                    ArrayList<String> level = File.loadFile(levelFileName, "campaign");
+                    ArrayList<String> level = FileGetter.loadFile(levelFileName, "campaign");
                     playingMenu.setLevel(level, String.valueOf(currentLevel), "campaign");
 
                     campaignSelector.getPlayButton().setVisible(false);
@@ -253,16 +246,16 @@ public class Main extends Application {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     try {
                         String levelName = (String) freePlaySelector.getSelectedLevel();
-                        ArrayList<String> level = File.loadFile(levelName, "freePlay");
+                        ArrayList<String> level = FileGetter.loadFile(levelName, "freePlay");
                         String[] tmp = levelName.split(".xsb");
                         levelName = tmp[0];
                         if (levelName.length() > 7) {
-                            String tmpName = "";
+                            StringBuilder BobTheBuilder = new StringBuilder();
                             for (int j = 0; j <= 5; j++) {
-                                tmpName += levelName.charAt(j);
+                                BobTheBuilder.append(levelName.charAt(j));
                             }
-                            tmpName += "...";
-                            levelName = tmpName;
+                            BobTheBuilder.append("...");
+                            levelName = BobTheBuilder.toString();
                         }
                         playingMenu.setLevel(level, levelName, "freePlay");
 
@@ -287,12 +280,12 @@ public class Main extends Application {
 
             randomMenu.getPlayButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                        playingMenu.setLevel((ArrayList<String>) randomMenu.getSelectedLevel(), "Random", "random");
-                        window.setScene(playingMenu);
-                        window.setFullScreen(fullscreen);
-                        randomMenu.getPlayButton().setVisible(false);
-                        randomMenu.getResumeButton().setVisible(true);
-                        randomMenu.setHasSelected(true);
+                    playingMenu.setLevel(randomMenu.getSelectedLevel(), "Random", "random");
+                    window.setScene(playingMenu);
+                    window.setFullScreen(fullscreen);
+                    randomMenu.getPlayButton().setVisible(false);
+                    randomMenu.getResumeButton().setVisible(true);
+                    randomMenu.setHasSelected(true);
                 }
             });
 
@@ -306,13 +299,13 @@ public class Main extends Application {
                     window.setScene(mainMenu);
                     window.setFullScreen(fullscreen);
                     playingMenu.getRickRollImage().setVisible(false);
-                    audioPlayer.prepareMusic(audioPlayer.getFileName());
+                    audioPlayer.prepareMusic(AudioPlayer.beatFile);
                     audioPlayer.play();
                 }
             });
             // --------------------
 
-            // TUTORIAl -----------
+            // TUTORIAL -----------
             Pane tutorialPane = new Pane();
             Tutorial tutorial = new Tutorial(tutorialPane, windowWidth, windowHeight, WR, HR);
 
@@ -352,12 +345,12 @@ public class Main extends Application {
 
             Console.prepare();
 
-            NewGenerator.prepare();
 
             window.setScene(mainMenu);
             window.show();
         } catch (Exception e2) {
             AlertBox.display("Fatal Error", "An error occurred while loading the game\n");
+            e2.printStackTrace();
             System.exit(-1);
         }
     }
@@ -415,7 +408,7 @@ public class Main extends Application {
         // 2 : 1600x900
         // 3 : 1920x1080    FHD
         // 4 : 2560x1440    WQHD
-        // 5 : 3840x2160    UHD-1 (presque 4K car 4K = 4096x2160)
+        // 5 : 3840x2160    UHD-1 (almost 4K because 4K = 4096x2160)
 
         Dimension dimension;
 
@@ -472,18 +465,31 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Create and prepare audio players for the music and sound effects.
+     */
     private void setAudioPlayers() {
         audioPlayer = new AudioPlayer();
         effectPlayer = new AudioPlayer();
         JSONReader reader = new JSONReader("data.json");
-        audioPlayer.setVolume(Double.valueOf(reader.getString("music")));
-        effectPlayer.setVolume(Double.valueOf(reader.getString("effect")));
+        audioPlayer.setVolume(Double.parseDouble(reader.getString("music")));
+        effectPlayer.setVolume(Double.parseDouble(reader.getString("effect")));
     }
 
-    public static boolean isFullscreen() {
-        return fullscreen;
+    /**
+     * Get the os of the user and return "/" or "\".
+     * @return "/" if it's Linux/MacOS and "\" if it's Windows.
+     */
+    public static String getFileDestination(){
+        String OS = System.getProperty("os.name");
+        String res;
+        if (OS.startsWith("Windows")){
+            res = "\\";
+        } else {
+            res = "/";
+        }
+        return res;
     }
-
     /**
      * The very first method on the execution pile.
      *
@@ -498,20 +504,21 @@ public class Main extends Application {
                     Scanner input = new Scanner(System.in);
                     input.next();
                     System.exit(0);
-                } else if (args.length == 3) {
-                    ArrayList<String> stringMap = File.loadFile(args[0], "freePlay");
-                    ArrayList<Direction> moves = LevelSaver.getHistory(args[1], "");
-                    Board map = new Board(stringMap);
-                    map.applyMoves(moves);
-                    stringMap = map.toArrayList();
-                    File.saveFile(args[2], "freePlay", stringMap);
-                    System.exit(0);
-                } else {
-                    throw new IllegalArgumentException(" Only these configurations are allowed :\n" +
-                            "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n" +
-                            "- 1 argument  : \"integrityCheck\"\n" +
-                            "- 0 argument");
                 }
+            }
+            else if (args.length == 3) {
+                ArrayList<String> stringMap = FileGetter.loadFile(args[0], "freePlay");
+                ArrayList<Direction> moves = LevelSaver.getHistory(args[1], "");
+                Board map = new Board(stringMap);
+                map.applyMoves(moves);
+                stringMap = map.toArrayList();
+                FileGetter.saveFile(args[2], "freePlay", stringMap);
+                System.exit(0);
+            } else {
+                throw new IllegalArgumentException(" Only these configurations are allowed :\n" +
+                        "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n" +
+                        "- 1 argument  : \"integrityCheck\"\n" +
+                        "- 0 argument");
             }
         }
         else {

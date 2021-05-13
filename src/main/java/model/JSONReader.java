@@ -8,6 +8,10 @@ import view.AlertBox;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * The <Code>JSONReader</Code> is a support for reading .json files. The methods and constructors make it very easy
+ * to read object in the json file.
+ */
 public class JSONReader {
     JSONObject obj;
 
@@ -19,22 +23,26 @@ public class JSONReader {
     public JSONReader(String fileName) {
         try {
             JSONParser jsonparser = new JSONParser();
-            FileReader reader = new FileReader(System.getProperty("user.dir") + "\\src\\main\\resources\\json\\" + fileName);
+            FileReader reader = new FileReader(FileGetter.directory("json") + fileName);
             this.obj = (JSONObject) jsonparser.parse(reader);
         } //It is useless to throw a new ParseException because we can't set a custom text with that Exception.
         catch (IOException exception) {
-            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing." +
-                    "Check if the names have not been changed or if any file has not been deleted. " +
-                    "You can run the FileIntegrity checker for further information. Missing file : " + fileName + ".");
+            AlertBox.display("Fatal error", "A .json file could not be found. Check if no file is missing.\n" +
+                    "Check if the names have not been changed or if any file has not been deleted.\n" +
+                    "You can run the FileIntegrity checker for further information.\nMissing file : " + fileName + ".");
             System.exit(-1);
         }
         catch (ParseException exception) {
             AlertBox.display("Fatal error", "A .json file could not be parsed. The content of the file " +
-                    "could not be read properly. Please replace the following file : " + fileName + ".");
+                    "could not be read properly.\n Please replace the following file : " + fileName + ".");
             System.exit(-1);
         }
     }
 
+    /**
+     * @param key The name of the key we want to read the value
+     * @return The Object value associated to the key
+     */
     public JSONObject getObject(String key) {
         return (JSONObject) this.obj.get(key);
     }

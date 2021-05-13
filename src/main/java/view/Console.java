@@ -22,6 +22,8 @@ public class Console {
     private static final Scene mainScene = new Scene(mainPane, 600, 400);
     private static final String COMMAND_KEY = "/";
     private static final String SET_DATA_COMMAND = "setdata";
+    private static final String RESET_RATING_COMMAND = "resetrating";
+    private static final String RESET_DATA = "resetdata";
 
     /**
      * Open the console.
@@ -109,6 +111,33 @@ public class Console {
                             setData(key.substring(0, key.length() - value.length() - 1), value);
                         }
                     }
+                }
+
+                else if (command.startsWith(RESET_RATING_COMMAND)) {
+
+                    // COMMAND : /resetrating
+                    JSONWriter jsonWriter = new JSONWriter("avg.json");
+                    String modeKey = "c";  // key to specify campaign levels
+                    for (int levelID = 0; levelID <= 15; levelID++) {
+                        jsonWriter.set(modeKey + levelID + "q", "0");
+                        jsonWriter.set(modeKey + levelID + "r", "0");
+                    }
+
+                    // COMMAND : /resetdata
+                } else if (command.startsWith(RESET_DATA)) {
+                    // /resetrating
+                    JSONWriter jsonWriter = new JSONWriter("avg.json");
+                    String modeKey = "c";  // key to specify campaign levels
+                    for (int levelID = 0; levelID <= 15; levelID++) {
+                        jsonWriter.set(modeKey + levelID + "q", "0");
+                        jsonWriter.set(modeKey + levelID + "r", "0");
+                    }
+
+                    JSONWriter data = new JSONWriter("data.json");
+                    data.set("completed levels", "0");
+                    data.set("music", "0.5");
+                    data.set("effect", "0.5");
+                    data.set("resolution", "0");
                 }
 
                 // OTHER COMMANDS...

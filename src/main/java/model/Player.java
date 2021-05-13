@@ -1,23 +1,28 @@
 package model;
+import javafx.scene.image.Image;
 
-
+/**
+ * The <code>Player</code> is a special <code>Block</code> of the game. It is the moving character controlled by the user.
+ */
 public class Player extends Block {
     private boolean isOnGoal;
     private PressurePlate plate;
     private Teleport currTP;
 
     private static final String Texture = "@";
-    private static final String Image = "player down.png";
+    public static final Image playerDownImg = loadImg("player down.png");
+    public static final Image playerUpImg = loadImg("player up.png");
+    public static final Image playerRightImg = loadImg("player right.png");
+    public static final Image playerLeftImg = loadImg("player left.png");
     /**
      * <code>Player</code> constructor
      * @param x_ The row of the Player in the blockList
      * @param y_ The line of the Player in the blockList
      * @param isOnGoal Is the Player is on a goal.
      */
-    public Player(int x_, int y_, boolean isOnGoal, Teleport currTP) {
+    public Player(int x_, int y_, boolean isOnGoal) {
         super(x_, y_);
         this.isOnGoal = isOnGoal;
-        this.currTP = currTP;
     }
 
 
@@ -97,11 +102,11 @@ public class Player extends Block {
 
     /**
      * Image accessor
-     * @return the name of the image of the player
+     * @return The Image of the Player (Image object)
      */
     @Override
-    public String getImage(){
-        return Image;
+    public Image getImage(){
+        return playerDownImg;
     }
 
     /**

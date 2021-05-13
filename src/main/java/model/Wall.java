@@ -1,10 +1,16 @@
 
 package model;
 
+import javafx.scene.image.Image;
+
+/**
+ * The <code>Wall</code> is a special <code>Block</code> of the game. If the player want to go in the direction of the wall,
+ * he doesn't move.
+ */
 public class Wall extends Block {
 
     private static final String Texture = "#";
-    private static final String Image = "wall.png";
+    private static final Image wallImg = loadImg("wall.png");
     /**
      * <code>Wall</code> Constructor
      * @param x_ The row of the <code>Wall</code> in the blockList
@@ -25,10 +31,10 @@ public class Wall extends Block {
 
     /**
      * Image accessor
-     * @return The name of the image of the wall
+     * @return The Image of the Wall (Image object)
      */
     @Override
-    public String getImage(){
-        return Image;
+    public Image getImage(){
+        return wallImg;
     }
 }

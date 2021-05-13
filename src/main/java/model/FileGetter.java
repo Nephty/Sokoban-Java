@@ -1,11 +1,16 @@
 package model;
 
+import presenter.Main;
 import view.AlertBox;
 
 import java.io.*;
 import java.util.ArrayList;
 
-public class File {
+/**
+ * <code>FileGetter</code> is a class that contains static method used to loadFile, get a directory,
+ * get the number of files in a given directory,etc..
+ */
+public class FileGetter {
 
     /**
      * Read an xsb file and return a arrayList of string made from it
@@ -15,10 +20,10 @@ public class File {
      * @return the arrayList of string made from the xsb file
      */
     public static ArrayList<String> loadFile(String levelName, String _def) {
-        String directory = directory(levelName, _def);
+        String directory = directory(_def);
         ArrayList<String> content = new ArrayList<>();
         try (
-                FileReader fr = new FileReader(directory);
+                FileReader fr = new FileReader(directory + levelName);
                 BufferedReader br = new BufferedReader(fr)
         ) {
             String line;
@@ -44,9 +49,9 @@ public class File {
      * @param content   The arrayList of String we want to save
      */
     public static void saveFile(String levelName, String _def, ArrayList<String> content) {
-        String directory = directory(levelName, _def);
+        String directory = directory(_def);
         try (
-                FileWriter fw = new FileWriter(directory);
+                FileWriter fw = new FileWriter(directory+levelName);
                 BufferedWriter bw = new BufferedWriter(fw)
                 ){
             // Add the Strings to the file
@@ -61,22 +66,22 @@ public class File {
     /**
      * Gives an array with all the file names in a directory
      *
-     * @param dir The directory where we want to make the list
+     * @param _def The name of the directory where we want to make the list
      * @return an array the file names in the given directory
      */
-    public static String[] levelList(String dir) {
-        String directory = directory().concat(dir);
+    public static String[] levelList(String _def) {
+        String s = Main.SEPARATOR;
+        String directory = directory().concat("main"+s+"resources"+s+"level"+s+_def);
         java.io.File file = new java.io.File(directory);
-        String[] content = file.list();
-        return content;
+        return file.list();
     }
 
     /**
-     * @param dir The directory where we want to count
+     * @param _def The name of the directory where we want to count
      * @return The number of levels in the folder
      */
-    public static int howManyLevel(String dir) {
-        String[] list = levelList(dir);
+    public static int howManyLevel(String _def) {
+        String[] list = levelList(_def);
         return list.length;
     }
 
@@ -84,27 +89,42 @@ public class File {
      * @return The path to the src file
      */
     public static String directory() {
-        String directory = System.getProperty("user.dir").concat("\\src\\");
-        return directory;
+        String s = Main.SEPARATOR;
+        return System.getProperty("user.dir").concat(s+"src"+s);
     }
 
     /**
-     * @param levelName The name of a file.
      * @param _def      The folder where we want to load the file
      * @return The path to the folder
      */
-    public static String directory(String levelName, String _def) {
+    public static String directory(String _def) {
         String directory = directory();
-        if (_def.equals("moves")) {
-            directory = directory.concat("main\\resources\\level\\moves\\" + levelName);
-        } else if (_def.equals("campaign")) {
-            directory = directory.concat("main\\resources\\level\\campaign\\" + levelName);
-        } else if (_def.equals("test")) {
-            directory = directory.concat("test\\resources\\" + levelName);
-        } else if (_def.equals("freePlay")) {
-            directory = directory.concat("main\\resources\\level\\freePlay\\" + levelName);
-        } else {
-            directory = directory.concat("main\\resources\\level\\campaign\\" + levelName);
+        String s = Main.SEPARATOR;
+        switch (_def) {
+            case "moves":
+                directory = directory.concat("main"+s+"resources"+s+"level"+s+"moves"+s);
+                break;
+            case "campaign":
+                directory = directory.concat("main"+s+"resources"+s+"level"+s+"campaign"+s);
+                break;
+            case "test":
+                directory = directory.concat("test"+s+"resources"+s);
+                break;
+            case "freePlay":
+                directory = directory.concat("main"+s+"resources"+s+"level"+s+"freePlay"+s);
+                break;
+            case "saves":
+                directory = directory.concat("main"+s+"resources"+s+"level"+s+"saves"+s);
+                break;
+            case "sound":
+                directory = directory.concat("main"+s+"resources"+s+"sound"+s);
+                break;
+            case "json":
+                directory = directory.concat("main"+s+"resources"+s+"json"+s);
+                break;
+            case "img":
+                directory = directory.concat("main"+s+"resources"+s+"img"+s);
+                break;
         }
         return directory;
     }

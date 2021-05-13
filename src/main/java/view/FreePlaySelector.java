@@ -6,7 +6,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import model.File;
+import model.FileGetter;
 
 /**
  * The <code>FreePlaySelector</code> is a user interface used to display all the different levels, their
@@ -14,8 +14,7 @@ import model.File;
  * to give the user a sneak peak into the level. The user can go back to the main menu, selected a level or
  * deselect one, start a new level or resume the on-going game. If there are too many levels to display on the
  * screen, multiple pages will be created and can be accessed to find the levels which could not have been displayed
- * on the first page. Locked levels are not playable until the user finished the previous level. Locked levels also
- * have a small lock icon on them to make it easier to tell them apart from unlocked levels.
+ * on the first page. Locked levels are not playable until the user finished the previous level.
  * The <code>FreePlaySelector</code> is used for the levels defined in the resources\level\freePlay directory.
  */
 public class FreePlaySelector extends LevelSelector{
@@ -43,7 +42,7 @@ public class FreePlaySelector extends LevelSelector{
     @Override
     public void setSelectors() {
         super.setSelectors();
-        String[] files = File.levelList("main\\resources\\level\\freePlay\\");
+        String[] files = FileGetter.levelList("freePlay");
         int xScale = 0;
         int yScale = 0;
         int nbrFiles = files.length;
@@ -55,6 +54,8 @@ public class FreePlaySelector extends LevelSelector{
             String level = files[i+(page*36)];
             if (!level.endsWith(".xsb")){
                 //If the file isn't an .xsb file, we skip this file.
+                continue;
+            }else if (level.equals(".xsb")){
                 continue;
             }
 

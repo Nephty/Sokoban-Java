@@ -1,13 +1,17 @@
 package view;
 
 import javafx.scene.Parent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 
 import presenter.Main;
 
+/**
+ * A <code>LevelSelector</code> is a user interface used to build different types of level selectors.
+ * The <code>LevelSelector</code> is not an implementable class : we can not create a new <code>LevelSelector</code>
+ * object and have it working as others level selectors, it is an abstract class.
+ */
 public abstract class LevelSelector
         extends Menu {
 
@@ -72,16 +76,6 @@ public abstract class LevelSelector
         this.middleMenu = new Pane();
 
         this.setSelectors();
-        //Pane with all the buttons for the selection
-        // TODO : doesn't work
-        this.middleMenuBackground.addEventHandler(MouseEvent.MOUSE_CLICKED, e-> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                if (!this.resumeButton.isVisible() && this.hasSelected) {
-                    this.resumeButton.setVisible(true);
-                    this.playButton.setVisible(false);
-                }
-            }
-        });
 
         if (!Main.fullscreen) {
             this.backButton.setLayoutY(-50);
@@ -112,8 +106,7 @@ public abstract class LevelSelector
     }
 
     /**
-     * Create the button for the level selection.
-     * Read the completed levels in the data.json file and create the good number of buttons.
+     * Create the buttons for the level selection.
      */
     public void setSelectors() {
         middleMenu.getChildren().removeAll(middleMenu.getChildren());
@@ -185,45 +178,11 @@ public abstract class LevelSelector
         this.rightMenu.setLayoutY(0);
     }
 
-
-    /**
-     * Return the middle mennu component.
-     * @return The middle menu
-     */
-    public Pane getMiddleMenu() {
-        return this.middleMenu;
-    }
-
     /**
      * Return the currently selected level.
      * @return The currently selected level.
      */
     public abstract Object getSelectedLevel();
-
-
-    /**
-     * rightMenu accessor
-     * @return (Pane) rightMenu
-     */
-    public Pane getRightMenu() {
-        return this.rightMenu;
-    }
-
-    /**
-     * rightMenuImage accessor
-     * @return (CustomImage) rightMenuImage
-     */
-    public CustomImage getRightMenuImage() {
-        return this.rightMenuImage;
-    }
-
-    /**
-     * levelViewer accessor
-     * @return (Pane) levelViewer
-     */
-    public Pane getLevelViewer(){
-        return this.levelViewer;
-    }
 
     /**
      * finalPane accessor

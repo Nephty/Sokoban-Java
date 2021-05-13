@@ -1,6 +1,10 @@
 package model;
 import java.util.ArrayList;
 
+/**
+ * The <code>Board</code> is the main class of the game, it creates the blockList with each block of the level and
+ * it handles the moves.
+ */
 public class Board {
     private ArrayList<String> level;
     private ArrayList<Block> world;
@@ -77,14 +81,21 @@ public class Board {
                         break;
 
                     case '@':
-                        player1 = new Player(x,y,false, null);
-                        x++;
-                        break;
-
+                        if (player1 != null){
+                            throw new IllegalArgumentException("Error : There can only be 1 player in the map !");
+                        }else {
+                            player1 = new Player(x,y,false);
+                            x++;
+                            break;  
+                        }
                     case '+':
-                        player1 = new Player(x,y,true, null);
-                        x++;
-                        break;
+                        if (player1 != null){
+                            throw new IllegalArgumentException("Error : There can only be 1 player in the map !");
+                        }else{
+                            player1 = new Player(x,y,true);
+                            x++;
+                            break;
+                        }
                     case '%':
                         if (tmpTeleport == null){
                             tmpTeleport = new Teleport(x,y,null);
@@ -296,32 +307,19 @@ public class Board {
     public ArrayList<String> toArrayList(){
         ArrayList<String> res = new ArrayList<>();
         for (Block[] blocks : blockList) {
-            String line = "";
+            StringBuilder line = new StringBuilder();
             for (Block block : blocks) {
                 if (block == null) {
-                    line += " ";
+                    line.append(" ");
                 } else {
-                    line += block.getTexture();
+                    line.append(block.getTexture());
                 }
             }
-            res.add(line);
+            res.add(line.toString());
         }
         return res;
     }
 
-    public void printList(){
-        for (Block[] blocks : blockList){
-            String line = "";
-            for (Block block : blocks) {
-                if (block == null) {
-                    line += " ";
-                } else {
-                    line += block.getTexture();
-                }
-            }
-            System.out.println(line);
-        }
-    }
 
     /**
      * Apply the moves to the current map

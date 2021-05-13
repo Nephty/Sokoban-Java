@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.FileGetter;
 
 import java.io.File;
 import java.util.Arrays;
@@ -57,6 +58,10 @@ public class CompleteFieldBox {
         window.setScene(scene);
         window.showAndWait();
 
+        window.setOnCloseRequest(e-> {
+            window.close();
+        });
+
         return input.getText();
     }
 
@@ -89,11 +94,12 @@ public class CompleteFieldBox {
         input.setPrefWidth(300);
         input.setPromptText(promptText);
 
-        File directoryPath = new File("src\\main\\resources\\level\\saves\\");
+        File directoryPath = new File(FileGetter.directory("saves"));
         String[] files = directoryPath.list();
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
+        fileChooser.setInitialDirectory(new File(FileGetter.directory("saves")));
 
         Button openFileSelection = new Button("Open...");
         openFileSelection.setOnAction(e -> {
