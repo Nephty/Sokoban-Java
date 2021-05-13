@@ -1,0 +1,57 @@
+Quantité de la mémoire utilisée explose pendant le jeu
+------------------------------------------------------------------------------
+
+Potentiels problèmes :
+
+1. Images trop lourdes
+2. Trop d'instances d'images
+3. La liste de blocs devient de plus en plus longue
+
+
+
+
+Test 1 : tester avec des images plus légères puis des images plus lourdes (250bytes vs 750 bytes)
+
+Résultats attendus :
+	- Si le problème est le 1), alors la quantité mémoire utilisée va exploser bien plus tôt, puisqu'on va la remplir avec des images 3 fois plus lourdes
+	- Si le problème est le 2), alors la quantité de mémoire explosera de la même manière que ce soit avec 250 bytes ou 750 bytes (à peu de choses près)
+	- Si le problème est le 3), alors la quantité de mémoire explosera de la même manière que ce soit avec 250 bytes ou 750 bytes (à peu de choses près)
+ 
+Résultats obtenus :
+La mémoire s'est comportée de la même manière quelque soit le poids des images
+
+Conclusion :
+La taille des images n'influence pas la quantité de mémoire utilisée
+
+
+
+
+Test 2 : on ne crée plus d'instances des images, même si cela signifie que l'on ne voit plus le jeu
+
+Résultats attendus :
+	- Si le problème est le 1), alors la quantité de mémoire ne devrait pas exploser, puisqu'on ne crée plus les instances, mais on ne peut pas vraiment tirer de conclusions pour ce cas-ci
+	- Si le problème est le 2), alors la quantité de mémoire ne devrait pas exploser, puisqu'on ne crée plus les instances
+	- Si le problème est le 3), alors la quantité de mémoire ne devrait pas exploser, puisqu'on ne crée plus les instances, mais on ne peut pas vraiment tirer de conclusions pour ce cas-ci
+
+Résultats obtenus :
+La quantité de mémoire utilisée est restée très stable (impossible de remarquer une variation)
+
+Conclusion :
+La quantité d'instances créées pourrait demander énormément de place
+
+
+
+
+Test 3 : vérifier la longueur de la liste de blocs chaque fois que l'on se déplace
+
+Résultats attendus :
+	- Si le problème est le 1), alors la quantité mémoire utilisée va exploser*
+	- Si le problème est le 2), alors la quantité mémoire utilisée va exploser*
+	- Si le problème est le 3), alors la quantité mémoire utilisée va exploser*
+* : on ne teste pas via les résultats attendus mais en lisant directement la taille de la liste
+
+Résultats obtenus :
+La longueur de la liste reste la même (et les sous-listes aussi)
+
+Conclusion :
+La liste ne change pas de longueur

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>view</OriginalElement>
+  <nodes>
+    <node x="388.0" y="167.0">view.MainMenu</node>
+    <node x="747.0" y="601.0">view.CompleteFieldBox</node>
+    <node x="223.0" y="681.0">view.CustomButton</node>
+    <node x="968.0" y="601.0">view.ConfirmBox</node>
+    <node x="1076.0" y="145.0">view.Tutorial</node>
+    <node x="180.0" y="502.0">view.CampaignSelector</node>
+    <node x="0.0" y="601.0">view.Game</node>
+    <node x="289.0" y="601.0">view.CustomImage</node>
+    <node x="376.0" y="502.0">view.FreePlaySelector</node>
+    <node x="1298.0" y="601.0">view.Console</node>
+    <node x="1447.0" y="601.0">view.test</node>
+    <node x="536.0" y="601.0">view.AudioPlayer</node>
+    <node x="912.0" y="0.0">view.Menu</node>
+    <node x="168.0" y="145.0">view.LevelSelector</node>
+    <node x="1492.0" y="256.0">view.AchievementsMenu</node>
+    <node x="1264.0" y="233.0">view.CreatorMenu</node>
+    <node x="1141.0" y="601.0">view.AlertBox</node>
+    <node x="848.0" y="211.0">view.PlayingMenu</node>
+    <node x="611.0" y="90.0">view.OptionsMenu</node>
+    <node x="0.0" y="502.0">view.RandomSelector</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="view.CampaignSelector" target="view.LevelSelector">
+      <point x="0.0" y="-27.0" />
+      <point x="0.0" y="126.0" />
+    </edge>
+    <edge source="view.OptionsMenu" target="view.Menu">
+      <point x="0.0" y="-181.0" />
+      <point x="719.5" y="70.0" />
+      <point x="940.5714285714286" y="70.0" />
+      <point x="-11.428571428571445" y="15.0" />
+    </edge>
+    <edge source="view.PlayingMenu" target="view.Menu">
+      <point x="0.0" y="-60.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="view.MainMenu" target="view.Menu">
+      <point x="0.0" y="-104.0" />
+      <point x="489.5" y="60.0" />
+      <point x="929.1428571428571" y="60.0" />
+      <point x="-22.85714285714289" y="15.0" />
+    </edge>
+    <edge source="view.CustomButton" target="view.CustomImage">
+      <point x="0.0" y="-27.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="view.AchievementsMenu" target="view.Menu">
+      <point x="0.0" y="-15.0" />
+      <point x="1580.0" y="50.0" />
+      <point x="986.2857142857142" y="50.0" />
+      <point x="34.28571428571422" y="15.0" />
+    </edge>
+    <edge source="view.FreePlaySelector" target="view.LevelSelector">
+      <point x="0.0" y="-27.0" />
+      <point x="464.0" y="477.0" />
+      <point x="334.6666666666667" y="477.0" />
+      <point x="66.66666666666669" y="126.0" />
+    </edge>
+    <edge source="view.LevelSelector" target="view.Menu">
+      <point x="0.0" y="-126.0" />
+      <point x="268.0" y="50.0" />
+      <point x="917.7142857142857" y="50.0" />
+      <point x="-34.285714285714334" y="15.0" />
+    </edge>
+    <edge source="view.CreatorMenu" target="view.Menu">
+      <point x="0.0" y="-38.0" />
+      <point x="1368.0" y="60.0" />
+      <point x="974.8571428571429" y="60.0" />
+      <point x="22.85714285714289" y="15.0" />
+    </edge>
+    <edge source="view.Tutorial" target="view.Menu">
+      <point x="0.0" y="-126.0" />
+      <point x="1160.0" y="70.0" />
+      <point x="963.4285714285714" y="70.0" />
+      <point x="11.428571428571445" y="15.0" />
+    </edge>
+    <edge source="view.RandomSelector" target="view.LevelSelector">
+      <point x="0.0" y="-27.0" />
+      <point x="80.0" y="477.0" />
+      <point x="201.33333333333337" y="477.0" />
+      <point x="-66.66666666666669" y="126.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="800.3928571428568" y="355.2579365079365" />
+  <SelectedNodes>
+    <node>view.MainMenu</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
