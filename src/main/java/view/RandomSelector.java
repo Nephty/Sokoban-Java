@@ -97,22 +97,26 @@ public class RandomSelector extends LevelSelector{
             try{
                 int size = Integer.parseInt(sizeField.getText());
                 int nbrBoxes = Integer.parseInt(boxesField.getText());
-                if (size > 6 && size <= 25){
-                    int maxBoxes = 4*(size-6);
-                    if (nbrBoxes <= maxBoxes){
-                        selectedDifficulty = null;
-                        gameSize = size;
-                        gameBoxes = nbrBoxes;
-                        this.playButton.setVisible(true);
-                    } else{
-                        AlertBox.display("Minor error", "Number of boxes must be lower than "+maxBoxes
-                        + " with a width of " + size);
+                if (size > 6 && size <= 25*WR){
+                    if (size < 26) {
+                        int maxBoxes = 4*(size-6);
+                        if (nbrBoxes <= maxBoxes){
+                            selectedDifficulty = null;
+                            gameSize = size;
+                            gameBoxes = nbrBoxes;
+                            this.playButton.setVisible(true);
+                        } else{
+                            AlertBox.display("Minor error", "Number of boxes must be lower than "+maxBoxes
+                            + " with a width of " + size);
+                        }
+                    else{
+                       AlertBox.display("Minor error", "Size must be lower than 26");
                     }
                 }else {
-                    AlertBox.display("Minor error","Width must be between 7 and 25");
+                    AlertBox.display("Minor error","Size must be between 7 and " + (int) Math.floor(25*WR));
                 }
             } catch (NumberFormatException exc){
-                AlertBox.display("Minor error", "Width or the number of boxes have to be integers !");
+                AlertBox.display("Minor error", "Size or the number of boxes have to be integers !");
             }
         });
     }
