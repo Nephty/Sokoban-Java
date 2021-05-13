@@ -77,14 +77,21 @@ public class Board {
                         break;
 
                     case '@':
-                        player1 = new Player(x,y,false, null);
-                        x++;
-                        break;
-
+                        if (player1 != null){
+                            throw new IllegalArgumentException("Error : There can only be 1 player in the map !");
+                        }else {
+                            player1 = new Player(x,y,false, null);
+                            x++;
+                            break;  
+                        }
                     case '+':
-                        player1 = new Player(x,y,true, null);
-                        x++;
-                        break;
+                        if (player1 != null){
+                            throw new IllegalArgumentException("Error : There can only be 1 player in the map !");
+                        }else{
+                            player1 = new Player(x,y,true, null);
+                            x++;
+                            break;
+                        }
                     case '%':
                         if (tmpTeleport == null){
                             tmpTeleport = new Teleport(x,y,null);
