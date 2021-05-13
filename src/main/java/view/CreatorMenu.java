@@ -232,9 +232,9 @@ public class CreatorMenu
             try{
                 this.numberX = Integer.parseInt(sizeXField.getText());
                 this.numberY = Integer.parseInt(sizeYField.getText());
-                if (numberY <= 25*HR || numberX <= WR){
-                    AlertBox.display("Minor error","Height must be lower than "+(int) Math.ceil(25*HR)
-                    +"\nWidth must be lower than "+(int) Math.ceil(25*WR));
+                if (numberY <= 25*HR || numberX <= 25*WR){
+                    AlertBox.display("Minor error","Height must be lower than "+(int) Math.floor(25*HR)
+                    +"\nWidth must be lower than "+(int) Math.floor(25*WR));
                 }else {
                     this.gameBoard = new Block[numberY][numberX];
                     this.gamePane.getChildren().removeAll(this.gamePane.getChildren());
