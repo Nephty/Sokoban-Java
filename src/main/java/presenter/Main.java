@@ -136,7 +136,7 @@ public class Main extends Application {
                     optionsMenu.getResolution(), optionsMenu.getMusicVolume(), optionsMenu.getEffectVolume(),
                     optionsMenu.getUpControl(), optionsMenu.getDownControl(), optionsMenu.getRightControl(),
                     optionsMenu.getLeftControl(), optionsMenu.getRestartControl(), optionsMenu.getLoadControl(),
-                    optionsMenu.getSaveControl(), optionsMenu.getOpenConsControl(), optionsMenu.getCloseConsControl()
+                    optionsMenu.getSaveControl(), optionsMenu.getOpenConsControl(), optionsMenu.getCloseConsControl(),
                     optionsMenu.getAutoPromptHBox());
 
             mainMenu.getOptionsButton().overlay.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
