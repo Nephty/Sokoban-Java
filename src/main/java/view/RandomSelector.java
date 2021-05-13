@@ -97,18 +97,19 @@ public class RandomSelector extends LevelSelector{
             try{
                 int size = Integer.parseInt(sizeField.getText());
                 int nbrBoxes = Integer.parseInt(boxesField.getText());
-                if (width > 6){
-                    if (nbrBoxes < Math.floorDiv(width-1,2)){
+                if (size > 6 && size <= 25*WR){
+                    int maxBoxes = 4*(size-6);
+                    if (nbrBoxes <= maxBoxes){
                         selectedDifficulty = null;
                         gameSize = size;
                         gameBoxes = nbrBoxes;
                         this.playButton.setVisible(true);
                     } else{
-                        AlertBox.display("Minor error", "Number of boxes must be lower than " + (Math.floorDiv(width-1,2)+1)
+                        AlertBox.display("Minor error", "Number of boxes must be lower than "+maxBoxes
                         + " with a width of " + size);
                     }
                 }else {
-                    AlertBox.display("Minor error","Width must be greater than 6");
+                    AlertBox.display("Minor error","Width must be between 6 and " + (int) Math.ceil(25*WR));
                 }
             } catch (NumberFormatException exc){
                 AlertBox.display("Minor error", "Width or the number of boxes have to be integers !");
