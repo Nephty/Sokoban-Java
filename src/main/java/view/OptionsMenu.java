@@ -3,10 +3,7 @@ package view;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.input.KeyEvent;
@@ -33,7 +30,8 @@ public class OptionsMenu
     private String starterEffectVolume;
     private AudioPlayer audioPlayer;
     private AudioPlayer effectPlayer;
-    private HBox upHBox, downHBox, rightHBox, leftHBox, restartHBox, loadHBox, saveHBox, openConsHBox, closeConsHBox;
+    private HBox upHBox, downHBox, rightHBox, leftHBox, restartHBox, loadHBox, saveHBox, openConsHBox, closeConsHBox,
+        autoPromptHBox;
     private TextField upControl, downControl, rightControl, leftControl;
     private TextField restartControl, loadControl, saveControl, openConsControl, closeConsControl;
     // If we want to move every keybind selector to the right of to the left, we can simply modify this value
