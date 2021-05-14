@@ -56,22 +56,6 @@ public abstract class Block {
     }
 
     /**
-     * X setter
-     * @param newValue the new row of the Block
-     */
-    public void setX(int newValue){
-        this.x = newValue;
-    }
-
-    /**
-     * Y setter
-     * @param newValue the new line of the Block
-     */
-    public void setY(int newValue) {
-        this.y = newValue;
-    }
-
-    /**
      * Texture accessor
      * @return The texture of the Block (the char in .xsb file)
      */

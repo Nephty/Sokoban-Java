@@ -3,12 +3,10 @@ package view;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
-import java.io.FileNotFoundException;
-
 /**
  * A <code>CustomButton</code> is a <code>CustomImage</code> filled with an image found in the
  *  <code>src\main\resources\img</code> directory. We can interact with it but no interface is implemented and
- *  no inital method is available for interaction. The difference with a <code>CustomImage</code> is that the
+ *  no initial method is available for interaction. The difference with a <code>CustomImage</code> is that the
  *  <code>CustomButton</code> gets an overlay according to its size and the overlay is set up when creating a new
  *  <code>CustomButton</code>. Warning : if we want to add a method to click on the button, we must add a new
  *  <code>EventHandler</code> on the overlay because it will be displayed on top of the <code>CustomButton</code>.
@@ -32,12 +30,8 @@ public class CustomButton extends CustomImage {
         this.overlay = new CustomImage(x_, y_, WR, HR, "button overlay.png");
         this.overlay.setVisible(false);
 
-        this.setOnMouseEntered(e -> {
-            this.overlay.setVisible(true);
-        });
-        this.overlay.setOnMouseExited(e -> {
-            this.overlay.setVisible(false);
-        });
+        this.setOnMouseEntered(e -> this.overlay.setVisible(true));
+        this.overlay.setOnMouseExited(e -> this.overlay.setVisible(false));
     }
 
     /**
@@ -66,12 +60,8 @@ public class CustomButton extends CustomImage {
         this.overlay = new CustomImage(x_, y_, WR, HR, localFileName);
         this.overlay.setVisible(false);
 
-        this.setOnMouseEntered(e -> {
-            this.overlay.setVisible(true);
-        });
-        this.overlay.setOnMouseExited(e -> {
-            this.overlay.setVisible(false);
-        });
+        this.setOnMouseEntered(e -> this.overlay.setVisible(true));
+        this.overlay.setOnMouseExited(e -> this.overlay.setVisible(false));
     }
 
     /**

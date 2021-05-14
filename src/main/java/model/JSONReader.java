@@ -9,14 +9,14 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * The <Code>JSONReader</Code> is a support for reading .json files. The methods and constructors make it very easy
+ * The <code>JSONReader</code> is a support for reading .json files. The methods and constructors make it very easy
  * to read object in the json file.
  */
 public class JSONReader {
     JSONObject obj;
 
     /**
-     * <Code>JSONReader</Code> Constructor.
+     * <code>JSONReader</code> Constructor.
      * It opens the json file and prepares it to read its content.
      * @param fileName The name of the JSON file
      */

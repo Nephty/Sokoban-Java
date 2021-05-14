@@ -15,8 +15,8 @@ public class StopWatch {
     private int minutes;
     private int seconds;
     private int elapsedTime;
-    private Text timeText;
-    private Timer timer;
+    private final Text timeText;
+    private final Timer timer;
 
     /**
      * Create the StopWatch in a Text node

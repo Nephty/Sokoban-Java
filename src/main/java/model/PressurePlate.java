@@ -7,8 +7,8 @@ import javafx.scene.image.Image;
  */
 public class PressurePlate extends Block {
     private static final Image plateImg = loadImg("air.png");
-    private String texture;
-    private String effect;
+    private final String texture;
+    private final String effect;
 
     /**
      * <code>PressurePlate</code> constructor

@@ -6,11 +6,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import model.JSONReader;
 import model.JSONWriter;
-import org.json.simple.parser.ParseException;
 
 import java.awt.*;
-import java.io.IOException;
-import java.util.ArrayList;
 
 
 /**
@@ -56,7 +53,7 @@ public abstract class Menu
         this.WR = WR_;
         this.HR = HR_;
         this.width = (int) width_;
-        this.height = (int) height;
+        this.height = (int) height_;
         this.font = new Font("Microsoft YaHei", 35*WR);
         this.color = Color.rgb(88, 38, 24);
     }

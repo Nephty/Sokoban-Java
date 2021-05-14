@@ -69,12 +69,12 @@ public class Main extends Application {
             });
 
             background.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                if (mainMenu.getPlayInterface()) {
+                if (MainMenu.getPlayInterface()) {
                     mainMenu.getCampaignButton().setVisible(false);
                     mainMenu.getTutorialButton().setVisible(false);
                     mainMenu.getFreePlayButton().setVisible(false);
                     mainMenu.getRandomButton().setVisible(false);
-                    mainMenu.setPlayInterface(false);
+                    MainMenu.setPlayInterface(false);
                 }
             });
 
@@ -265,7 +265,7 @@ public class Main extends Application {
                         freePlaySelector.getResumeButton().setVisible(true);
                         freePlaySelector.setHasSelected(true);
                     } catch (IllegalArgumentException exc) {
-                        AlertBox.display("Error", "An error occured while trying to load the level\n" +
+                        AlertBox.display("Error", "An error occurred while trying to load the level\n" +
                                 exc.getMessage());
                     }
                 }
@@ -497,28 +497,38 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         if (args != null && args.length != 0) {
-            if (args.length == 1) {
-                if (args[0].equals("integrityCheck")) {
-                    IntegrityChecker.checkFileIntegrity();
-                    System.out.println("Enter something to leave... ");
-                    Scanner input = new Scanner(System.in);
-                    input.next();
+            try {
+                if (args.length == 1) {
+                    if (args[0].equals("integrityCheck")) {
+                        IntegrityChecker.checkFileIntegrity();
+                        System.out.println("Enter something to leave... ");
+                        Scanner input = new Scanner(System.in);
+                        input.next();
+                        System.exit(0);
+                    }
+                } else if (args.length == 3) {
+                    if (!args[2].endsWith(".xsb") || (!args[0].endsWith(".xsb")) || (!args[1].endsWith(".mov"))) {
+                        throw new IllegalArgumentException(" Only these configurations are allowed :\n" +
+                                "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n" +
+                                "- 1 argument  : \"integrityCheck\"\n" +
+                                "- 0 argument");
+                    }
+                    ArrayList<String> stringMap = FileGetter.loadFile(args[0], "freePlay");
+                    ArrayList<Direction> moves = LevelSaver.getHistory(args[1], "");
+                    Board map = new Board(stringMap);
+                    map.applyMoves(moves);
+                    stringMap = map.toArrayList();
+                    FileGetter.saveFile(args[2], "freePlay", stringMap);
                     System.exit(0);
+                } else {
+                    throw new IllegalArgumentException(" Only these configurations are allowed :\n" +
+                            "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n" +
+                            "- 1 argument  : \"integrityCheck\"\n" +
+                            "- 0 argument");
                 }
-            }
-            else if (args.length == 3) {
-                ArrayList<String> stringMap = FileGetter.loadFile(args[0], "freePlay");
-                ArrayList<Direction> moves = LevelSaver.getHistory(args[1], "");
-                Board map = new Board(stringMap);
-                map.applyMoves(moves);
-                stringMap = map.toArrayList();
-                FileGetter.saveFile(args[2], "freePlay", stringMap);
-                System.exit(0);
-            } else {
-                throw new IllegalArgumentException(" Only these configurations are allowed :\n" +
-                        "- 3 arguments : (input.xsb map - .mov file - output.xsb file name )\n" +
-                        "- 1 argument  : \"integrityCheck\"\n" +
-                        "- 0 argument");
+            } catch (IllegalArgumentException e){
+                System.out.println(e.getMessage());
+                System.exit(-1);
             }
         }
         else {

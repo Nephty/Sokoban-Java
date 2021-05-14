@@ -86,6 +86,7 @@ public class Game {
 
     /**
      * Increment the total amount of moves made during the current game.
+     * @param value The value to add
      */
     public void addTotalMoves(byte value) {
         this.totalMoves += value;

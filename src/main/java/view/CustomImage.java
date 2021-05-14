@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 /**
  * A <code>CustomImage</code> is a <code>Rectangle</code> filled with an image found in the
  * <code>src\main\resources\img</code> directory. We can interact with it but no interface is implemented and
- * no inital method is available for interaction since this is not the purpose of the <code>CustomImage</code>.
+ * no initial method is available for interaction since this is not the purpose of the <code>CustomImage</code>.
  * Its main role is simply to display an image from the files.
  */
 public class CustomImage

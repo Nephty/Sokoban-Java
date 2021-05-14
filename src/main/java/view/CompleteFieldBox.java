@@ -58,9 +58,7 @@ public class CompleteFieldBox {
         window.setScene(scene);
         window.showAndWait();
 
-        window.setOnCloseRequest(e-> {
-            window.close();
-        });
+        window.setOnCloseRequest(e-> window.close());
 
         return input.getText();
     }

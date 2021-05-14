@@ -15,8 +15,8 @@ public class Box extends Block {
 
     /**
      * Box constructor
-     * @param x_ The row of the block in the blockList
-     * @param y_ The line of the block in the blockList
+     * @param x_ The row of the box in the blockList
+     * @param y_ The line of the box in the blockList
      * @param isOnGoal Is the Box is on a goal.
      */
     public Box(int x_, int y_, boolean isOnGoal) {
@@ -31,7 +31,6 @@ public class Box extends Block {
      */
     @Override
     public boolean canPass(Block nextObj){
-        super.canPass(nextObj);
         if (nextObj instanceof  Box || nextObj instanceof Teleport){
             return false;
         }
@@ -39,11 +38,11 @@ public class Box extends Block {
     }
 
     /**
-     * @return (boolean) True if the Box is on a Goal.
+     *
+     * @return True if the Box is on a Goal.
      */
     @Override
     public boolean amIOnGoal(){
-        super.amIOnGoal();
         return isOnGoal;
     }
 
@@ -66,7 +65,6 @@ public class Box extends Block {
      */
     @Override
     public int push(int nextX, int nextY, Block[][] blockList, Player player1, BooleanCouple returnValue, int currBoxOnObj){
-        super.push(nextX, nextY, blockList,player1, returnValue, currBoxOnObj);
         Block nextObj = blockList[nextY][nextX];
         if (nextObj == null){
             //if the box is on a Goal

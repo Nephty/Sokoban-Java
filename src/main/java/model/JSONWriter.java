@@ -15,7 +15,7 @@ public class JSONWriter {
     String fileName;
     JSONReader temporaryReader;
     /**
-     * <Code>JSONWriter</Code> Constructor.
+     * <code>JSONWriter</code> Constructor.
      * It opens the json file and prepares it to write inside it.
      * @param fileName The name of the JSON file
      */

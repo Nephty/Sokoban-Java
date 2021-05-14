@@ -42,6 +42,7 @@ public class Board {
         world = new ArrayList<>();
         boxes = new ArrayList<>();
         goals = new ArrayList<>();
+        player1 = null;
 
         Teleport tmpTeleport = null;
 
@@ -81,21 +82,21 @@ public class Board {
                         break;
 
                     case '@':
-                        if (player1 != null){
-                            throw new IllegalArgumentException("Error : There can only be 1 player in the map !");
-                        }else {
+                        if (player1 == null){
                             player1 = new Player(x,y,false);
                             x++;
-                            break;  
-                        }
-                    case '+':
-                        if (player1 != null){
+                        }else {
                             throw new IllegalArgumentException("Error : There can only be 1 player in the map !");
-                        }else{
+                        }
+                        break;
+                    case '+':
+                        if (player1 == null){
                             player1 = new Player(x,y,true);
                             x++;
-                            break;
+                        }else{
+                            throw new IllegalArgumentException("Error : There can only be 1 player in the map !");
                         }
+                        break;
                     case '%':
                         if (tmpTeleport == null){
                             tmpTeleport = new Teleport(x,y,null);
@@ -206,6 +207,10 @@ public class Board {
         return boxes;
     }
 
+    /**
+     * CurrBoxOnObj accessor.
+     * @return The current amount of BoxOnObj.
+     */
     public int getCurrBoxOnObj() {
         return currBoxOnObj;
     }
@@ -254,7 +259,7 @@ public class Board {
             default:
                 return returnValue;
         }
-        //if the next case is still in the map size
+        //if the next nextBlock is in the map.
         if (nextX < this.levelWidth && nextX >= 0 && nextY < this.levelHeight && nextY >= 0) {
             this.currBoxOnObj = player1.move(nextX,nextY,nextX2,nextY2,blockList,returnValue, currBoxOnObj, levelHeight, levelWidth);
         }
@@ -265,6 +270,7 @@ public class Board {
      * Restart the map.
      */
     public void restart(){
+        player1 = null;
         currBoxOnObj = 0;
         loadMap(level);
         setBlockList();

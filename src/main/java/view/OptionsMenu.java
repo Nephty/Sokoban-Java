@@ -28,8 +28,8 @@ public class OptionsMenu
     private CustomButton backButtonOptions;
     private String starterMusicVolume;
     private String starterEffectVolume;
-    private AudioPlayer audioPlayer;
-    private AudioPlayer effectPlayer;
+    private final AudioPlayer audioPlayer;
+    private final AudioPlayer effectPlayer;
     private HBox upHBox, downHBox, rightHBox, leftHBox, restartHBox, loadHBox, saveHBox, openConsHBox, closeConsHBox,
         autoPromptHBox;
     private TextField upControl, downControl, rightControl, leftControl;

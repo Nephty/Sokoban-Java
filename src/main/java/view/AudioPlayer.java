@@ -44,25 +44,6 @@ public class AudioPlayer {
     }
 
     /**
-     * Create a new <code>AudioPlayer</code> object without automatically playing the music.
-     * The object will remain silent if no playing method is applied.
-     * @param audio The Media object of the sound.
-     */
-    public AudioPlayer(Media audio) {
-        prepareMusic(audio);
-    }
-
-
-    /**
-     * Return the <code>MediaPlayer</code> attribute.
-     * @return The <code>MediaPlayer</code> attribute.
-     */
-    public MediaPlayer getMediaPlayer() {
-        return this.mediaPlayer;
-    }
-
-
-    /**
      * Create the <code>Media</code> object and the <code>MediaPlayer</code> object in use and sets the default
      * values for the rate and volume.
      * @param audio The Media object that will be used as the audio track.

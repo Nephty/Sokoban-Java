@@ -4,10 +4,8 @@ import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import org.json.simple.parser.ParseException;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**

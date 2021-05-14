@@ -60,13 +60,8 @@ public class FreePlaySelector extends LevelSelector{
             }
 
 
-            String levelName;
-            if (level.equals(".xsb")){
-                levelName = level;
-            } else{
-                String[] tmp = level.split(".xsb");
-                levelName = tmp[0];
-            }
+            String[] tmp = level.split(".xsb");
+            String levelName = tmp[0];
             CustomButton tmpButton = new CustomButton(100 + xScale * 150, 250 + yScale * 150, WR, HR, "level box.png");
             this.middleMenu.getChildren().addAll(tmpButton);
 
@@ -86,12 +81,12 @@ public class FreePlaySelector extends LevelSelector{
             this.middleMenu.getChildren().add(nbr);
 
             if (levelName.length() > 5){
-                String tmpName ="";
+                StringBuilder tmpName = new StringBuilder();
                 for (int j=0;j<=5;j++){
-                    tmpName += levelName.charAt(j);
+                    tmpName.append(levelName.charAt(j));
                 }
-                tmpName += "...";
-                levelName = tmpName;
+                tmpName.append("...");
+                levelName = tmpName.toString();
             }
             int length = levelName.length();
             if (length == 1) {

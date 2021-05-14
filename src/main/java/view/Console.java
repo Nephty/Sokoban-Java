@@ -118,7 +118,7 @@ public class Console {
                     // COMMAND : /resetrating
                     JSONWriter jsonWriter = new JSONWriter("avg.json");
                     String modeKey = "c";  // key to specify campaign levels
-                    for (int levelID = 0; levelID <= 15; levelID++) {
+                    for (int levelID = 0; levelID <= 16; levelID++) {
                         jsonWriter.set(modeKey + levelID + "q", "0");
                         jsonWriter.set(modeKey + levelID + "r", "0");
                     }
@@ -128,7 +128,7 @@ public class Console {
                     // /resetrating
                     JSONWriter jsonWriter = new JSONWriter("avg.json");
                     String modeKey = "c";  // key to specify campaign levels
-                    for (int levelID = 0; levelID <= 15; levelID++) {
+                    for (int levelID = 0; levelID <= 16; levelID++) {
                         jsonWriter.set(modeKey + levelID + "q", "0");
                         jsonWriter.set(modeKey + levelID + "r", "0");
                     }

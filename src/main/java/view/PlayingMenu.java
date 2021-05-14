@@ -135,6 +135,7 @@ public class PlayingMenu extends Menu {
             }
             else if(str.equals(keyBinds[4])) {
                 this.resetCounters();
+                game.getBoard().restart();
                 game.setPlayerFacing(Direction.DOWN);
                 direction = Direction.RESTART;
             }else if(str.equals(keyBinds[5])) {
@@ -855,7 +856,6 @@ public class PlayingMenu extends Menu {
      * Reset the counters of the amount of moves and pushes.
      */
     private void resetCounters(){
-        game.getBoard().restart();
         currentLevelIsWon = false;
         movesHistory = new ArrayList<>();
         this.game.setPlayerFacing(Direction.DOWN);

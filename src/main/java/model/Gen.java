@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * The <Gen>Gen</Gen> class handle the generation. It has 2 possibility for the generation :
+ * The <code>Gen</code> class handle the generation. It has 2 possibility for the generation :
  * With the Difficulty (EASY-NORMAL-HARD) or with a custom size and a custom number of boxes.
  * The generation can only create squares and use DeadLocks method to generate a playable level.
  */
