@@ -17,14 +17,13 @@
           "11":"JSONReader.java",
           "12":"JSONWriter.java",
           "13":"LevelSaver.java",
-          "14":"LogInMenu.java",
-          "15":"MapEditor.java",
-          "16":"Player.java",
-          "17":"Position.java",
-          "18":"PressurePlate.java",
-          "19":"StopWatch.java",
-          "20":"Teleport.java",
-          "21":"Wall.java"
+          "14":"MapEditor.java",
+          "15":"Player.java",
+          "16":"Position.java",
+          "17":"PressurePlate.java",
+          "18":"StopWatch.java",
+          "19":"Teleport.java",
+          "20":"Wall.java"
         },
         "presenter": {
           "0":"Main.java"
@@ -80,7 +79,7 @@
           "25":"loadSaveButton.png",
           "26":"lock overlay.png",
           "27":"lock_overlay.png",
-          "28":"main menu.png"
+          "28":"main menu.png",
           "29":"moves.png",
           "30":"newMap.png",
           "31":"next level.png",
@@ -171,7 +170,7 @@
             "14":"level15.xsb",
             "15":"level16.xsb",
             "16":"secret.xsb"
-          },
+          }
         },
         "sound": {
             "0":"beat.mp3",
