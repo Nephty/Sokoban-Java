@@ -3,6 +3,7 @@ package view;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
 import java.io.File;
+
 import javafx.util.Duration;
 import model.FileGetter;
 
@@ -22,6 +23,7 @@ public class AudioPlayer {
 
     private MediaPlayer mediaPlayer;
     private Media currMedia;
+
 
     private double volume = 0.5;
 
